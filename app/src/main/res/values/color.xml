@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="LightGray">#D3D3D3</color>
+    <color name="Grey">#BEBEBE</color>
+    <color name="theme_color">#00A2E9</color>
+    <color name="nocolor">#00000000</color>
+    <color name="white">#ffffff</color>
+    <!-- 白色 -->
+
+    <color name="black">#000000</color>
+    <!-- 黑色 -->
+    <color name="gray_black">#f2f2f2</color>
+    <color name="tab_back">#515151</color>
+    <color name="red">#ff0000</color>
+    <!-- 红色 -->
+
+    <color name="yellow">#FFF7D23E</color>
+    <color name="blue">#0000ff</color>
+    <!-- 蓝色 -->
+
+    <color name="text_blue">#6ec370</color>
+    <color name="text_black">#919191</color>
+    <color name="green">#00FF00</color>
+
+    <color name="lightgreen">#90ee90</color>
+    <!-- 亮绿色 -->
+</resources>
