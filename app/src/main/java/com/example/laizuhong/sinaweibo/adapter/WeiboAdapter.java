@@ -3,11 +3,13 @@ package com.example.laizuhong.sinaweibo.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,12 +38,12 @@ import java.util.regex.Pattern;
  */
 public class WeiboAdapter extends BaseAdapter{
 
-    List<Status> statuses;
-    Context context;
-    int MODE=0;
     private static  final  Pattern itemuser=Pattern.compile("@\\w+ ");
     private static  final  Pattern web1=Pattern.compile("http://\\w+");
     private static  final  Pattern web2=Pattern.compile("#\\w+#");
+    List<Status> statuses;
+    Context context;
+    int MODE = 0;
     DisplayImageOptions options;
 
     public WeiboAdapter(Context context,List<Status> statuses,int mode){
@@ -61,6 +63,24 @@ public class WeiboAdapter extends BaseAdapter{
 
     }
 
+    /**
+     * 半角转换为全角
+     *
+     * @param input
+     * @return
+     */
+    public static String ToDBC(String input) {
+        char[] c = input.toCharArray();
+        for (int i = 0; i < c.length; i++) {
+            if (c[i] == 12288) {
+                c[i] = (char) 32;
+                continue;
+            }
+            if (c[i] > 65280 && c[i] < 65375)
+                c[i] = (char) (c[i] - 65248);
+        }
+        return new String(c);
+    }
 
     @Override
     public int getCount() {
@@ -85,7 +105,7 @@ public class WeiboAdapter extends BaseAdapter{
             convertView= LayoutInflater.from(context).inflate(R.layout.item_weibo,null);
             holer.username= (TextView) convertView.findViewById(R.id.username);
             holer.time= (TextView) convertView.findViewById(R.id.time);
-            holer.frome= (TextView) convertView.findViewById(R.id.frome);
+            holer.from = (TextView) convertView.findViewById(R.id.frome);
             holer.text= (TextView) convertView.findViewById(R.id.text);
             holer.sharecount= (TextView) convertView.findViewById(R.id.retweetcount);
             holer.commentcount= (TextView) convertView.findViewById(R.id.commentcount);
@@ -106,10 +126,10 @@ public class WeiboAdapter extends BaseAdapter{
         Status status=statuses.get(position);
         holer.username.setText(status.user.screen_name);
 
-        holer.time.setText(DateUtil.GmtToDatastring(status.created_at));
-        if (status.source.contains("weibo")) {
-            holer.frome.setText("微博");
-        }
+        holer.time.setText(DateUtil.GmtToDatastring(status.created_at).substring(5, 16));
+
+        holer.from.setText(Html.fromHtml(status.source).toString());
+        Log.e("frome", status.source);
         holer.text.setText(ToDBC(status.text));
        setTextview(holer.text);
         com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(status.user.profile_image_url, holer.userhead, options);
@@ -157,78 +177,6 @@ public class WeiboAdapter extends BaseAdapter{
         return convertView;
     }
 
-
-    class ViewHoler{
-        TextView username,time,frome,text,frome_text,sharecount,commentcount,likecount;
-        LinearLayout share,comment,like,frome_status;
-        ImageView likeImage,userhead;
-        GridView gridView,frome_grid;
-    }
-
-
-    /**
-     * 半角转换为全角
-     *
-     * @param input
-     * @return
-     */
-    public static String ToDBC(String input) {
-        char[] c = input.toCharArray();
-        for (int i = 0; i < c.length; i++) {
-            if (c[i] == 12288) {
-                c[i] = (char) 32;
-                continue;
-            }
-            if (c[i] > 65280 && c[i] < 65375)
-                c[i] = (char) (c[i] - 65248);
-        }
-        return new String(c);
-    }
-
-
-
-    class MyGridviewAdapter extends  BaseAdapter{
-
-
-
-        ArrayList<String> pic;
-
-        public MyGridviewAdapter(ArrayList<String> pic) {
-            this.pic = pic;
-        }
-
-
-
-        @Override
-        public int getCount() {
-            if (pic.size()>9){
-                return 9;
-            }
-            return pic.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return pic.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            convertView=LayoutInflater.from(context).inflate(R.layout.item_gridview,null);
-
-            ImageView imageView= (ImageView) convertView.findViewById(R.id.image);
-           // imageView.setLayoutParams(new ViewGroup.LayoutParams(DisplayUtil.px2dip(context,MyApp.width/3-20),DisplayUtil.px2dip(context,MyApp.width/3-20)));
-           // Log.e("image_url",pic.get(position));
-            com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(pic.get(position),imageView,options);
-            return convertView;
-        }
-    }
-
     private void setTextview(TextView textview){
         String string=textview.getText().toString();
         SpannableString spannableString=new SpannableString(string);
@@ -273,8 +221,6 @@ public class WeiboAdapter extends BaseAdapter{
         }));
     }
 
-
-
     /*
      *设置具体哪个关键字可点击
      */
@@ -298,5 +244,57 @@ public class WeiboAdapter extends BaseAdapter{
         textview.setText(spannableString);
         textview.setMovementMethod(LinkMovementMethod.getInstance());
     }
+
+    class ViewHoler {
+        TextView username, time, text, frome_text, sharecount, commentcount, likecount;
+        LinearLayout share, comment, like, frome_status;
+        ImageView likeImage, userhead;
+        GridView gridView, frome_grid;
+        TextView from;
+    }
+
+    class MyGridviewAdapter extends BaseAdapter {
+
+
+        ArrayList<String> pic;
+
+        public MyGridviewAdapter(ArrayList<String> pic) {
+            this.pic = pic;
+        }
+
+
+        @Override
+        public int getCount() {
+            if (pic.size() > 9) {
+                return 9;
+            }
+            return pic.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return pic.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_gridview, null);
+
+            ImageView imageView = (ImageView) convertView.findViewById(R.id.image);
+            // imageView.setLayoutParams(new ViewGroup.LayoutParams(DisplayUtil.px2dip(context,MyApp.width/3-20),DisplayUtil.px2dip(context,MyApp.width/3-20)));
+            // Log.e("image_url",pic.get(position));
+            com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(pic.get(position), imageView, options);
+            return convertView;
+        }
+    }
+
+
+
+
 
 }

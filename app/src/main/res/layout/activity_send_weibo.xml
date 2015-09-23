@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <RelativeLayout
         android:id="@+id/title_layout"
         android:layout_width="fill_parent"
@@ -16,14 +17,14 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="5dp"
             android:gravity="center"
-            android:text="取消"/>
+            android:text="取消" />
 
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="发微博"/>
+            android:text="发微博" />
 
 
         <TextView
@@ -34,11 +35,9 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="5dp"
             android:gravity="center"
-            android:text="发送"/>
+            android:text="发送" />
 
     </RelativeLayout>
-
-
 
 
     <LinearLayout
@@ -54,14 +53,15 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:padding="8dp"
-            android:src="@drawable/compose_toolbar_picture_highlighted"/>
+            android:src="@drawable/compose_toolbar_picture_highlighted" />
+
         <ImageView
             android:id="@+id/fun2"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:padding="8dp"
-            android:src="@drawable/compose_mentionbutton_background_highlighted"/>
+            android:src="@drawable/compose_mentionbutton_background_highlighted" />
 
         <ImageView
             android:id="@+id/fun3"
@@ -69,31 +69,62 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:padding="8dp"
-            android:src="@drawable/compose_trendbutton_background_highlighted"/>
+            android:src="@drawable/compose_trendbutton_background_highlighted" />
+
         <ImageView
             android:id="@+id/fun4"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:padding="8dp"
-            android:src="@drawable/compose_emoticonbutton_background_highlighted"/>
+            android:src="@drawable/compose_emoticonbutton_background_highlighted" />
+
         <ImageView
             android:id="@+id/fun5"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:padding="8dp"
-            android:src="@drawable/search_discover_icon_addchannel_highlighted"/>
+            android:src="@drawable/search_discover_icon_addchannel_highlighted" />
 
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/text"
+
+    <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@id/line_layout"
-        android:layout_below="@id/title_layout"
-        android:background="@color/white"
-        android:gravity="top" />
+        android:layout_below="@id/title_layout">
 
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+
+                <EditText
+                    android:id="@+id/text"
+                    android:layout_width="fill_parent"
+                    android:layout_height="100dp"
+                    android:background="@color/white"
+                    android:gravity="top"
+                    android:maxLines="10" />
+
+                <com.example.laizuhong.sinaweibo.util.MyGridView
+                    android:id="@+id/send_pic_grid"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_below="@id/text"
+                    android:horizontalSpacing="5dp"
+                    android:numColumns="3"
+                    android:verticalSpacing="5dp">
+
+                </com.example.laizuhong.sinaweibo.util.MyGridView>
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>

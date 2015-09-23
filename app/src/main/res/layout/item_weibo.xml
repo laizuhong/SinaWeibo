@@ -9,14 +9,14 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         android:orientation="vertical"
-        android:padding="5dp"
-        android:background="@color/white">
+        android:padding="5dp">
 
 
         <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="40dp">
 
             <ImageView
                 android:id="@+id/userhead"
@@ -27,12 +27,12 @@
 
             <TextView
                 android:id="@+id/username"
-                android:textColor="@color/red"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_toRightOf="@id/userhead"
-                android:text="123" />
+                android:text="123"
+                android:textColor="@color/red" />
 
             <TextView
                 android:id="@+id/time"
@@ -80,19 +80,19 @@
         <TextView
             android:id="@+id/text"
             android:layout_width="fill_parent"
-            android:textColor="@color/black"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="10dp"
+            android:textColor="@color/black" />
 
         <com.example.laizuhong.sinaweibo.util.MyGridView
+            android:id="@+id/mygridview"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:numColumns="3"
             android:horizontalSpacing="5dp"
+            android:numColumns="3"
             android:verticalSpacing="5dp"
-            android:id="@+id/mygridview">
+            android:visibility="gone">
 
         </com.example.laizuhong.sinaweibo.util.MyGridView>
 
@@ -101,8 +101,8 @@
             android:id="@+id/frome_status"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@color/gray_black">
+            android:background="@color/gray_black"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/frome_text"
@@ -111,13 +111,13 @@
 
             <com.example.laizuhong.sinaweibo.util.MyGridView
 
+                android:id="@+id/frome_grid"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:numColumns="3"
                 android:horizontalSpacing="5dp"
+                android:numColumns="3"
                 android:verticalSpacing="5dp"
-                android:id="@+id/frome_grid">
+                android:visibility="gone">
 
             </com.example.laizuhong.sinaweibo.util.MyGridView>
 

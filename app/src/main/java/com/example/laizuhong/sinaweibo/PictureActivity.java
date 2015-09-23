@@ -1,5 +1,6 @@
 package com.example.laizuhong.sinaweibo;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,12 +13,13 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.laizuhong.sinaweibo.bean.Picture;
-import com.example.laizuhong.sinaweibo.bean.PictureFile;
 import com.example.laizuhong.sinaweibo.util.DisplayUtil;
 import com.example.laizuhong.sinaweibo.util.PictureUtil;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -25,6 +27,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,9 +36,9 @@ import java.util.List;
  */
 public class PictureActivity extends AppCompatActivity implements View.OnClickListener {
 
-
+    int tab = 0;
     MyAdapter adapter;
-    List<PictureFile> pictureFiles;
+    //List<PictureFile> PictureUtil.pictureFiles;
     List<Picture> pictures;
     GridView gridView;
     PopupWindow popupWindow;
@@ -47,14 +51,18 @@ public class PictureActivity extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture);
+        pictures = (List<Picture>) getIntent().getSerializableExtra("picture");
+        if (pictures == null) {
+            pictures = new ArrayList<>();
+        }
         init();
     }
 
 
     private void init() {
-        pictureFiles = PictureUtil.newInstance(this).getFolders();
-        pictures = pictureFiles.get(0).getSets();
-        pictures.remove(0);
+        PictureUtil.newInstance(this);
+
+
         imageSize = new ImageSize(DisplayUtil.dip2px(this, 50), DisplayUtil.dip2px(this, 50));
         options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.logo)
@@ -74,6 +82,7 @@ public class PictureActivity extends AppCompatActivity implements View.OnClickLi
         // gridView.setOnScrollListener(this);
         findViewById(R.id.back).setOnClickListener(this);
         findViewById(R.id.tv_title).setOnClickListener(this);
+        findViewById(R.id.ok).setOnClickListener(this);
         initPopupWindow();
     }
 
@@ -91,6 +100,12 @@ public class PictureActivity extends AppCompatActivity implements View.OnClickLi
                     popupWindow.showAsDropDown(v);
                 }
                 break;
+            case R.id.ok:
+                Intent intent = new Intent();
+                intent.putExtra("picture", (Serializable) pictures);
+                setResult(RESULT_OK, intent);
+                finish();
+                break;
         }
     }
 
@@ -106,9 +121,8 @@ public class PictureActivity extends AppCompatActivity implements View.OnClickLi
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                tab = position;
                 popupWindow.dismiss();
-                pictures = pictureFiles.get(position).getSets();
                 adapter.notifyDataSetChanged();
                 gridView.setSelection(0);
             }
@@ -141,25 +155,17 @@ public class PictureActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        pictureFiles.clear();
-        pictureFiles = null;
-        pictures.clear();
-        pictures = null;
-    }
 
     class MyAdapter extends BaseAdapter {
 
         @Override
         public int getCount() {
-            return pictures.size();
+            return PictureUtil.pictureFiles.get(tab).getSets().size();
         }
 
         @Override
         public Object getItem(int position) {
-            return pictures.get(position);
+            return PictureUtil.pictureFiles.get(tab).getSets().get(position);
         }
 
         @Override
@@ -168,41 +174,75 @@ public class PictureActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             final ViewHoler holer;
             if (convertView == null) {
                 holer = new ViewHoler();
                 convertView = LayoutInflater.from(PictureActivity.this).inflate(R.layout.item_pic_gridview, null);
                 holer.imageView = (ImageView) convertView.findViewById(R.id.imageview);
+                holer.check_layout = (LinearLayout) convertView.findViewById(R.id.check_layout);
+                holer.box = (ImageView) convertView.findViewById(R.id.checkbox);
                 convertView.setTag(holer);
             } else {
                 holer = (ViewHoler) convertView.getTag();
                 holer.imageView.setImageBitmap(null);
             }
-            String path = pictures.get(position).getPath();
+            final Picture picture = PictureUtil.pictureFiles.get(tab).getSets().get(position);
+            String path = picture.getPath();
             if (path == null) {
                 return convertView;
             }
-            Log.e("path", path + "   123");
+            Log.e("path", picture.toString() + "   123");
 
             ImageLoader.getInstance().displayImage("file://" + path, holer.imageView, options);
+            if (picture.isChecked()) {
+                holer.box.setBackgroundResource(R.drawable.compose_guide_check_box_right);
+            } else {
+                holer.box.setBackgroundResource(R.drawable.compose_guide_check_box_default);
+            }
+
+            holer.check_layout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (picture.isChecked()) {
+                        Log.e("box取消", picture.isChecked() + "!!!");
+                        holer.box.setBackgroundResource(R.drawable.compose_guide_check_box_default);
+                        PictureUtil.pictureFiles.get(tab).getSets().get(position).isChecked = false;
+                        pictures.remove(picture);
+                    } else {
+                        if (pictures.size() > 8) {
+                            Toast.makeText(PictureActivity.this, "最多可选9张图", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        Log.e("box选中", picture.isChecked() + "!!!");
+                        holer.box.setBackgroundResource(R.drawable.compose_guide_check_box_right);
+                        PictureUtil.pictureFiles.get(tab).getSets().get(position).isChecked = true;
+                        pictures.add(picture);
+                    }
+                    Log.e("map.size", pictures.size() + "   !!!");
+                }
+            });
+
             return convertView;
         }
     }
 
     class ViewHoler {
         ImageView imageView;
+        LinearLayout check_layout;
+        ImageView box;
     }
 
     class PopAdapter extends BaseAdapter {
         @Override
         public int getCount() {
-            return pictureFiles.size();
+            return PictureUtil.pictureFiles.size();
         }
 
         @Override
         public Object getItem(int position) {
-            return pictureFiles.get(position);
+            return PictureUtil.pictureFiles.get(position);
         }
 
         @Override
@@ -218,13 +258,13 @@ public class PictureActivity extends AppCompatActivity implements View.OnClickLi
             TextView count = (TextView) convertView.findViewById(R.id.filecount);
 
 
-            String path = pictureFiles.get(position).getThumbnail();
+            String path = PictureUtil.pictureFiles.get(position).getThumbnail();
             Log.e("thumbnai", path);
 
 
             ImageLoader.getInstance().displayImage("file://" + path, imageView, options);
-            name.setText(pictureFiles.get(position).getFolderName());
-            count.setText("共" + pictureFiles.get(position).getCount() + "张");
+            name.setText(PictureUtil.pictureFiles.get(position).getFolderName());
+            count.setText("共" + PictureUtil.pictureFiles.get(position).getCount() + "张");
 
             return convertView;
         }

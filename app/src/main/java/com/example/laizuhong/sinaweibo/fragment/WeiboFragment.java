@@ -41,31 +41,65 @@ import in.srain.cube.views.ptr.header.MaterialHeader;
  */
 public class WeiboFragment extends Fragment implements AbsListView.OnScrollListener{
 
-    private View rootView;//缓存Fragment view
-    /** 当前 Token 信息 */
-    private Oauth2AccessToken mAccessToken;
-    /** 用于获取微博信息流等操作的API */
-    private StatusesAPI mStatusesAPI;
-
     Context context;
-
-    private View mProgressBar;
-    private TextView mHintView;
-    private View footview;
-
     PtrFrameLayout ptrFrameLayout;
-
-
     ListView listView;
-
     LinearLayout loading;
-
     int MODE=1;  //1为刷新，2为加载更多
     int page=1;
     boolean fresh=false;
     ArrayList<Status> statusList;
-
     WeiboAdapter adapter;
+    private View rootView;//缓存Fragment view
+    /**
+     * 当前 Token 信息
+     */
+    private Oauth2AccessToken mAccessToken;
+    /**
+     * 用于获取微博信息流等操作的API
+     */
+    private StatusesAPI mStatusesAPI;
+    private View mProgressBar;
+    private TextView mHintView;
+    private View footview;
+    /**
+     * 微博 OpenAPI 回调接口。
+     */
+    private RequestListener mListener = new RequestListener() {
+        @Override
+        public void onComplete(String response) {
+            if (!TextUtils.isEmpty(response)) {
+                Log.e("RequestListener status", response);
+                if (response.startsWith("{\"statuses\"")) {
+                    // 调用 StatusList#parse 解析字符串成微博列表对象
+                    StatusList statuses = StatusList.parse(response);
+                    if (statuses != null && statuses.total_number > 0) {
+                        if (loading.getVisibility() == View.VISIBLE) {
+                            loading.setVisibility(View.GONE);
+                            ptrFrameLayout.setVisibility(View.VISIBLE);
+                        }
+                        ptrFrameLayout.refreshComplete();
+                        if (MODE == 1) {
+                            statusList.clear();
+                        }
+                        statusList.addAll(statuses.statusList);
+                        setState(0);
+                        adapter.notifyDataSetChanged();
+                        fresh = false;
+                    }
+                } else {
+                    Toast.makeText(context, response, Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+
+        @Override
+        public void onWeiboException(WeiboException e) {
+            LogUtil.e("onWeiboException", e.getMessage());
+            ErrorInfo info = ErrorInfo.parse(e.getMessage());
+            Toast.makeText(context, info.toString(), Toast.LENGTH_LONG).show();
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -81,7 +115,6 @@ public class WeiboFragment extends Fragment implements AbsListView.OnScrollListe
         init(rootView);
         return rootView;
     }
-
 
     private void init(View v){
         listView= (ListView) v.findViewById(R.id.allweibo);
@@ -154,46 +187,6 @@ public class WeiboFragment extends Fragment implements AbsListView.OnScrollListe
         });
     }
 
-    /**
-     * 微博 OpenAPI 回调接口。
-     */
-    private RequestListener mListener = new RequestListener() {
-        @Override
-        public void onComplete(String response) {
-            if (!TextUtils.isEmpty(response)) {
-                Log.e("RequestListener status", response);
-                if (response.startsWith("{\"statuses\"")) {
-                    // 调用 StatusList#parse 解析字符串成微博列表对象
-                    StatusList  statuses = StatusList.parse(response);
-                    if (statuses != null && statuses.total_number > 0) {
-                        if (loading.getVisibility()==View.VISIBLE){
-                            loading.setVisibility(View.GONE);
-                            ptrFrameLayout.setVisibility(View.VISIBLE);
-                        }
-                        ptrFrameLayout.refreshComplete();
-                        if (MODE==1){
-                            statusList.clear();
-                        }
-                        statusList.addAll(statuses.statusList);
-                        setState(0);
-                        adapter.notifyDataSetChanged();
-                        fresh=false;
-                    }
-                } else {
-                    Toast.makeText(context, response, Toast.LENGTH_LONG).show();
-                }
-            }
-        }
-
-        @Override
-        public void onWeiboException(WeiboException e) {
-            LogUtil.e("onWeiboException", e.getMessage());
-            ErrorInfo info = ErrorInfo.parse(e.getMessage());
-            Toast.makeText(context, info.toString(), Toast.LENGTH_LONG).show();
-        }
-    };
-
-
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
 
@@ -201,7 +194,7 @@ public class WeiboFragment extends Fragment implements AbsListView.OnScrollListe
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        Log.e("onscroll",totalItemCount-firstVisibleItem+"   "+visibleItemCount);
+        //Log.e("onscroll",totalItemCount-firstVisibleItem+"   "+visibleItemCount);
         if (totalItemCount-firstVisibleItem==visibleItemCount&&fresh==false){
             footview.setVisibility(View.VISIBLE);
             MODE=2;

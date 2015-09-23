@@ -1,9 +1,11 @@
 package com.example.laizuhong.sinaweibo.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by laizuhong on 2015/9/18.
  */
-public class Picture {
+public class Picture implements Serializable {
 
     public String parentName;
     public long size;
@@ -11,20 +13,21 @@ public class Picture {
     public String path;
     public boolean isChecked;
     public int id;
-
-    @Override
-    public String toString() {
-        return "Picture{" +
-                "parentName='" + parentName + '\'' +
-                ", size=" + size +
-                ", displayName='" + displayName + '\'' +
-                ", path='" + path + '\'' +
-                ", isChecked=" + isChecked +
-                ", id=" + id +
-                '}';
-    }
+    public int child;
+    public int group;
 
     public Picture() {
+    }
+
+    public Picture(String parentName, long size, String displayName, String path, boolean isChecked, int id, int child, int group) {
+        this.parentName = parentName;
+        this.size = size;
+        this.displayName = displayName;
+        this.path = path;
+        this.isChecked = isChecked;
+        this.id = id;
+        this.child = child;
+        this.group = group;
     }
 
     public Picture(String path) {
@@ -38,6 +41,37 @@ public class Picture {
         this.path = path;
         this.isChecked = isChecked;
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Picture{" +
+                "parentName='" + parentName + '\'' +
+                ", size=" + size +
+                ", displayName='" + displayName + '\'' +
+                ", path='" + path + '\'' +
+                ", isChecked=" + isChecked +
+                ", id=" + id +
+                ", child=" + child +
+                ", group=" + group +
+                '}';
+    }
+
+    public int getChild() {
+
+        return child;
+    }
+
+    public void setChild(int child) {
+        this.child = child;
+    }
+
+    public int getGroup() {
+        return group;
+    }
+
+    public void setGroup(int group) {
+        this.group = group;
     }
 
     public String getParentName() {

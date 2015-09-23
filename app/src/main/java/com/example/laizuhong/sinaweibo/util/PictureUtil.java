@@ -22,10 +22,12 @@ import java.util.Set;
  */
 public class PictureUtil {
 
-    Context context;
-    ContentResolver contentResolver;
+    public static List<PictureFile> pictureFiles;
+    private static ContentResolver contentResolver;
 
     private static PictureUtil instance;
+    Context context;
+
 
     private PictureUtil(Context context) {
         this.context = context;
@@ -35,21 +37,22 @@ public class PictureUtil {
     public static PictureUtil newInstance(Context context) {
         if (instance == null) {
             instance = new PictureUtil(context);
+            pictureFiles = getFolders();
         }
         return instance;
-    };
+    }
 
-    public List<PictureFile> getFolders() {
+    public static List<PictureFile> getFolders() {
         Uri mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
         Cursor mCursor = contentResolver.query(mImageUri, null,
                 MediaStore.Images.Media.MIME_TYPE + "=? or "
                         + MediaStore.Images.Media.MIME_TYPE + "=?",
-                new String[] { "image/jpeg", "image/png" },
+                new String[]{"image/jpeg", "image/png"},
                 MediaStore.Images.Media.DATE_MODIFIED);
         HashMap<String, List<Picture>> map = capacity(mCursor);
 
-        List<PictureFile> mPictureFiles = new ArrayList<>();
+        pictureFiles = new ArrayList<>();
 
         Set<Map.Entry<String, List<Picture>>> set = map.entrySet();
         for (Iterator<Map.Entry<String, List<Picture>>> iterator = set
@@ -62,14 +65,14 @@ public class PictureUtil {
                     .getValue().size() + 1, entry.getValue(), b.path);
             // 在第0个位置加入了拍照图片
             tempPictureFile.sets.add(0, new Picture());
-            mPictureFiles.add(tempPictureFile);
+            pictureFiles.add(tempPictureFile);
         }
         mCursor.close();
-        return mPictureFiles;
+        return pictureFiles;
     }
 
-    private HashMap<String, List<Picture>> capacity(Cursor mCursor) {
-
+    private static HashMap<String, List<Picture>> capacity(Cursor mCursor) {
+        int group = 0;
         HashMap<String, List<Picture>> beans = new HashMap<>();
         while (mCursor.moveToNext()) {
             String path = mCursor.getString(mCursor
@@ -88,11 +91,13 @@ public class PictureUtil {
             if (beans.containsKey(parentName)) {
                 sb = beans.get(parentName);
                 sb.add(new Picture(parentName, size, display_name, path,
-                        false,id));
+                        false, id, sb.size(), sb.get(0).getGroup()));
             } else {
                 sb = new ArrayList<>();
+
                 sb.add(new Picture(parentName, size, display_name, path,
-                        false,id));
+                        false, id, 0, group));
+                group++;
             }
             beans.put(parentName, sb);
         }
