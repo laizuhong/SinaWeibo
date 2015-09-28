@@ -54,6 +54,10 @@ public class PictureActivity extends AppCompatActivity implements View.OnClickLi
         pictures = (List<Picture>) getIntent().getSerializableExtra("picture");
         if (pictures == null) {
             pictures = new ArrayList<>();
+        } else {
+            for (int i = 0; i < pictures.size(); i++) {
+                Log.e("asdf", pictures.get(i).toString());
+            }
         }
         init();
     }
@@ -209,7 +213,12 @@ public class PictureActivity extends AppCompatActivity implements View.OnClickLi
                         Log.e("box取消", picture.isChecked() + "!!!");
                         holer.box.setBackgroundResource(R.drawable.compose_guide_check_box_default);
                         PictureUtil.pictureFiles.get(tab).getSets().get(position).isChecked = false;
-                        pictures.remove(picture);
+                        for (int i = 0; i < pictures.size(); i++) {
+                            if (pictures.get(i).getId() == picture.getId()) {
+                                pictures.remove(picture);
+                                break;
+                            }
+                        }
                     } else {
                         if (pictures.size() > 8) {
                             Toast.makeText(PictureActivity.this, "最多可选9张图", Toast.LENGTH_LONG).show();

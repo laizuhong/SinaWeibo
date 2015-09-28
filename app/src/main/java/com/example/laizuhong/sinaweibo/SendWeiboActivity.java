@@ -116,6 +116,9 @@ public class SendWeiboActivity extends AppCompatActivity implements View.OnClick
                 break;
             case R.id.fun1:
                 Intent picture=new Intent(SendWeiboActivity.this,PictureActivity.class);
+                if (pictures.size() > 0 && pictures.size() < 8) {
+                    pictures.remove(pictures.size() - 1);
+                }
                 picture.putExtra("picture", (Serializable) pictures);
                 startActivityForResult(picture, 1);
                 break;
@@ -129,7 +132,12 @@ public class SendWeiboActivity extends AppCompatActivity implements View.OnClick
                 break;
             case R.id.send:
                 String text=edt.getText().toString();
-                mStatusesAPI.update(text,"","",mListener);
+                if (pictures.size() == 0) {
+                    mStatusesAPI.update(text, "", "", mListener);
+                } else {
+                    Bitmap bitmap = ImageLoader.getInstance().loadImageSync("file://" + pictures.get(0).getPath(), options);
+                    mStatusesAPI.upload(text, bitmap, "", "", mListener);
+                }
                 break;
         }
     }
@@ -146,6 +154,9 @@ public class SendWeiboActivity extends AppCompatActivity implements View.OnClick
                     pictures.add(new Picture("path"));
                 }
                 adapter.notifyDataSetChanged();
+                for (int i = 0; i < pictures.size(); i++) {
+                    Log.e("pictures", pictures.get(i).toString() + " ");
+                }
             }
         }
     }
@@ -176,8 +187,9 @@ public class SendWeiboActivity extends AppCompatActivity implements View.OnClick
                 img.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (pictures.size() != 0 && getCount() < 9 && position == getCount() - 1) {
+                        if (pictures.size() > 0 && getCount() < 9 && position == getCount() - 1) {
                             Intent picture = new Intent(SendWeiboActivity.this, PictureActivity.class);
+                            pictures.remove(pictures.size() - 1);
                             picture.putExtra("picture", (Serializable) pictures);
                             startActivityForResult(picture, 1);
                         }
@@ -189,18 +201,22 @@ public class SendWeiboActivity extends AppCompatActivity implements View.OnClick
 
             final Picture picture = pictures.get(position);
 
-
+            Log.e("     getview", picture.getGroup() + "   " + picture.getChild());
             ImageLoader.getInstance().displayImage("file://" + picture.getPath(), img, options);
             delete.setTag(position);
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int p = (int) v.getTag();
-                    int group = pictures.get(p).getGroup();
-                    int child = pictures.get(p).getChild();
-                    Log.e("path", pictures.get(p).toString() + "   " + group + "   " + child);
-                    pictures.remove(p);
+                    Picture picture1 = pictures.get(p);
+                    int group = picture1.getGroup();
+                    int child = picture1.getChild();
+                    Log.e("path", group + "   " + child);
+                    pictures.remove(picture1);
                     PictureUtil.pictureFiles.get(group).getSets().get(child).isChecked = false;
+                    if (pictures.size() == 1) {
+                        pictures.clear();
+                    }
                     adapter.notifyDataSetChanged();
                 }
             });

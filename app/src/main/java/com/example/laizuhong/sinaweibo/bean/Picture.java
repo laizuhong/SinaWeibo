@@ -46,10 +46,7 @@ public class Picture implements Serializable {
     @Override
     public String toString() {
         return "Picture{" +
-                "parentName='" + parentName + '\'' +
-                ", size=" + size +
-                ", displayName='" + displayName + '\'' +
-                ", path='" + path + '\'' +
+
                 ", isChecked=" + isChecked +
                 ", id=" + id +
                 ", child=" + child +
