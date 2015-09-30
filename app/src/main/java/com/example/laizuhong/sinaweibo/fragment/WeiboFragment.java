@@ -153,9 +153,12 @@ public class WeiboFragment extends Fragment implements AbsListView.OnScrollListe
         header.setPadding(0, 0, 0, DisplayUtil.dip2px(context, 10));
         header.setPtrFrameLayout(ptrFrameLayout);
 
+        ptrFrameLayout.setResistance(1.7f);
+        ptrFrameLayout.setRatioOfHeaderHeightToRefresh(1.2f);
+        ptrFrameLayout.setDurationToClose(200);
 
         ptrFrameLayout.setLoadingMinTime(1000);
-        ptrFrameLayout.setDurationToCloseHeader(1500);
+        ptrFrameLayout.setDurationToCloseHeader(500);
         ptrFrameLayout.setHeaderView(header);
         ptrFrameLayout.addPtrUIHandler(header);
         ptrFrameLayout.setPtrHandler(new PtrHandler() {
@@ -164,8 +167,8 @@ public class WeiboFragment extends Fragment implements AbsListView.OnScrollListe
                 frame.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        MODE=1;
-                        page=1;
+                        MODE = 1;
+                        page = 1;
                         mStatusesAPI.friendsTimeline(0L, 0L, 10, page, false, 0, false, mListener);
 
                     }
@@ -181,10 +184,12 @@ public class WeiboFragment extends Fragment implements AbsListView.OnScrollListe
         v.findViewById(R.id.tosend).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(context, SendWeiboActivity.class);
+                Intent intent = new Intent(context, SendWeiboActivity.class);
                 context.startActivity(intent);
             }
         });
+
+
     }
 
     @Override

@@ -4,11 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.text.Html;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextPaint;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,27 +15,21 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.laizuhong.sinaweibo.R;
-import com.example.laizuhong.sinaweibo.UserWeiboActivity;
+import com.example.laizuhong.sinaweibo.WeiboDetailActivity;
 import com.example.laizuhong.sinaweibo.util.DateUtil;
-import com.example.laizuhong.sinaweibo.util.OnTextviewClickListener;
-import com.example.laizuhong.sinaweibo.util.WeiboClickSpan;
+import com.example.laizuhong.sinaweibo.util.StringUtil;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.sina.weibo.sdk.openapi.models.Status;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by laizuhong on 2015/9/16.
  */
 public class WeiboAdapter extends BaseAdapter{
 
-    private static  final  Pattern itemuser=Pattern.compile("@\\w+ ");
-    private static  final  Pattern web1=Pattern.compile("http://\\w+");
-    private static  final  Pattern web2=Pattern.compile("#\\w+#");
+
     List<Status> statuses;
     Context context;
     int MODE = 0;
@@ -51,9 +40,9 @@ public class WeiboAdapter extends BaseAdapter{
         this.statuses=statuses;
         this.MODE=mode;
         options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.logo)
-                .showImageForEmptyUri(R.drawable.logo)
-                .showImageOnFail(R.drawable.logo)
+//                .showImageOnLoading(R.drawable.logo)
+//                .showImageForEmptyUri(R.drawable.logo)
+//                .showImageOnFail(R.drawable.logo)
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .displayer(new FadeInBitmapDisplayer(100)) // 展现方式：渐现
@@ -63,24 +52,7 @@ public class WeiboAdapter extends BaseAdapter{
 
     }
 
-    /**
-     * 半角转换为全角
-     *
-     * @param input
-     * @return
-     */
-    public static String ToDBC(String input) {
-        char[] c = input.toCharArray();
-        for (int i = 0; i < c.length; i++) {
-            if (c[i] == 12288) {
-                c[i] = (char) 32;
-                continue;
-            }
-            if (c[i] > 65280 && c[i] < 65375)
-                c[i] = (char) (c[i] - 65248);
-        }
-        return new String(c);
-    }
+
 
     @Override
     public int getCount() {
@@ -119,23 +91,24 @@ public class WeiboAdapter extends BaseAdapter{
             holer.frome_status= (LinearLayout) convertView.findViewById(R.id.frome_status);
             holer.frome_text= (TextView) convertView.findViewById(R.id.frome_text);
             holer.frome_grid= (GridView) convertView.findViewById(R.id.frome_grid);
+            holer.item_list = (LinearLayout) convertView.findViewById(R.id.item_list);
             convertView.setTag(holer);
         }else {
             holer= (ViewHoler) convertView.getTag();
         }
-        Status status=statuses.get(position);
+        final Status status = statuses.get(position);
         holer.username.setText(status.user.screen_name);
 
         holer.time.setText(DateUtil.GmtToDatastring(status.created_at).substring(5, 16));
 
         holer.from.setText(Html.fromHtml(status.source).toString());
         Log.e("frome", status.source);
-        holer.text.setText(ToDBC(status.text));
-       setTextview(holer.text);
+        holer.text.setText(StringUtil.ToDBC(status.text));
+        // StringUtil.setTextview(holer.text, context);
         com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(status.user.profile_image_url, holer.userhead, options);
         if (status.pic_urls!=null){
             holer.gridView.setVisibility(View.VISIBLE);
-            MyGridviewAdapter  adapter=new MyGridviewAdapter(status.pic_urls);
+            MyGridviewAdapter adapter = new MyGridviewAdapter(status.pic_urls, context);
             holer.gridView.setAdapter(adapter);
         }else {
             holer.gridView.setVisibility(View.GONE);
@@ -144,12 +117,22 @@ public class WeiboAdapter extends BaseAdapter{
 
         if (status.retweeted_status!=null){
             holer.frome_status.setVisibility(View.VISIBLE);
+            holer.frome_status.setTag(position);
+            holer.frome_status.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int p = (int) v.getTag();
+                    Intent intent = new Intent(context, WeiboDetailActivity.class);
+                    intent.putExtra("weibo", statuses.get(p).retweeted_status);
+                    context.startActivity(intent);
+                }
+            });
             String text=status.retweeted_status.user.screen_name+":  "+status.retweeted_status.text;
-            holer.frome_text.setText(ToDBC(text));
-            setTextview(holer.frome_text);
+            holer.frome_text.setText(StringUtil.ToDBC(text));
+            // StringUtil.setTextview(holer.frome_text, context);
             if (status.retweeted_status.pic_urls!=null){
                 holer.frome_grid.setVisibility(View.VISIBLE);
-                MyGridviewAdapter adapter=new MyGridviewAdapter(status.retweeted_status.pic_urls);
+                MyGridviewAdapter adapter = new MyGridviewAdapter(status.retweeted_status.pic_urls, context);
                 holer.frome_grid.setAdapter(adapter);
             }else {
                 holer.frome_grid.setVisibility(View.GONE);
@@ -174,124 +157,51 @@ public class WeiboAdapter extends BaseAdapter{
             holer.likecount.setText(status.attitudes_count+"");
         }
 
+        holer.share.setTag(position);
+        holer.share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int p = (int) v.getTag();
+                Intent intent = new Intent(context, WeiboDetailActivity.class);
+                intent.putExtra("weibo", statuses.get(p));
+                context.startActivity(intent);
+            }
+        });
+        holer.comment.setTag(position);
+        holer.comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int p = (int) v.getTag();
+                Intent intent = new Intent(context, WeiboDetailActivity.class);
+                intent.putExtra("weibo", statuses.get(p));
+                context.startActivity(intent);
+            }
+        });
+        holer.item_list.setTag(position);
+        holer.item_list.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int p = (int) v.getTag();
+                Intent intent = new Intent(context, WeiboDetailActivity.class);
+                intent.putExtra("weibo", statuses.get(p));
+                context.startActivity(intent);
+            }
+        });
         return convertView;
     }
 
-    private void setTextview(TextView textview){
-        String string=textview.getText().toString();
-        SpannableString spannableString=new SpannableString(string);
-        setKeyworkClickable(textview,spannableString,itemuser,new WeiboClickSpan(new OnTextviewClickListener() {
-            @Override
-            public void clickTextView() {
-                Intent intent=new Intent(context, UserWeiboActivity.class);
-                context.startActivity(intent);
-            }
 
-            @Override
-            public void setStyle(TextPaint ds) {
-                ds.setColor(context.getResources().getColor(R.color.green));
-                ds.setUnderlineText(false);
-            }
-        }));
-        setKeyworkClickable(textview,spannableString,web1,new WeiboClickSpan(new OnTextviewClickListener() {
-            @Override
-            public void clickTextView() {
-                Intent intent=new Intent(context, UserWeiboActivity.class);
-                context.startActivity(intent);
-            }
-
-            @Override
-            public void setStyle(TextPaint ds) {
-                ds.setColor(context.getResources().getColor(R.color.green));
-                ds.setUnderlineText(false);
-            }
-        }));
-        setKeyworkClickable(textview,spannableString,web2,new WeiboClickSpan(new OnTextviewClickListener() {
-            @Override
-            public void clickTextView() {
-                Intent intent=new Intent(context, UserWeiboActivity.class);
-                context.startActivity(intent);
-            }
-
-            @Override
-            public void setStyle(TextPaint ds) {
-                ds.setColor(context.getResources().getColor(R.color.green));
-                ds.setUnderlineText(false);
-            }
-        }));
-    }
-
-    /*
-     *设置具体哪个关键字可点击
-     */
-    private void setKeyworkClickable(TextView textView,SpannableString spannableString,Pattern pattern,ClickableSpan clickableSpan){
-        Matcher matcher=pattern.matcher(spannableString.toString());
-        while (matcher.find()){
-            String key=matcher.group();
-            if (!"".equals(key)){
-                int start =spannableString.toString().indexOf(key);
-                int end =start+key.length();
-                setClickTextview(textView,spannableString,start,end,clickableSpan);
-            }
-        }
-    }
-
-    /*
-     *设置textview中的字段可点击
-     */
-    private void setClickTextview(TextView textview,SpannableString spannableString,int start,int end ,ClickableSpan clickableSpan){
-        spannableString.setSpan(clickableSpan,start,end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textview.setText(spannableString);
-        textview.setMovementMethod(LinkMovementMethod.getInstance());
-    }
 
     class ViewHoler {
         TextView username, time, text, frome_text, sharecount, commentcount, likecount;
-        LinearLayout share, comment, like, frome_status;
+        LinearLayout share, comment, like, frome_status, item_list;
         ImageView likeImage, userhead;
         GridView gridView, frome_grid;
         TextView from;
+
     }
 
-    class MyGridviewAdapter extends BaseAdapter {
 
-
-        ArrayList<String> pic;
-
-        public MyGridviewAdapter(ArrayList<String> pic) {
-            this.pic = pic;
-        }
-
-
-        @Override
-        public int getCount() {
-            if (pic.size() > 9) {
-                return 9;
-            }
-            return pic.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return pic.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_gridview, null);
-
-            ImageView imageView = (ImageView) convertView.findViewById(R.id.image);
-            // imageView.setLayoutParams(new ViewGroup.LayoutParams(DisplayUtil.px2dip(context,MyApp.width/3-20),DisplayUtil.px2dip(context,MyApp.width/3-20)));
-            // Log.e("image_url",pic.get(position));
-            com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(pic.get(position), imageView, options);
-            return convertView;
-        }
-    }
 
 
 

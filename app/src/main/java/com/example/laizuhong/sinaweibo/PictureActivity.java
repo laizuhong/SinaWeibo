@@ -69,9 +69,6 @@ public class PictureActivity extends AppCompatActivity implements View.OnClickLi
 
         imageSize = new ImageSize(DisplayUtil.dip2px(this, 50), DisplayUtil.dip2px(this, 50));
         options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.logo)
-                .showImageForEmptyUri(R.drawable.logo)
-                .showImageOnFail(R.drawable.logo)
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .displayer(new FadeInBitmapDisplayer(100)) // 展现方式：渐现
