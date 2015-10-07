@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import com.example.laizuhong.sinaweibo.R;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import java.util.ArrayList;
@@ -60,9 +61,15 @@ public class MyGridviewAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        convertView = LayoutInflater.from(context).inflate(R.layout.item_gridview, null);
-        ImageView imageView = (ImageView) convertView.findViewById(R.id.image);
-        com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(pic.get(position), imageView, options);
+        if (getCount()==1){
+            convertView=LayoutInflater.from(context).inflate(R.layout.item_gridview1,null);
+            ImageView imageView= (ImageView) convertView.findViewById(R.id.image);
+            ImageLoader.getInstance().displayImage(pic.get(position),imageView,options);
+        }else {
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_gridview, null);
+            ImageView imageView = (ImageView) convertView.findViewById(R.id.image);
+            com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(pic.get(position), imageView, options);
+        }
         return convertView;
     }
 

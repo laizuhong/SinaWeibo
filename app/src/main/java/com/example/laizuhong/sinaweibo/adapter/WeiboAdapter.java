@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,6 +16,7 @@ import android.widget.TextView;
 import com.example.laizuhong.sinaweibo.R;
 import com.example.laizuhong.sinaweibo.WeiboDetailActivity;
 import com.example.laizuhong.sinaweibo.util.DateUtil;
+import com.example.laizuhong.sinaweibo.util.MyGridView;
 import com.example.laizuhong.sinaweibo.util.StringUtil;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
@@ -87,10 +87,10 @@ public class WeiboAdapter extends BaseAdapter{
             holer.like= (LinearLayout) convertView.findViewById(R.id.like);
             holer.likeImage= (ImageView) convertView.findViewById(R.id.likeimage);
             holer.userhead= (ImageView) convertView.findViewById(R.id.userhead);
-            holer.gridView= (GridView) convertView.findViewById(R.id.mygridview);
+            holer.gridView = (MyGridView) convertView.findViewById(R.id.mygridview);
             holer.frome_status= (LinearLayout) convertView.findViewById(R.id.frome_status);
             holer.frome_text= (TextView) convertView.findViewById(R.id.frome_text);
-            holer.frome_grid= (GridView) convertView.findViewById(R.id.frome_grid);
+            holer.frome_grid = (MyGridView) convertView.findViewById(R.id.frome_grid);
             holer.item_list = (LinearLayout) convertView.findViewById(R.id.item_list);
             convertView.setTag(holer);
         }else {
@@ -108,8 +108,15 @@ public class WeiboAdapter extends BaseAdapter{
         com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(status.user.profile_image_url, holer.userhead, options);
         if (status.pic_urls!=null){
             holer.gridView.setVisibility(View.VISIBLE);
+            if (status.pic_urls.size() == 1) {
+                holer.gridView.setNumColumns(2);
+            } else {
+                holer.gridView.setNumColumns(3);
+            }
             MyGridviewAdapter adapter = new MyGridviewAdapter(status.pic_urls, context);
             holer.gridView.setAdapter(adapter);
+            //resetGridviewWidth(holer.gridView);
+            //Utils.updateGridViewLayoutParams(holer.gridView,3);
         }else {
             holer.gridView.setVisibility(View.GONE);
         }
@@ -132,8 +139,15 @@ public class WeiboAdapter extends BaseAdapter{
             // StringUtil.setTextview(holer.frome_text, context);
             if (status.retweeted_status.pic_urls!=null){
                 holer.frome_grid.setVisibility(View.VISIBLE);
+                if (status.retweeted_status.pic_urls.size() == 1) {
+                    holer.frome_grid.setNumColumns(2);
+                } else {
+                    holer.frome_grid.setNumColumns(3);
+                }
                 MyGridviewAdapter adapter = new MyGridviewAdapter(status.retweeted_status.pic_urls, context);
                 holer.frome_grid.setAdapter(adapter);
+                //resetGridviewWidth(holer.frome_grid);
+                //Utils.updateGridViewLayoutParams(holer.frome_grid, 3);
             }else {
                 holer.frome_grid.setVisibility(View.GONE);
             }
@@ -190,20 +204,20 @@ public class WeiboAdapter extends BaseAdapter{
         return convertView;
     }
 
-
+    private void resetGridviewWidth(MyGridView gridView) {
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) gridView.getLayoutParams();
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(layoutParams.width, layoutParams.height);
+        gridView.setLayoutParams(params);
+    }
 
     class ViewHoler {
         TextView username, time, text, frome_text, sharecount, commentcount, likecount;
         LinearLayout share, comment, like, frome_status, item_list;
         ImageView likeImage, userhead;
-        GridView gridView, frome_grid;
+        MyGridView gridView, frome_grid;
         TextView from;
 
     }
-
-
-
-
 
 
 

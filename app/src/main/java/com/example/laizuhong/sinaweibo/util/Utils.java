@@ -9,8 +9,10 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.SparseIntArray;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,13 +22,12 @@ public class Utils {
     public static final String RESPONSE_METHOD = "method";
     public static final String RESPONSE_CONTENT = "content";
     public static final String RESPONSE_ERRCODE = "errcode";
-    protected static final String ACTION_LOGIN = "com.baidu.pushdemo.action.LOGIN";
     public static final String ACTION_MESSAGE = "com.baiud.pushdemo.action.MESSAGE";
     public static final String ACTION_RESPONSE = "bccsclient.action.RESPONSE";
     public static final String ACTION_SHOW_MESSAGE = "bccsclient.action.SHOW_MESSAGE";
-    protected static final String EXTRA_ACCESS_TOKEN = "access_token";
     public static final String EXTRA_MESSAGE = "message";
-
+    protected static final String ACTION_LOGIN = "com.baidu.pushdemo.action.LOGIN";
+    protected static final String EXTRA_ACCESS_TOKEN = "access_token";
     public static String logStringCache = "";
 
     // 获取ApiKey
@@ -57,10 +58,7 @@ public class Utils {
         SharedPreferences sp = PreferenceManager
                 .getDefaultSharedPreferences(context);
         String flag = sp.getString("bind_flag", "");
-        if ("ok".equalsIgnoreCase(flag)) {
-            return true;
-        }
-        return false;
+        return "ok".equalsIgnoreCase(flag);
     }
 
     public static void setBind(Context context, boolean flag) {
@@ -114,9 +112,9 @@ public class Utils {
 	 */
 	public static int dpToPx(float dp, Resources resources) {
 		float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
-				resources.getDisplayMetrics());
-		return (int) px;
-	}
+                resources.getDisplayMetrics());
+        return (int) px;
+    }
 
 	public static int getRelativeTop(View myView) {
 		// if (myView.getParent() == myView.getRootView())
@@ -134,5 +132,43 @@ public class Utils {
 			return myView.getLeft()
 					+ getRelativeLeft((View) myView.getParent());
 	}
+
+    /**
+     * 计算GridView的高度
+     *
+     * @param gridView 要计算的GridView
+     */
+    public static void updateGridViewLayoutParams(MyGridView gridView,
+                                                  int maxColumn) {
+        int childs = gridView.getAdapter().getCount();
+        SparseIntArray mGvWidth = new SparseIntArray();
+
+        if (childs > 0) {
+            int columns = childs < maxColumn ? childs % maxColumn : maxColumn;
+            gridView.setNumColumns(columns);
+            int width = 0;
+            int cacheWidth = mGvWidth.get(columns);
+            if (cacheWidth != 0) {
+                width = cacheWidth;
+            } else { // 计算gridview每行的宽度, 如果item小于3则计算所有item的宽度;
+                // 否则只计算3个child宽度，因此一行最多3个child。 (这里我们以3为例)
+                int rowCounts = childs < maxColumn ? childs : maxColumn;
+                for (int i = 0; i < rowCounts; i++) {
+                    View childView = gridView.getAdapter().getView(i, null,
+                            gridView);
+                    childView.measure(0, 0);
+                    width += childView.getMeasuredWidth();
+                }
+            }
+
+            ViewGroup.LayoutParams params = gridView.getLayoutParams();
+            params.width = width;
+            gridView.setLayoutParams(params);
+            if (mGvWidth.get(columns) == 0) {
+                mGvWidth.append(columns, width);
+            }
+        }
+    }
+
 
 }

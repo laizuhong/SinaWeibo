@@ -89,12 +89,14 @@ public class CommentFragment extends Fragment implements AbsListView.OnScrollLis
         mHintView = (TextView) footview
                 .findViewById(R.id.xlistview_footer_hint_textview);
 
+        setState(1);
+
         commentlist = new ArrayList<>();
         adapter = new CommentAdapter(commentlist, context);
         listView.addFooterView(footview);
         listView.setAdapter(adapter);
-        footview.setVisibility(View.GONE);
-        //  listView.setOnScrollListener(this);
+        //footview.setVisibility(View.GONE);
+        listView.setOnScrollListener(this);
 
         // 获取当前已保存过的 Token
         oauth2AccessToken = AccessTokenKeeper.readAccessToken(context);
@@ -112,12 +114,14 @@ public class CommentFragment extends Fragment implements AbsListView.OnScrollLis
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        if (totalItemCount - firstVisibleItem == visibleItemCount && fresh == false) {
-            footview.setVisibility(View.VISIBLE);
-            fresh = true;
-            setState(1);
-            page++;
-            commentsAPI.show(id, 0, 0, 10, page, CommentsAPI.AUTHOR_FILTER_ALL, mListener);
+        Log.e("onscrollAAAAAAAAAAAAAAA", firstVisibleItem + "   " + visibleItemCount + "   " + totalItemCount);
+        if (totalItemCount > 9 && totalItemCount - firstVisibleItem == visibleItemCount && fresh == false) {
+            Log.e("onscroll", firstVisibleItem + "   " + visibleItemCount + "   " + totalItemCount);
+//            footview.setVisibility(View.VISIBLE);
+//            fresh = true;
+//            setState(1);
+//            page++;
+//            commentsAPI.show(id, 0, 0, 10, page, CommentsAPI.AUTHOR_FILTER_ALL, mListener);
         }
     }
 

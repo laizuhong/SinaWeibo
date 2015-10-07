@@ -7,7 +7,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -15,12 +18,19 @@ import android.widget.TextView;
 import com.example.laizuhong.sinaweibo.adapter.MyGridviewAdapter;
 import com.example.laizuhong.sinaweibo.fragment.CommentFragment;
 import com.example.laizuhong.sinaweibo.util.DateUtil;
+import com.example.laizuhong.sinaweibo.util.DisplayUtil;
 import com.example.laizuhong.sinaweibo.util.MyGridView;
+import com.example.laizuhong.sinaweibo.util.MyScrollView;
 import com.example.laizuhong.sinaweibo.util.StringUtil;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.sina.weibo.sdk.openapi.models.Status;
+
+import in.srain.cube.views.ptr.PtrDefaultHandler;
+import in.srain.cube.views.ptr.PtrFrameLayout;
+import in.srain.cube.views.ptr.PtrHandler;
+import in.srain.cube.views.ptr.header.MaterialHeader;
 
 /**
  * Created by laizuhong on 2015/9/29.
@@ -30,12 +40,14 @@ public class WeiboDetailActivity extends AppCompatActivity implements View.OnCli
     Status status;
     TextView name, time, frome, text, share_count, comment_count, like_count, frome_text;
     ImageView head, more;
-    LinearLayout share, commit, like, frome_status_layout;
+    LinearLayout share, commit, like, frome_status_layout, menu_layout;
     MyGridView gridView, frome_grid;
     DisplayImageOptions options;
     MyGridviewAdapter adapter;
     Fragment commentFragment;
     Fragment repostFragment;
+    PtrFrameLayout ptrFrameLayout;
+    FrameLayout frameLayout;
     private String weibo_id;
 
     public String getWeibo_id() {
@@ -82,6 +94,7 @@ public class WeiboDetailActivity extends AppCompatActivity implements View.OnCli
         frome_status_layout = (LinearLayout) findViewById(R.id.frome_status);
         frome_grid = (MyGridView) findViewById(R.id.frome_grid);
 
+
         options = new DisplayImageOptions.Builder()
 //                .showImageOnLoading(R.drawable.logo)
 //                .showImageForEmptyUri(R.drawable.logo)
@@ -92,6 +105,17 @@ public class WeiboDetailActivity extends AppCompatActivity implements View.OnCli
                 .considerExifParams(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .build();
+
+        MyScrollView myScrollView = (MyScrollView) findViewById(R.id.scrollview);
+
+
+        frameLayout = (FrameLayout) findViewById(R.id.layout);
+        menu_layout = (LinearLayout) findViewById(R.id.menu_layout);
+        int height = getWindowManager().getDefaultDisplay().getHeight();
+        Log.e("height", height + "");
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
+        frameLayout.setLayoutParams(params);
+
         initDate();
     }
 
@@ -107,6 +131,11 @@ public class WeiboDetailActivity extends AppCompatActivity implements View.OnCli
         ImageLoader.getInstance().displayImage(status.user.profile_image_url, head, options);
         if (status.pic_urls != null) {
             gridView.setVisibility(View.VISIBLE);
+            if (status.pic_urls.size() == 1) {
+                gridView.setNumColumns(2);
+            } else {
+                gridView.setNumColumns(3);
+            }
             adapter = new MyGridviewAdapter(status.pic_urls, this);
             gridView.setAdapter(adapter);
         } else {
@@ -127,6 +156,42 @@ public class WeiboDetailActivity extends AppCompatActivity implements View.OnCli
                 frome_grid.setAdapter(adapter);
             }
         }
+
+
+        ptrFrameLayout = (PtrFrameLayout) findViewById(R.id.store_house_ptr_frame);
+        // header
+        final MaterialHeader header = new MaterialHeader(this);
+        int[] colors = getResources().getIntArray(R.array.google_colors);
+        header.setColorSchemeColors(colors);
+        header.setLayoutParams(new PtrFrameLayout.LayoutParams(-1, -2));
+        header.setPadding(0, 0, 0, DisplayUtil.dip2px(this, 10));
+        header.setPtrFrameLayout(ptrFrameLayout);
+
+        ptrFrameLayout.setResistance(1.7f);
+        ptrFrameLayout.setRatioOfHeaderHeightToRefresh(1.2f);
+        ptrFrameLayout.setDurationToClose(200);
+
+        ptrFrameLayout.setLoadingMinTime(1000);
+        ptrFrameLayout.setDurationToCloseHeader(500);
+        ptrFrameLayout.setHeaderView(header);
+        ptrFrameLayout.addPtrUIHandler(header);
+        ptrFrameLayout.setPtrHandler(new PtrHandler() {
+            @Override
+            public void onRefreshBegin(PtrFrameLayout frame) {
+                frame.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        ptrFrameLayout.refreshComplete();
+                    }
+                }, 1000);
+            }
+
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
+            }
+        });
+
         switchFragment(1);
     }
 
