@@ -95,6 +95,7 @@
                 android:layout_marginTop="10dp"
                 android:textColor="@color/black" />
 
+
             <com.example.laizuhong.sinaweibo.util.MyGridView
                 android:id="@+id/mygridview"
                 android:layout_width="fill_parent"
@@ -119,6 +120,7 @@
                 android:id="@+id/frome_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+
 
             <com.example.laizuhong.sinaweibo.util.MyGridView
 

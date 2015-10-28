@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
 
-    <com.example.laizuhong.sinaweibo.util.MyListView
+    <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
