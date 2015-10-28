@@ -56,7 +56,7 @@
                 android:visibility="gone" />
         </RelativeLayout>
 
-        <TextView
+        <com.example.laizuhong.sinaweibo.util.TweetTextView
             android:id="@+id/comment_text"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

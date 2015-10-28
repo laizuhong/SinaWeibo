@@ -1,8 +1,10 @@
 package com.example.laizuhong.sinaweibo;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.example.laizuhong.sinaweibo.config.AccessTokenKeeper;
@@ -24,7 +26,12 @@ public class SettingActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
-        getSupportActionBar().setTitle("设置");
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeAsUpIndicator(R.drawable.actionbar_back);
+        actionBar.setTitle("设置");
         mLogoutListener=new LogOutRequestListener();
         findViewById(R.id.exit).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,6 +48,15 @@ public class SettingActivity extends AppCompatActivity{
         });
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:// 点击返回图标事件
+                finish();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     /**
      * 登出按钮的监听器，接收登出处理结果。（API 请求结果的监听器）
@@ -55,7 +71,7 @@ public class SettingActivity extends AppCompatActivity{
 
                     if ("true".equalsIgnoreCase(value)) {
                         AccessTokenKeeper.clear(SettingActivity.this);
-                        MainActivity.mainActivity.finish();
+                        Main.main.finish();
                         finish();
                     }
                 } catch (JSONException e) {

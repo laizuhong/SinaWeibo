@@ -5,30 +5,44 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.laizuhong.sinaweibo.adapter.MyGridviewAdapter;
 import com.example.laizuhong.sinaweibo.fragment.CommentFragment;
+import com.example.laizuhong.sinaweibo.util.CatnutUtils;
 import com.example.laizuhong.sinaweibo.util.DateUtil;
+import com.example.laizuhong.sinaweibo.util.DisplayUtil;
 import com.example.laizuhong.sinaweibo.util.MyGridView;
+import com.example.laizuhong.sinaweibo.util.ObservableScrollView;
 import com.example.laizuhong.sinaweibo.util.StringUtil;
+import com.example.laizuhong.sinaweibo.util.TweetImageSpan;
+import com.example.laizuhong.sinaweibo.util.TweetTextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.sina.weibo.sdk.openapi.models.Status;
 
+import in.srain.cube.views.ptr.PtrDefaultHandler;
+import in.srain.cube.views.ptr.PtrFrameLayout;
+import in.srain.cube.views.ptr.PtrHandler;
+import in.srain.cube.views.ptr.header.MaterialHeader;
+
 /**
  * Created by laizuhong on 2015/9/29.
  */
-public class WeiboDetailActivity extends AppCompatActivity implements View.OnClickListener {
+public class WeiboDetailActivity extends AppCompatActivity implements View.OnClickListener, ObservableScrollView.Callbacks {
 
     Status status;
-    TextView name, time, frome, text, share_count, comment_count, like_count, frome_text;
+    TweetTextView text, frome_text;
+    TextView name, time, frome, share_count, comment_count, like_count;
     ImageView head, more;
     LinearLayout share, commit, like, frome_status_layout;
     MyGridView gridView, frome_grid;
@@ -36,6 +50,10 @@ public class WeiboDetailActivity extends AppCompatActivity implements View.OnCli
     MyGridviewAdapter adapter;
     Fragment commentFragment;
     Fragment repostFragment;
+    TweetImageSpan tweetImageSpan;
+    PtrFrameLayout ptrFrameLayout;
+    ObservableScrollView observableScrollView;
+    View stopView;
     private String weibo_id;
 
     public String getWeibo_id() {
@@ -56,13 +74,19 @@ public class WeiboDetailActivity extends AppCompatActivity implements View.OnCli
 
 
     private void init() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeAsUpIndicator(R.drawable.actionbar_back);
+        actionBar.setTitle("正文");
         weibo_id = status.id;
         findViewById(R.id.back).setOnClickListener(this);
         name = (TextView) findViewById(R.id.username);
         name.setOnClickListener(this);
         time = (TextView) findViewById(R.id.time);
         frome = (TextView) findViewById(R.id.frome);
-        text = (TextView) findViewById(R.id.text);
+        text = (TweetTextView) findViewById(R.id.text);
         share_count = (TextView) findViewById(R.id.share_count);
         comment_count = (TextView) findViewById(R.id.comment_count);
         like_count = (TextView) findViewById(R.id.like_count);
@@ -78,20 +102,71 @@ public class WeiboDetailActivity extends AppCompatActivity implements View.OnCli
         like = (LinearLayout) findViewById(R.id.like);
         like.setOnClickListener(this);
 
-        frome_text = (TextView) findViewById(R.id.frome_text);
+        tweetImageSpan = new TweetImageSpan(this);
+
+        frome_text = (TweetTextView) findViewById(R.id.frome_text);
         frome_status_layout = (LinearLayout) findViewById(R.id.frome_status);
         frome_grid = (MyGridView) findViewById(R.id.frome_grid);
 
         options = new DisplayImageOptions.Builder()
-//                .showImageOnLoading(R.drawable.logo)
-//                .showImageForEmptyUri(R.drawable.logo)
-//                .showImageOnFail(R.drawable.logo)
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
                 .displayer(new FadeInBitmapDisplayer(100)) // 展现方式：渐现
                 .considerExifParams(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .build();
+
+        ptrFrameLayout = (PtrFrameLayout) findViewById(R.id.store_house_ptr_frame);
+        // header
+        final MaterialHeader header = new MaterialHeader(this);
+        int[] colors = getResources().getIntArray(R.array.google_colors);
+        header.setColorSchemeColors(colors);
+        header.setLayoutParams(new PtrFrameLayout.LayoutParams(-1, -2));
+        header.setPadding(0, 0, 0, DisplayUtil.dip2px(this, 10));
+        header.setPtrFrameLayout(ptrFrameLayout);
+
+        ptrFrameLayout.setResistance(1.7f);
+        ptrFrameLayout.setRatioOfHeaderHeightToRefresh(1.2f);
+        ptrFrameLayout.setDurationToClose(200);
+
+        ptrFrameLayout.setLoadingMinTime(1000);
+        ptrFrameLayout.setDurationToCloseHeader(500);
+        ptrFrameLayout.setHeaderView(header);
+        ptrFrameLayout.addPtrUIHandler(header);
+        ptrFrameLayout.setPtrHandler(new PtrHandler() {
+            @Override
+            public void onRefreshBegin(PtrFrameLayout frame) {
+                frame.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        ptrFrameLayout.refreshComplete();
+                    }
+                }, 0);
+            }
+
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
+            }
+        });
+
+        stopView = findViewById(R.id.stopview);
+        ScrollView scrollView = (ScrollView) findViewById(R.id.observable);
+        scrollView.smoothScrollBy(0, 0);
+//        observableScrollView = (ObservableScrollView) findViewById(R.id.observable);
+//        observableScrollView.setCallbacks(this);
+//        observableScrollView.getViewTreeObserver().addOnGlobalLayoutListener(
+//                new ViewTreeObserver.OnGlobalLayoutListener() {
+//
+//                    @Override
+//                    public void onGlobalLayout() {
+//                        onScrollChanged(observableScrollView.getScrollY());
+//                    }
+//                });
+//        observableScrollView.scrollTo(0, 0);
+//        observableScrollView.smoothScrollTo(0, 0);//设置scrollView默认滚动到顶部
+
         initDate();
     }
 
@@ -99,7 +174,8 @@ public class WeiboDetailActivity extends AppCompatActivity implements View.OnCli
         name.setText(status.user.screen_name);
         time.setText(DateUtil.GmtToDatastring(status.created_at).substring(5, 16));
         frome.setText(Html.fromHtml(status.source).toString());
-        text.setText(StringUtil.ToDBC(status.text));
+        text.setText(status.text);
+        CatnutUtils.vividTweet(text, tweetImageSpan);
         StringUtil.setTextview(text, this);
         share_count.setText("转发" + status.reposts_count);
         comment_count.setText("评论" + status.comments_count);
@@ -117,7 +193,8 @@ public class WeiboDetailActivity extends AppCompatActivity implements View.OnCli
             frome_status_layout.setVisibility(View.GONE);
         } else {
             frome_status_layout.setVisibility(View.VISIBLE);
-            frome_text.setText(StringUtil.ToDBC(status.retweeted_status.text));
+            frome_text.setText(status.retweeted_status.text);
+            CatnutUtils.vividTweet(frome_text, tweetImageSpan);
             StringUtil.setTextview(frome_text, this);
             if (status.retweeted_status.pic_urls == null) {
                 frome_grid.setVisibility(View.GONE);
@@ -128,6 +205,23 @@ public class WeiboDetailActivity extends AppCompatActivity implements View.OnCli
             }
         }
         switchFragment(1);
+    }
+
+    @Override
+    public void onScrollChanged(int scrollY) {
+        this.findViewById(R.id.stickyView)
+                .setTranslationY(Math.max(stopView.getTop(), scrollY));
+
+    }
+
+    @Override
+    public void onDownMotionEvent() {
+
+    }
+
+    @Override
+    public void onUpOrCancelMotionEvent() {
+
     }
 
 
@@ -159,6 +253,17 @@ public class WeiboDetailActivity extends AppCompatActivity implements View.OnCli
         }
         ft.commit();
 
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:// 点击返回图标事件
+                finish();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }

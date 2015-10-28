@@ -8,7 +8,8 @@
     <RelativeLayout
         android:id="@+id/title_layout"
         android:layout_width="fill_parent"
-        android:layout_height="40dp">
+        android:layout_height="40dp"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/back"
@@ -111,204 +112,233 @@
 
     </LinearLayout>
 
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+
+    <in.srain.cube.views.ptr.PtrFrameLayout xmlns:cube_ptr="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/store_house_ptr_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_above="@id/fun_layout"
-        android:layout_below="@id/title_layout">
+        android:layout_below="@id/title_layout"
+        cube_ptr:ptr_duration_to_close="300"
+        cube_ptr:ptr_duration_to_close_header="2000"
+        cube_ptr:ptr_keep_header_when_refresh="true"
+        cube_ptr:ptr_pull_to_fresh="false"
+        cube_ptr:ptr_ratio_of_header_height_to_refresh="1.2"
+        cube_ptr:ptr_resistance="1.7">
 
-        <LinearLayout
+
+        <ScrollView
+            android:id="@+id/observable"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="vertical">
-
-
-                <RelativeLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="40dp"
-                    android:layout_margin="10dp"
-                    android:background="@color/white">
-
-                    <ImageView
-                        android:id="@+id/userhead"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="@drawable/logo"
-                        android:scaleType="fitXY" />
-
-                    <TextView
-                        android:id="@+id/username"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_toRightOf="@id/userhead"
-                        android:text="123"
-                        android:textColor="@color/red" />
-
-                    <TextView
-                        android:id="@+id/time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignBottom="@id/userhead"
-                        android:layout_marginLeft="10dp"
-                        android:layout_toRightOf="@id/userhead"
-                        android:text="123" />
-
-                    <TextView
-                        android:id="@+id/frome"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignBottom="@id/userhead"
-                        android:layout_marginLeft="10dp"
-                        android:layout_toRightOf="@id/time"
-                        android:text="123" />
-
-                    <LinearLayout
-                        android:layout_width="60dp"
-                        android:layout_height="30dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/subscribe"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="1"
-                            android:textSize="10sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="订阅"
-                            android:textSize="10sp" />
-                    </LinearLayout>
-
-
-                </RelativeLayout>
-
-                <TextView
-                    android:id="@+id/text"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@color/white"
-                    android:focusable="false"
-                    android:textColor="@color/black" />
-
-                <com.example.laizuhong.sinaweibo.util.MyGridView
-                    android:id="@+id/mygridview"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:background="@color/white"
-                    android:horizontalSpacing="5dp"
-                    android:numColumns="3"
-                    android:verticalSpacing="5dp"
-                    android:visibility="gone">
-
-                </com.example.laizuhong.sinaweibo.util.MyGridView>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/frome_status"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/gray_black"
-                android:orientation="vertical"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp">
-
-                <TextView
-                    android:id="@+id/frome_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <com.example.laizuhong.sinaweibo.util.MyGridView
-
-                    android:id="@+id/frome_grid"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:horizontalSpacing="5dp"
-                    android:numColumns="3"
-                    android:verticalSpacing="5dp"
-                    android:visibility="gone">
-
-                </com.example.laizuhong.sinaweibo.util.MyGridView>
-
-            </LinearLayout>
+            android:layout_height="fill_parent">
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:layout_marginTop="10dp"
-                android:background="@color/white"
                 android:orientation="vertical">
 
-                <RelativeLayout
+                <LinearLayout
+                    android:id="@+id/stickyView"
                     android:layout_width="fill_parent"
-                    android:layout_height="40dp">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
 
-                    <TextView
-                        android:id="@+id/share_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="20dp"
-                        android:text="转发" />
+                </LinearLayout>
 
-
-                    <TextView
-                        android:id="@+id/comment_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="20dp"
-                        android:layout_toRightOf="@id/share_count"
-                        android:text="评论" />
-
-
-                    <TextView
-                        android:id="@+id/like_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="20dp"
-                        android:text="赞" />
-
-
-                </RelativeLayout>
-
-                <ImageView
+                <LinearLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/gray_black" />
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="vertical">
 
-                <FrameLayout
-                    android:id="@+id/layout"
+
+                    <RelativeLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp"
+                        android:layout_margin="10dp"
+                        android:background="@color/white">
+
+                        <ImageView
+                            android:id="@+id/userhead"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/logo"
+                            android:scaleType="fitXY" />
+
+                        <TextView
+                            android:id="@+id/username"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_toRightOf="@id/userhead"
+                            android:text="123"
+                            android:textColor="@color/red" />
+
+                        <TextView
+                            android:id="@+id/time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@id/userhead"
+                            android:layout_marginLeft="10dp"
+                            android:layout_toRightOf="@id/userhead"
+                            android:text="123" />
+
+                        <TextView
+                            android:id="@+id/frome"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@id/userhead"
+                            android:layout_marginLeft="10dp"
+                            android:layout_toRightOf="@id/time"
+                            android:text="123" />
+
+                        <LinearLayout
+                            android:layout_width="60dp"
+                            android:layout_height="30dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/subscribe"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="1"
+                                android:textSize="10sp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="订阅"
+                                android:textSize="10sp" />
+                        </LinearLayout>
+
+
+                    </RelativeLayout>
+
+                    <com.example.laizuhong.sinaweibo.util.TweetTextView
+                        android:id="@+id/text"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@color/white"
+                        android:focusable="false"
+                        android:textColor="@color/black" />
+
+                    <com.example.laizuhong.sinaweibo.util.MyGridView
+                        android:id="@+id/mygridview"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:background="@color/white"
+                        android:horizontalSpacing="5dp"
+                        android:numColumns="3"
+                        android:verticalSpacing="5dp"
+                        android:visibility="gone">
+
+                    </com.example.laizuhong.sinaweibo.util.MyGridView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/frome_status"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/gray_black"
+                    android:orientation="vertical"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp">
+
+                    <com.example.laizuhong.sinaweibo.util.TweetTextView
+                        android:id="@+id/frome_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <com.example.laizuhong.sinaweibo.util.MyGridView
+
+                        android:id="@+id/frome_grid"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:horizontalSpacing="5dp"
+                        android:numColumns="3"
+                        android:verticalSpacing="5dp"
+                        android:visibility="gone">
+
+                    </com.example.laizuhong.sinaweibo.util.MyGridView>
+
+                </LinearLayout>
+
+                <LinearLayout
+
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:background="@color/white">
+                    android:layout_marginTop="10dp"
+                    android:background="@color/white"
+                    android:orientation="vertical">
 
-                </FrameLayout>
+                    <RelativeLayout
+                        android:id="@+id/stopview"
+                        android:layout_width="fill_parent"
+                        android:layout_height="40dp">
+
+
+                        <TextView
+                            android:id="@+id/share_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="20dp"
+                            android:text="转发" />
+
+
+                        <TextView
+                            android:id="@+id/comment_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="20dp"
+                            android:layout_toRightOf="@id/share_count"
+                            android:text="评论" />
+
+
+                        <TextView
+                            android:id="@+id/like_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="20dp"
+                            android:text="赞" />
+
+
+                    </RelativeLayout>
+
+                    <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray_black" />
+
+
+                    <FrameLayout
+                        android:id="@+id/layout"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:background="@color/white">
+
+                    </FrameLayout>
+
+                </LinearLayout>
 
 
             </LinearLayout>
 
-        </LinearLayout>
+        </ScrollView>
 
-    </ScrollView>
+
+    </in.srain.cube.views.ptr.PtrFrameLayout>
 
 
 </RelativeLayout>

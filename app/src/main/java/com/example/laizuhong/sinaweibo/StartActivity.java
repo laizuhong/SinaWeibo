@@ -52,6 +52,14 @@ public class StartActivity extends AppCompatActivity{
 
     }
 
+    private void startActivity() {
+        Intent intent = new Intent();
+        intent.setClass(StartActivity.this, Main.class);
+        startActivity(intent);
+        overridePendingTransition(android.R.anim.fade_in,
+                android.R.anim.fade_out);
+        finish();
+    }
 
     /**
      * 微博认证授权回调类。
@@ -100,16 +108,6 @@ public class StartActivity extends AppCompatActivity{
             Toast.makeText(StartActivity.this,
                     "Auth exception : " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
-    }
-
-
-    private void startActivity(){
-        Intent intent = new Intent();
-        intent.setClass(StartActivity.this, MainActivity.class);
-        startActivity(intent);
-        overridePendingTransition(android.R.anim.fade_in,
-                android.R.anim.fade_out);
-        finish();
     }
 
 }

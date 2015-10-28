@@ -9,15 +9,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.laizuhong.sinaweibo.R;
 import com.example.laizuhong.sinaweibo.WeiboDetailActivity;
+import com.example.laizuhong.sinaweibo.util.CatnutUtils;
 import com.example.laizuhong.sinaweibo.util.DateUtil;
-import com.example.laizuhong.sinaweibo.util.StringUtil;
+import com.example.laizuhong.sinaweibo.util.MyGridView;
+import com.example.laizuhong.sinaweibo.util.TweetImageSpan;
+import com.example.laizuhong.sinaweibo.util.TweetTextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.sina.weibo.sdk.openapi.models.Status;
@@ -34,11 +36,13 @@ public class WeiboAdapter extends BaseAdapter{
     Context context;
     int MODE = 0;
     DisplayImageOptions options;
+    TweetImageSpan tweetImageSpan;
 
     public WeiboAdapter(Context context,List<Status> statuses,int mode){
         this.context=context;
         this.statuses=statuses;
         this.MODE=mode;
+        tweetImageSpan = new TweetImageSpan(context);
         options = new DisplayImageOptions.Builder()
 //                .showImageOnLoading(R.drawable.logo)
 //                .showImageForEmptyUri(R.drawable.logo)
@@ -78,7 +82,7 @@ public class WeiboAdapter extends BaseAdapter{
             holer.username= (TextView) convertView.findViewById(R.id.username);
             holer.time= (TextView) convertView.findViewById(R.id.time);
             holer.from = (TextView) convertView.findViewById(R.id.frome);
-            holer.text= (TextView) convertView.findViewById(R.id.text);
+            holer.text = (TweetTextView) convertView.findViewById(R.id.text);
             holer.sharecount= (TextView) convertView.findViewById(R.id.retweetcount);
             holer.commentcount= (TextView) convertView.findViewById(R.id.commentcount);
             holer.likecount= (TextView) convertView.findViewById(R.id.likecount);
@@ -87,10 +91,10 @@ public class WeiboAdapter extends BaseAdapter{
             holer.like= (LinearLayout) convertView.findViewById(R.id.like);
             holer.likeImage= (ImageView) convertView.findViewById(R.id.likeimage);
             holer.userhead= (ImageView) convertView.findViewById(R.id.userhead);
-            holer.gridView= (GridView) convertView.findViewById(R.id.mygridview);
+            holer.gridView = (MyGridView) convertView.findViewById(R.id.mygridview);
             holer.frome_status= (LinearLayout) convertView.findViewById(R.id.frome_status);
-            holer.frome_text= (TextView) convertView.findViewById(R.id.frome_text);
-            holer.frome_grid= (GridView) convertView.findViewById(R.id.frome_grid);
+            holer.frome_text = (TweetTextView) convertView.findViewById(R.id.frome_text);
+            holer.frome_grid = (MyGridView) convertView.findViewById(R.id.frome_grid);
             holer.item_list = (LinearLayout) convertView.findViewById(R.id.item_list);
             convertView.setTag(holer);
         }else {
@@ -103,7 +107,10 @@ public class WeiboAdapter extends BaseAdapter{
 
         holer.from.setText(Html.fromHtml(status.source).toString());
         Log.e("frome", status.source);
-        holer.text.setText(StringUtil.ToDBC(status.text));
+        holer.text.setText(status.text);
+        CatnutUtils.vividTweet(holer.text, tweetImageSpan);
+
+
         // StringUtil.setTextview(holer.text, context);
         com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(status.user.profile_image_url, holer.userhead, options);
         if (status.pic_urls!=null){
@@ -128,7 +135,8 @@ public class WeiboAdapter extends BaseAdapter{
                 }
             });
             String text=status.retweeted_status.user.screen_name+":  "+status.retweeted_status.text;
-            holer.frome_text.setText(StringUtil.ToDBC(text));
+            holer.frome_text.setText(text);
+            CatnutUtils.vividTweet(holer.frome_text, tweetImageSpan);
             // StringUtil.setTextview(holer.frome_text, context);
             if (status.retweeted_status.pic_urls!=null){
                 holer.frome_grid.setVisibility(View.VISIBLE);
@@ -193,10 +201,11 @@ public class WeiboAdapter extends BaseAdapter{
 
 
     class ViewHoler {
-        TextView username, time, text, frome_text, sharecount, commentcount, likecount;
+        TweetTextView text, frome_text;
+        TextView username, time, sharecount, commentcount, likecount;
         LinearLayout share, comment, like, frome_status, item_list;
         ImageView likeImage, userhead;
-        GridView gridView, frome_grid;
+        MyGridView gridView, frome_grid;
         TextView from;
 
     }

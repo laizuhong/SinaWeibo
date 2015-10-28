@@ -93,8 +93,8 @@ public class CommentFragment extends Fragment implements AbsListView.OnScrollLis
         adapter = new CommentAdapter(commentlist, context);
         listView.addFooterView(footview);
         listView.setAdapter(adapter);
-        footview.setVisibility(View.GONE);
-        //  listView.setOnScrollListener(this);
+        //footview.setVisibility(View.GONE);
+        listView.setOnScrollListener(this);
 
         // 获取当前已保存过的 Token
         oauth2AccessToken = AccessTokenKeeper.readAccessToken(context);
@@ -112,6 +112,7 @@ public class CommentFragment extends Fragment implements AbsListView.OnScrollLis
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        Log.e("onScroll", "first=" + firstVisibleItem + "    visible=" + visibleItemCount + "     total=" + totalItemCount);
         if (totalItemCount - firstVisibleItem == visibleItemCount && fresh == false) {
             footview.setVisibility(View.VISIBLE);
             fresh = true;

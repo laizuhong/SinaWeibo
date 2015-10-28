@@ -10,8 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.laizuhong.sinaweibo.R;
+import com.example.laizuhong.sinaweibo.util.CatnutUtils;
 import com.example.laizuhong.sinaweibo.util.DateUtil;
-import com.example.laizuhong.sinaweibo.util.StringUtil;
+import com.example.laizuhong.sinaweibo.util.TweetImageSpan;
+import com.example.laizuhong.sinaweibo.util.TweetTextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
@@ -27,10 +29,12 @@ public class CommentAdapter extends BaseAdapter {
     List<Comment> comments;
     Context context;
     DisplayImageOptions options;
+    TweetImageSpan tweetImageSpan;
 
     public CommentAdapter(List<Comment> comments, Context context) {
         this.comments = comments;
         this.context = context;
+        tweetImageSpan = new TweetImageSpan(context);
         options = new DisplayImageOptions.Builder()
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
@@ -64,7 +68,7 @@ public class CommentAdapter extends BaseAdapter {
             holer.name = (TextView) convertView.findViewById(R.id.username);
             holer.time = (TextView) convertView.findViewById(R.id.time);
             holer.count = (TextView) convertView.findViewById(R.id.comment_like_count);
-            holer.text = (TextView) convertView.findViewById(R.id.comment_text);
+            holer.text = (TweetTextView) convertView.findViewById(R.id.comment_text);
             holer.head = (ImageView) convertView.findViewById(R.id.userhead);
             convertView.setTag(holer);
         } else {
@@ -75,13 +79,15 @@ public class CommentAdapter extends BaseAdapter {
         holer.name.setText(comment.user.screen_name);
         ImageLoader.getInstance().displayImage(comment.user.profile_image_url, holer.head, options);
         holer.time.setText(DateUtil.GmtToDatastring(comment.created_at).substring(5, 16));
-        holer.text.setText(StringUtil.ToDBC(comment.text));
+        holer.text.setText(comment.text);
+        CatnutUtils.vividTweet(holer.text, tweetImageSpan);
 
         return convertView;
     }
 
     class Holer {
-        TextView name, time, count, text;
+        TweetTextView text;
+        TextView name, time, count;
         ImageView head;
     }
 

@@ -62,7 +62,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"></activity>
 
 
         <!-- 其他 -->
@@ -101,6 +100,7 @@
         </activity>
         <activity android:name=".PictureActivity"></activity>
         <activity android:name=".WeiboDetailActivity"></activity>
+        <activity android:name=".Main"></activity>
     </application>
 
 </manifest>
