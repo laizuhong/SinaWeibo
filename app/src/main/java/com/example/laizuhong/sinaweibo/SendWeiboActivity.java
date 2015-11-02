@@ -3,9 +3,10 @@ package com.example.laizuhong.sinaweibo;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -35,7 +36,7 @@ import java.util.List;
 /**
  * Created by laizuhong on 2015/9/18.
  */
-public class SendWeiboActivity extends AppCompatActivity implements View.OnClickListener{
+public class SendWeiboActivity extends BaseActivity implements View.OnClickListener {
 
     GridView gridView;
     PictureAdapter adapter;
@@ -76,6 +77,7 @@ public class SendWeiboActivity extends AppCompatActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_weibo);
+        getSupportActionBar().setTitle("发微博");
         init();
     }
 
@@ -108,12 +110,32 @@ public class SendWeiboActivity extends AppCompatActivity implements View.OnClick
                 .build();
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_send, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.ok) {
+            String text = edt.getText().toString();
+            if (pictures.size() == 0) {
+                mStatusesAPI.update(text, "", "", mListener);
+            } else {
+                Bitmap bitmap = ImageLoader.getInstance().loadImageSync("file://" + pictures.get(0).getPath(), options);
+                mStatusesAPI.upload(text, bitmap, "", "", mListener);
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.back:
-                finish();
-                break;
+
             case R.id.fun1:
                 Intent picture=new Intent(SendWeiboActivity.this,PictureActivity.class);
                 if (pictures.size() > 0 && pictures.size() < 8) {
@@ -130,15 +152,7 @@ public class SendWeiboActivity extends AppCompatActivity implements View.OnClick
                 break;
             case R.id.fun5:
                 break;
-            case R.id.send:
-                String text=edt.getText().toString();
-                if (pictures.size() == 0) {
-                    mStatusesAPI.update(text, "", "", mListener);
-                } else {
-                    Bitmap bitmap = ImageLoader.getInstance().loadImageSync("file://" + pictures.get(0).getPath(), options);
-                    mStatusesAPI.upload(text, bitmap, "", "", mListener);
-                }
-                break;
+
         }
     }
 

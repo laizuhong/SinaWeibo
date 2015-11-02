@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.example.laizuhong.sinaweibo.R;
 import com.example.laizuhong.sinaweibo.util.CatnutUtils;
 import com.example.laizuhong.sinaweibo.util.DateUtil;
+import com.example.laizuhong.sinaweibo.util.MyLog;
 import com.example.laizuhong.sinaweibo.util.TweetImageSpan;
 import com.example.laizuhong.sinaweibo.util.TweetTextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -38,7 +39,7 @@ public class CommentAdapter extends BaseAdapter {
         options = new DisplayImageOptions.Builder()
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
-                .displayer(new FadeInBitmapDisplayer(100)) // 展现方式：渐现
+                .displayer(new FadeInBitmapDisplayer(500)) // 展现方式：渐现
                 .considerExifParams(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .build();
@@ -75,6 +76,7 @@ public class CommentAdapter extends BaseAdapter {
             holer = (Holer) convertView.getTag();
         }
 
+        MyLog.e(position + "");
         Comment comment = comments.get(position);
         holer.name.setText(comment.user.screen_name);
         ImageLoader.getInstance().displayImage(comment.user.profile_image_url, holer.head, options);

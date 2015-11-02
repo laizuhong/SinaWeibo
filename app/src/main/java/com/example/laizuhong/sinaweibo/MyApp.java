@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.StrictMode;
 
+import com.example.laizuhong.sinaweibo.util.CrashHandler;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -15,6 +16,11 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
  */
 public class MyApp extends Application {
     public static int width;
+    public static MyApp myApp;
+
+    public static MyApp getInstance() {
+        return myApp;
+    }
 
     public static void initImageLoader(Context context) {
         // This configuration tuning is custom. You can tune every option, you may tune some of them,
@@ -31,10 +37,12 @@ public class MyApp extends Application {
 
         // Initialize ImageLoader with configuration.
         ImageLoader.getInstance().init(config.build());
+
     }
 
     @Override
     public void onCreate() {
+        myApp = this;
         if (com.example.laizuhong.sinaweibo.Constants.Config.DEVELOPER_MODE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyDialog().build());
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyDeath().build());
@@ -43,5 +51,10 @@ public class MyApp extends Application {
         super.onCreate();
 
         initImageLoader(getApplicationContext());
+
+        CrashHandler crashHandler = CrashHandler.getInstance();//这是收集异常信息的单例类，具体代码请看下文
+        crashHandler.init(getApplicationContext());//初始化
     }
+
+
 }

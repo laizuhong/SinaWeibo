@@ -9,7 +9,7 @@
 
     <LinearLayout
 
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="vertical"
@@ -18,7 +18,7 @@
 
         <LinearLayout
             android:id="@+id/item_list"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/clik_selector"
             android:orientation="vertical">
@@ -68,7 +68,8 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/subscribe"

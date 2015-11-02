@@ -7,7 +7,8 @@
     <RelativeLayout
         android:id="@+id/title_layout"
         android:layout_width="fill_parent"
-        android:layout_height="50dp">
+        android:layout_height="50dp"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/back"
@@ -43,7 +44,7 @@
     <LinearLayout
         android:id="@+id/line_layout"
         android:layout_width="fill_parent"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal">
 
@@ -94,7 +95,8 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@id/line_layout"
-        android:layout_below="@id/title_layout">
+        android:layout_below="@id/title_layout"
+        android:background="@color/white">
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -109,7 +111,7 @@
                 <EditText
                     android:id="@+id/text"
                     android:layout_width="fill_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="150dp"
                     android:background="@color/white"
                     android:gravity="top"
                     android:maxLines="10" />

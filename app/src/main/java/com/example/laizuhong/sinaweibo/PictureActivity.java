@@ -2,10 +2,13 @@ package com.example.laizuhong.sinaweibo;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +37,7 @@ import java.util.List;
 /**
  * Created by laizuhong on 2015/9/18.
  */
-public class PictureActivity extends AppCompatActivity implements View.OnClickListener {
+public class PictureActivity extends BaseActivity implements View.OnClickListener {
 
     int tab = 0;
     MyAdapter adapter;
@@ -51,6 +54,7 @@ public class PictureActivity extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture);
+        getSupportActionBar().setTitle("图片");
         pictures = (List<Picture>) getIntent().getSerializableExtra("picture");
         if (pictures == null) {
             pictures = new ArrayList<>();
@@ -80,33 +84,45 @@ public class PictureActivity extends AppCompatActivity implements View.OnClickLi
 
         adapter = new MyAdapter();
         gridView.setAdapter(adapter);
-        // gridView.setOnScrollListener(this);
-        findViewById(R.id.back).setOnClickListener(this);
-        findViewById(R.id.tv_title).setOnClickListener(this);
-        findViewById(R.id.ok).setOnClickListener(this);
+        findViewById(R.id.chose).setOnClickListener(this);
         initPopupWindow();
     }
 
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_chose_picture, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.ok) {
+            Intent intent = new Intent();
+            intent.putExtra("picture", (Serializable) pictures);
+            setResult(RESULT_OK, intent);
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.back:
-                finish();
-                break;
-            case R.id.tv_title:
+
+            case R.id.chose:
                 if (popupWindow.isShowing()) {
                     popupWindow.dismiss();
                 } else {
-                    popupWindow.showAsDropDown(v);
+                    int[] location = new int[2];
+                    v.getLocationOnScreen(location);
+
+                    popupWindow.showAtLocation(v, Gravity.NO_GRAVITY, location[0], location[1] - popupWindow.getHeight());
+
                 }
                 break;
-            case R.id.ok:
-                Intent intent = new Intent();
-                intent.putExtra("picture", (Serializable) pictures);
-                setResult(RESULT_OK, intent);
-                finish();
-                break;
+
         }
     }
 
@@ -135,8 +151,10 @@ public class PictureActivity extends AppCompatActivity implements View.OnClickLi
                 popupWindow.dismiss();
             }
         });
-        popupWindow = new PopupWindow(contentView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, true);
-
+        int width = getWindowManager().getDefaultDisplay().getWidth();
+        popupWindow = new PopupWindow(contentView, width, 800, true);
+        popupWindow.setAnimationStyle(R.style.mypopwindow_anim_style);
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
         popupWindow.setTouchable(true);
 
         popupWindow.setTouchInterceptor(new View.OnTouchListener() {

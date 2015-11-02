@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.laizuhong.sinaweibo.Constants;
@@ -18,6 +17,7 @@ import com.example.laizuhong.sinaweibo.R;
 import com.example.laizuhong.sinaweibo.WeiboDetailActivity;
 import com.example.laizuhong.sinaweibo.adapter.CommentAdapter;
 import com.example.laizuhong.sinaweibo.config.AccessTokenKeeper;
+import com.example.laizuhong.sinaweibo.util.MyListView;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.exception.WeiboException;
 import com.sina.weibo.sdk.net.RequestListener;
@@ -36,7 +36,7 @@ public class CommentFragment extends Fragment implements AbsListView.OnScrollLis
 
     CommentAdapter adapter;
     List<Comment> commentlist;
-    ListView listView;
+    MyListView listView;
     Context context;
     CommentsAPI commentsAPI;
     Oauth2AccessToken oauth2AccessToken;
@@ -61,6 +61,8 @@ public class CommentFragment extends Fragment implements AbsListView.OnScrollLis
                     adapter.notifyDataSetChanged();
                     fresh = false;
                     setState(0);
+                } else if (comments != null || comments.total_number == 0 || comments.commentList == null || comments.commentList.size() == 0) {
+                    setState(0);
                 }
             }
         }
@@ -82,7 +84,7 @@ public class CommentFragment extends Fragment implements AbsListView.OnScrollLis
     private void init(View view) {
         id = Long.valueOf(((WeiboDetailActivity) getActivity()).getWeibo_id());
         context = getActivity();
-        listView = (ListView) view.findViewById(R.id.listView);
+        listView = (MyListView) view.findViewById(R.id.listView);
         footview = LayoutInflater.from(context)
                 .inflate(R.layout.xlistview_footer, null);
         mProgressBar = footview.findViewById(R.id.xlistview_footer_progressbar);
@@ -94,7 +96,8 @@ public class CommentFragment extends Fragment implements AbsListView.OnScrollLis
         listView.addFooterView(footview);
         listView.setAdapter(adapter);
         //footview.setVisibility(View.GONE);
-        listView.setOnScrollListener(this);
+        //listView.setOnScrollListener(this);
+        //listView.setParentScrollView(((WeiboDetailActivity) getActivity()).getScrollView());
 
         // 获取当前已保存过的 Token
         oauth2AccessToken = AccessTokenKeeper.readAccessToken(context);
@@ -112,7 +115,7 @@ public class CommentFragment extends Fragment implements AbsListView.OnScrollLis
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        Log.e("onScroll", "first=" + firstVisibleItem + "    visible=" + visibleItemCount + "     total=" + totalItemCount);
+        Log.e("comment  onScroll", "first=" + firstVisibleItem + "    visible=" + visibleItemCount + "     total=" + totalItemCount);
         if (totalItemCount - firstVisibleItem == visibleItemCount && fresh == false) {
             footview.setVisibility(View.VISIBLE);
             fresh = true;
@@ -120,6 +123,10 @@ public class CommentFragment extends Fragment implements AbsListView.OnScrollLis
             page++;
             commentsAPI.show(id, 0, 0, 10, page, CommentsAPI.AUTHOR_FILTER_ALL, mListener);
         }
+    }
+
+    public void request(boolean b) {
+        listView.requestDisallowInterceptTouchEvent(b);
     }
 
 

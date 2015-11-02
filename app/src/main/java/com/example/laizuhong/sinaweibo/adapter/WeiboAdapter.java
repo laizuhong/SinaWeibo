@@ -8,20 +8,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.laizuhong.sinaweibo.R;
+import com.example.laizuhong.sinaweibo.UserWeiboActivity;
 import com.example.laizuhong.sinaweibo.WeiboDetailActivity;
 import com.example.laizuhong.sinaweibo.util.CatnutUtils;
 import com.example.laizuhong.sinaweibo.util.DateUtil;
 import com.example.laizuhong.sinaweibo.util.MyGridView;
+import com.example.laizuhong.sinaweibo.util.MyLog;
 import com.example.laizuhong.sinaweibo.util.TweetImageSpan;
 import com.example.laizuhong.sinaweibo.util.TweetTextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.sina.weibo.sdk.openapi.models.Status;
 
 import java.util.List;
@@ -49,7 +51,7 @@ public class WeiboAdapter extends BaseAdapter{
 //                .showImageOnFail(R.drawable.logo)
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
-                .displayer(new FadeInBitmapDisplayer(100)) // 展现方式：渐现
+//                .displayer(new FadeInBitmapDisplayer(100)) // 展现方式：渐现
                 .considerExifParams(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .build();
@@ -74,7 +76,7 @@ public class WeiboAdapter extends BaseAdapter{
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHoler holer;
         if (convertView==null){
             holer=new ViewHoler();
@@ -113,10 +115,37 @@ public class WeiboAdapter extends BaseAdapter{
 
         // StringUtil.setTextview(holer.text, context);
         com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(status.user.profile_image_url, holer.userhead, options);
+        holer.userhead.setTag(position);
+        holer.userhead.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int p = (int) v.getTag();
+                String uid = statuses.get(p).user.id;
+                String name = statuses.get(p).user.screen_name;
+                Intent intent = new Intent(context, UserWeiboActivity.class);
+                intent.putExtra("uid", uid);
+                intent.putExtra("name", name);
+                context.startActivity(intent);
+
+            }
+        });
         if (status.pic_urls!=null){
             holer.gridView.setVisibility(View.VISIBLE);
             MyGridviewAdapter adapter = new MyGridviewAdapter(status.pic_urls, context);
             holer.gridView.setAdapter(adapter);
+            holer.gridView.setOnTouchInvalidPositionListener(new MyGridView.OnTouchInvalidPositionListener() {
+                @Override
+                public boolean onTouchInvalidPosition(int motionEvent) {
+                    MyLog.e(motionEvent + "");
+                    return false;
+                }
+            });
+            holer.gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    MyLog.e(position + "");
+                }
+            });
         }else {
             holer.gridView.setVisibility(View.GONE);
         }

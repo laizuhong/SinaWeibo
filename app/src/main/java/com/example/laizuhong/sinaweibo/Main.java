@@ -6,8 +6,13 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -112,23 +117,26 @@ public class Main extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Intent intent = new Intent();
-//                switch (position) {
-//                    case 0:
-//                        intent.setClass(main, SettingActivity.class);
-//                        break;
-//                    case 1:
-//                        intent.setClass(main, SettingActivity.class);
-//                        break;
-//                    case 2:
-//                        intent.setClass(main, SettingActivity.class);
-//                        break;
-//                    case 3:
-//                        intent.setClass(main, SettingActivity.class);
-//                        break;
-//                }
+                Intent intent = new Intent();
+                switch (position) {
+                    case 0:
+                        intent.putExtra("uid", user.id);
+                        intent.putExtra("name", user.screen_name);
+                        intent.setClass(main, UserWeiboActivity.class);
+                        break;
+                    case 1:
+                        intent.setClass(main, FriendActivity.class);
+                        intent.putExtra("uid", user.id);
+                        break;
+                    case 2:
+                        intent.setClass(main, SettingActivity.class);
+                        break;
+                    case 3:
+                        intent.setClass(main, SettingActivity.class);
+                        break;
+                }
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
-//                startActivity(intent);
+                startActivity(intent);
             }
         });
 
@@ -153,6 +161,40 @@ public class Main extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+
+        // 获取SearchView对象
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        if (searchView == null) {
+            Log.e("SearchView", "Fail to get Search View.");
+            return true;
+        }
+        // 配置SearchView的属性
+        searchView.setIconifiedByDefault(true);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.e("onQueryTextSubmit", query);
+                Intent intent = new Intent(main, SearchResultActvity.class);
+                startActivity(intent);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:// 点击返回图标事件
@@ -161,9 +203,25 @@ public class Main extends AppCompatActivity {
                 } else {
                     mDrawerLayout.openDrawer(Gravity.LEFT);//打开抽屉
                 }
+                break;
+            case R.id.action_plus:
+                Intent intent = new Intent(main, SendWeiboActivity.class);
+                startActivity(intent);
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
+        return true;
     }
 
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            finish();
+        }
+        return super.onKeyDown(keyCode, event);
+
+
+    }
 }

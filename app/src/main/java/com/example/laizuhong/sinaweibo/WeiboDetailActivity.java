@@ -5,13 +5,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -21,7 +22,8 @@ import com.example.laizuhong.sinaweibo.util.CatnutUtils;
 import com.example.laizuhong.sinaweibo.util.DateUtil;
 import com.example.laizuhong.sinaweibo.util.DisplayUtil;
 import com.example.laizuhong.sinaweibo.util.MyGridView;
-import com.example.laizuhong.sinaweibo.util.ObservableScrollView;
+import com.example.laizuhong.sinaweibo.util.MyLog;
+import com.example.laizuhong.sinaweibo.util.MyScrollView;
 import com.example.laizuhong.sinaweibo.util.StringUtil;
 import com.example.laizuhong.sinaweibo.util.TweetImageSpan;
 import com.example.laizuhong.sinaweibo.util.TweetTextView;
@@ -38,30 +40,34 @@ import in.srain.cube.views.ptr.header.MaterialHeader;
 /**
  * Created by laizuhong on 2015/9/29.
  */
-public class WeiboDetailActivity extends AppCompatActivity implements View.OnClickListener, ObservableScrollView.Callbacks {
+public class WeiboDetailActivity extends BaseActivity implements View.OnClickListener {
 
     Status status;
     TweetTextView text, frome_text;
     TextView name, time, frome, share_count, comment_count, like_count;
-    ImageView head, more;
+    ImageView head;
     LinearLayout share, commit, like, frome_status_layout;
     MyGridView gridView, frome_grid;
     DisplayImageOptions options;
     MyGridviewAdapter adapter;
-    Fragment commentFragment;
+    CommentFragment commentFragment;
     Fragment repostFragment;
     TweetImageSpan tweetImageSpan;
     PtrFrameLayout ptrFrameLayout;
-    ObservableScrollView observableScrollView;
-    View stopView;
+    MyScrollView scrollView;
+    FrameLayout frameLayout;
+    int stop;
+
+
     private String weibo_id;
 
     public String getWeibo_id() {
         return weibo_id;
     }
 
-    public void setWeibo_id(String weibo_id) {
-        this.weibo_id = weibo_id;
+
+    public ScrollView getScrollView() {
+        return scrollView;
     }
 
     @Override
@@ -74,14 +80,9 @@ public class WeiboDetailActivity extends AppCompatActivity implements View.OnCli
 
 
     private void init() {
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.actionbar_back);
-        actionBar.setTitle("正文");
+        getSupportActionBar().setTitle("正文");
         weibo_id = status.id;
-        findViewById(R.id.back).setOnClickListener(this);
+//        findViewById(R.id.back).setOnClickListener(this);
         name = (TextView) findViewById(R.id.username);
         name.setOnClickListener(this);
         time = (TextView) findViewById(R.id.time);
@@ -92,8 +93,6 @@ public class WeiboDetailActivity extends AppCompatActivity implements View.OnCli
         like_count = (TextView) findViewById(R.id.like_count);
         head = (ImageView) findViewById(R.id.userhead);
         head.setOnClickListener(this);
-        more = (ImageView) findViewById(R.id.more);
-        more.setOnClickListener(this);
         gridView = (MyGridView) findViewById(R.id.mygridview);
         share = (LinearLayout) findViewById(R.id.retweet);
         share.setOnClickListener(this);
@@ -151,24 +150,23 @@ public class WeiboDetailActivity extends AppCompatActivity implements View.OnCli
             }
         });
 
-        stopView = findViewById(R.id.stopview);
-        ScrollView scrollView = (ScrollView) findViewById(R.id.observable);
-        scrollView.smoothScrollBy(0, 0);
-//        observableScrollView = (ObservableScrollView) findViewById(R.id.observable);
-//        observableScrollView.setCallbacks(this);
-//        observableScrollView.getViewTreeObserver().addOnGlobalLayoutListener(
-//                new ViewTreeObserver.OnGlobalLayoutListener() {
-//
-//                    @Override
-//                    public void onGlobalLayout() {
-//                        onScrollChanged(observableScrollView.getScrollY());
-//                    }
-//                });
-//        observableScrollView.scrollTo(0, 0);
-//        observableScrollView.smoothScrollTo(0, 0);//设置scrollView默认滚动到顶部
+
+        scrollView = (MyScrollView) findViewById(R.id.observable);
+//        scrollView.smoothScrollBy(0, 0);
+//        scrollView.setOnScrollBottomListener(new MyScrollView.OnScrollBottomListener() {
+//            @Override
+//            public void scrollBottom() {
+//                MyLog.e("滚动到底部");
+//                scrollView.requestDisallowInterceptTouchEvent(false);
+//            }
+//        });
+
+
+        frameLayout = (FrameLayout) findViewById(R.id.layout);
 
         initDate();
     }
+
 
     private void initDate() {
         name.setText(status.user.screen_name);
@@ -204,26 +202,79 @@ public class WeiboDetailActivity extends AppCompatActivity implements View.OnCli
                 frome_grid.setAdapter(adapter);
             }
         }
+
+
+        stop = DisplayUtil.dip2px(this, 40);
+
+
+        final RelativeLayout center = (RelativeLayout) findViewById(R.id.center);
+        ViewTreeObserver vto = center.getViewTreeObserver();
+
+        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            boolean hasMeasured = false;
+
+            public boolean onPreDraw() {
+                if (hasMeasured == false) {
+
+                    int height = center.getMeasuredHeight();
+                    //获取到宽度和高度后，可用于计算
+                    Log.e("onPreDraw", height + "");
+
+                    LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) frameLayout.getLayoutParams();
+                    MyLog.e(height + "   " + stop);
+                    params.height = height - stop;
+                    params.width = LinearLayout.LayoutParams.MATCH_PARENT;
+                    frameLayout.setLayoutParams(params);
+                    hasMeasured = true;
+
+                }
+                return true;
+            }
+        });
+
+
+//        vto=topview.getViewTreeObserver();
+//        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+//            boolean hasMeasured=false;
+//            @Override
+//            public boolean onPreDraw() {
+//                if (!hasMeasured){
+//                    top=topview.getMeasuredHeight();
+//                    hasMeasured=true;
+//                }
+//                return true;
+//            }
+//        });
+
+//        vto=stopView.getViewTreeObserver();
+//        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+//            boolean hasMeasured=false;
+//            @Override
+//            public boolean onPreDraw() {
+//                if (!hasMeasured){
+//                    stop=stopView.getMeasuredHeight();
+//                    hasMeasured=true;
+//                }
+//                return true;
+//            }
+//        });
+
+
+//        scrollView.setOnScrollListener(new MyScrollView.OnScrollListener() {
+//            @Override
+//            public void onScroll(int scrollY) {
+//                Log.e("onScroll", scrollY + "     " + top + "   " + stop+"   "+stopView.getTop());
+//                if (scrollY> top) {
+//                    topstopview.setVisibility(View.VISIBLE);
+//                }
+//                if (scrollY < top) {
+//                    topstopview.setVisibility(View.GONE);
+//                }
+//            }
+//        });
         switchFragment(1);
-    }
-
-    @Override
-    public void onScrollChanged(int scrollY) {
-        this.findViewById(R.id.stickyView)
-                .setTranslationY(Math.max(stopView.getTop(), scrollY));
 
     }
-
-    @Override
-    public void onDownMotionEvent() {
-
-    }
-
-    @Override
-    public void onUpOrCancelMotionEvent() {
-
-    }
-
 
     @Override
     public void onClick(View v) {
@@ -246,24 +297,11 @@ public class WeiboDetailActivity extends AppCompatActivity implements View.OnCli
                     ft.show(commentFragment);
                 }
                 break;
-
-
             default:
                 break;
         }
         ft.commit();
-
     }
 
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:// 点击返回图标事件
-                finish();
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
 }
