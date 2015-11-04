@@ -13,11 +13,16 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.laizuhong.sinaweibo.bean.Picture;
 import com.example.laizuhong.sinaweibo.config.AccessTokenKeeper;
+import com.example.laizuhong.sinaweibo.util.MyLog;
+import com.example.laizuhong.sinaweibo.util.MyToast;
 import com.example.laizuhong.sinaweibo.util.PictureUtil;
+import com.example.laizuhong.sinaweibo.util.android.FriendsAPI;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
@@ -43,16 +48,25 @@ public class SendWeiboActivity extends BaseActivity implements View.OnClickListe
     List<Picture> pictures;
     DisplayImageOptions options;
     EditText edt;
+    Status status;
+    boolean is_comment;
+    RelativeLayout share;
+    TextView title, text;
+    ImageView imageView;
     /** 当前 Token 信息 */
     private Oauth2AccessToken mAccessToken;
     /** 用于获取微博信息流等操作的API */
     private StatusesAPI mStatusesAPI;
+
+    private FriendsAPI friendsAPI;
+
     /**
      * 微博 OpenAPI 回调接口。
      */
     private RequestListener mListener = new RequestListener() {
         @Override
         public void onComplete(String response) {
+            MyLog.e(response);
             if (response.startsWith("{\"created_at\"")) {
                 // 调用 Status#parse 解析字符串成微博对象
                 Status status = Status.parse(response);
@@ -78,6 +92,9 @@ public class SendWeiboActivity extends BaseActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_weibo);
         getSupportActionBar().setTitle("发微博");
+        status = (Status) getIntent().getSerializableExtra("weibo");
+        is_comment = getIntent().getBooleanExtra("comment", false);
+
         init();
     }
 
@@ -98,6 +115,7 @@ public class SendWeiboActivity extends BaseActivity implements View.OnClickListe
         mAccessToken = AccessTokenKeeper.readAccessToken(this);
         // 对statusAPI实例化
         mStatusesAPI = new StatusesAPI(this, Constants.APP_KEY, mAccessToken);
+        friendsAPI = new FriendsAPI(this, Constants.APP_KEY, mAccessToken);
         options = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.logo)
                 .showImageForEmptyUri(R.drawable.logo)
@@ -108,6 +126,25 @@ public class SendWeiboActivity extends BaseActivity implements View.OnClickListe
                 .considerExifParams(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .build();
+        share = (RelativeLayout) findViewById(R.id.share_layout);
+
+
+        if (is_comment) {
+            getSupportActionBar().setTitle("发评论");
+        } else {
+            if (status != null) {
+                getSupportActionBar().setTitle("转发微博");
+                share.setVisibility(View.VISIBLE);
+                title = (TextView) findViewById(R.id.share_title);
+                text = (TextView) findViewById(R.id.share_text);
+                imageView = (ImageView) findViewById(R.id.share_image);
+                ImageLoader.getInstance().displayImage(status.user.avatar_large, imageView, options);
+                title.setText(status.user.screen_name);
+                text.setText(status.text);
+            } else {
+                share.setVisibility(View.GONE);
+            }
+        }
     }
 
 
@@ -122,12 +159,31 @@ public class SendWeiboActivity extends BaseActivity implements View.OnClickListe
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.ok) {
             String text = edt.getText().toString();
+
+            if (is_comment) {
+                if (text == null) {
+                    MyToast.makeText("请输入评论内容");
+                }
+                friendsAPI.comment(status.id, text, 0, mListener);
+                return true;
+            }
+
+            if (status != null) {
+                if (text == null) {
+                    text = "转发微博";
+                }
+                friendsAPI.shareWeibo(status.id, text, 0, mListener);
+                return true;
+            }
+
             if (pictures.size() == 0) {
                 mStatusesAPI.update(text, "", "", mListener);
             } else {
                 Bitmap bitmap = ImageLoader.getInstance().loadImageSync("file://" + pictures.get(0).getPath(), options);
                 mStatusesAPI.upload(text, bitmap, "", "", mListener);
             }
+
+
         }
         return super.onOptionsItemSelected(item);
     }

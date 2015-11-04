@@ -37,6 +37,17 @@
                 android:text="time" />
 
             <TextView
+                android:id="@+id/repost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/username"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_toRightOf="@id/time"
+                android:text="repost"
+                android:visibility="gone" />
+
+            <TextView
                 android:id="@+id/comment_like_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

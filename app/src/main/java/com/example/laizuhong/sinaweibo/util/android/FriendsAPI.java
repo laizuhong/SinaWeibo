@@ -25,7 +25,7 @@ public class FriendsAPI extends AbsOpenAPI {
 
 
     /*
-    *根据用ID获取微博列表
+    *根据用ID获取关注列表
     */
     public void getUserFriends(String uid, int count, int cursor, RequestListener listener) {
         WeiboParameters params = new WeiboParameters(mAppKey);
@@ -35,4 +35,26 @@ public class FriendsAPI extends AbsOpenAPI {
         requestAsync("https://api.weibo.com/2/friendships/friends.json", params, HTTPMETHOD_GET, listener);
     }
 
+
+    /*
+    *分享微博
+    */
+    public void shareWeibo(String id, String text, int is_comment, RequestListener listener) {
+        WeiboParameters params = new WeiboParameters(mAppKey);
+        params.put("id", id);
+        params.put("status", text);
+        params.put("is_comment", is_comment);
+        requestAsync("https://api.weibo.com/2/statuses/repost.json", params, HTTPMETHOD_POST, listener);
+    }
+
+    /*
+   *评论微博
+   */
+    public void comment(String id, String text, int is_comment, RequestListener listener) {
+        WeiboParameters params = new WeiboParameters(mAppKey);
+        params.put("id", id);
+        params.put("status", text);
+        params.put("is_comment", is_comment);
+        requestAsync("https://api.weibo.com/2/comments/create.json", params, HTTPMETHOD_POST, listener);
+    }
 }

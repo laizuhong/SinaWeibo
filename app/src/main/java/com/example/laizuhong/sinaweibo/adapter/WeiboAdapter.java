@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.laizuhong.sinaweibo.R;
+import com.example.laizuhong.sinaweibo.SendWeiboActivity;
 import com.example.laizuhong.sinaweibo.UserWeiboActivity;
 import com.example.laizuhong.sinaweibo.WeiboDetailActivity;
 import com.example.laizuhong.sinaweibo.util.CatnutUtils;
@@ -199,7 +200,7 @@ public class WeiboAdapter extends BaseAdapter{
             @Override
             public void onClick(View v) {
                 int p = (int) v.getTag();
-                Intent intent = new Intent(context, WeiboDetailActivity.class);
+                Intent intent = new Intent(context, SendWeiboActivity.class);
                 intent.putExtra("weibo", statuses.get(p));
                 context.startActivity(intent);
             }

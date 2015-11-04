@@ -116,6 +116,7 @@
                     android:gravity="top"
                     android:maxLines="10" />
 
+
                 <com.example.laizuhong.sinaweibo.util.MyGridView
                     android:id="@+id/send_pic_grid"
                     android:layout_width="fill_parent"
@@ -126,6 +127,43 @@
                     android:verticalSpacing="5dp">
 
                 </com.example.laizuhong.sinaweibo.util.MyGridView>
+
+
+                <RelativeLayout
+                    android:id="@+id/share_layout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="100dp"
+                    android:layout_below="@id/send_pic_grid"
+                    android:layout_marginTop="10dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/share_image"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp" />
+
+                    <TextView
+                        android:id="@+id/share_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_toRightOf="@id/share_image"
+                        android:text="123"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/share_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/share_title"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_toRightOf="@id/share_image"
+                        android:text="123"
+                        android:textSize="15sp" />
+
+                </RelativeLayout>
             </RelativeLayout>
         </LinearLayout>
     </ScrollView>

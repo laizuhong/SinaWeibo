@@ -172,7 +172,7 @@
                     </LinearLayout>
 
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
                         android:layout_below="@id/topview"
@@ -187,50 +187,72 @@
 
                             <TextView
                                 android:id="@+id/share_count"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_width="80dp"
+                                android:layout_height="fill_parent"
                                 android:layout_centerVertical="true"
-                                android:layout_marginLeft="20dp"
+                                android:gravity="center"
                                 android:text="转发" />
 
 
                             <TextView
                                 android:id="@+id/comment_count"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_width="80dp"
+                                android:layout_height="fill_parent"
                                 android:layout_centerVertical="true"
-                                android:layout_marginLeft="20dp"
                                 android:layout_toRightOf="@id/share_count"
+                                android:gravity="center"
                                 android:text="评论" />
 
 
                             <TextView
                                 android:id="@+id/like_count"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_width="50dp"
+                                android:layout_height="fill_parent"
                                 android:layout_alignParentRight="true"
                                 android:layout_centerVertical="true"
                                 android:layout_marginRight="20dp"
+                                android:gravity="center"
                                 android:text="赞" />
 
 
+                            <ImageView
+                                android:layout_width="fill_parent"
+                                android:layout_height="1dp"
+                                android:layout_alignParentBottom="true"
+                                android:background="@color/gray_black" />
                         </RelativeLayout>
-
-                        <ImageView
-                            android:layout_width="fill_parent"
-                            android:layout_height="1dp"
-                            android:background="@color/gray_black" />
 
 
                         <FrameLayout
-                            android:id="@+id/layout"
+                            android:id="@+id/layout1"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:background="@color/white">
+                            android:layout_below="@id/stopview"
+                            android:background="@color/white"
+                            android:orientation="vertical">
 
                         </FrameLayout>
 
-                    </LinearLayout>
+                        <FrameLayout
+                            android:id="@+id/layout2"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/stopview"
+                            android:background="@color/white"
+                            android:orientation="vertical">
+
+                        </FrameLayout>
+                        <FrameLayout
+                            android:id="@+id/layout3"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/stopview"
+                            android:background="@color/white"
+                            android:orientation="vertical">
+
+                        </FrameLayout>
+
+                    </RelativeLayout>
 
 
                 </RelativeLayout>

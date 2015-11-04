@@ -7,9 +7,12 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.laizuhong.sinaweibo.Constants;
@@ -17,7 +20,7 @@ import com.example.laizuhong.sinaweibo.R;
 import com.example.laizuhong.sinaweibo.WeiboDetailActivity;
 import com.example.laizuhong.sinaweibo.adapter.CommentAdapter;
 import com.example.laizuhong.sinaweibo.config.AccessTokenKeeper;
-import com.example.laizuhong.sinaweibo.util.MyListView;
+import com.example.laizuhong.sinaweibo.util.MyLog;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.exception.WeiboException;
 import com.sina.weibo.sdk.net.RequestListener;
@@ -36,16 +39,18 @@ public class CommentFragment extends Fragment implements AbsListView.OnScrollLis
 
     CommentAdapter adapter;
     List<Comment> commentlist;
-    MyListView listView;
+    ListView listView;
     Context context;
     CommentsAPI commentsAPI;
     Oauth2AccessToken oauth2AccessToken;
     boolean fresh = false;
     int page = 1;
+    ScrollView scrollView;
+    boolean isfirst = true;
     private long id;
     private View mProgressBar;
     private TextView mHintView;
-    private View footview;
+    private View footview, rootView;
     /**
      * 微博 OpenAPI 回调接口。
      */
@@ -76,15 +81,24 @@ public class CommentFragment extends Fragment implements AbsListView.OnScrollLis
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_repost, null);
-        init(view);
-        return view;
+        if (rootView == null) {
+            rootView = inflater.inflate(R.layout.fragment_message, null);
+        }
+        //缓存的rootView需要判断是否已经被加过parent， 如果有parent需要从parent删除，要不然会发生这个rootview已经有parent的错误。
+        ViewGroup parent = (ViewGroup) rootView.getParent();
+        if (parent != null) {
+            parent.removeView(rootView);
+        }
+        scrollView = ((WeiboDetailActivity) getActivity()).getScrollView();
+        init(rootView);
+
+        return rootView;
     }
 
     private void init(View view) {
         id = Long.valueOf(((WeiboDetailActivity) getActivity()).getWeibo_id());
         context = getActivity();
-        listView = (MyListView) view.findViewById(R.id.listView);
+        listView = (ListView) view.findViewById(R.id.listView);
         footview = LayoutInflater.from(context)
                 .inflate(R.layout.xlistview_footer, null);
         mProgressBar = footview.findViewById(R.id.xlistview_footer_progressbar);
@@ -96,8 +110,59 @@ public class CommentFragment extends Fragment implements AbsListView.OnScrollLis
         listView.addFooterView(footview);
         listView.setAdapter(adapter);
         //footview.setVisibility(View.GONE);
-        //listView.setOnScrollListener(this);
+        listView.setOnScrollListener(this);
         //listView.setParentScrollView(((WeiboDetailActivity) getActivity()).getScrollView());
+
+
+        listView.setOnTouchListener(new View.OnTouchListener() {
+            boolean result = false;
+            float lastY = 0;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+//                switch (event.getAction()) {
+//                    case MotionEvent.ACTION_DOWN:
+//
+//                        lastY = event.getY();
+//                        break;
+//                    case MotionEvent.ACTION_MOVE:
+//                        int distanceY = (int) Math.abs(event.getY()-lastY);
+//                        if(distanceY>0){
+//                            MyLog.e(distanceY+"");
+//                            listView.requestDisallowInterceptTouchEvent(true);
+//                            result = true;
+//                        }else{
+//                            MyLog.e(distanceY+"");
+//                            result = false;
+//                        }
+//                        break;
+//
+//                    default:
+//                        break;
+//                }
+//                return result;
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    MyLog.e("up   " + WeiboDetailActivity.butom + "    " + isfirst);
+                    if (!WeiboDetailActivity.butom) {
+                        if (isfirst) {
+                            scrollView.requestDisallowInterceptTouchEvent(false);
+                        }
+                    }
+                } else {
+                    scrollView.requestDisallowInterceptTouchEvent(true);
+                }
+//                if (event.getAction()==MotionEvent.ACTION_DOWN){
+//                    MyLog.e("down");
+//                    if (isfirst){
+//                        scrollView.requestDisallowInterceptTouchEvent(false);
+//                    }
+//                }else {
+//                    scrollView.requestDisallowInterceptTouchEvent(true);
+//                }
+                return false;
+            }
+        });
 
         // 获取当前已保存过的 Token
         oauth2AccessToken = AccessTokenKeeper.readAccessToken(context);
@@ -116,6 +181,7 @@ public class CommentFragment extends Fragment implements AbsListView.OnScrollLis
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         Log.e("comment  onScroll", "first=" + firstVisibleItem + "    visible=" + visibleItemCount + "     total=" + totalItemCount);
+        isfirst = firstVisibleItem == 0;
         if (totalItemCount - firstVisibleItem == visibleItemCount && fresh == false) {
             footview.setVisibility(View.VISIBLE);
             fresh = true;

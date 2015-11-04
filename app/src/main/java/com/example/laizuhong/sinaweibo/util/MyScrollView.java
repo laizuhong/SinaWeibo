@@ -47,9 +47,11 @@ public class MyScrollView extends ScrollView {
 //        if (onScrollListener != null) {
 //            onScrollListener.onScroll(t);
 //        }
-//        if (t+getHeight()==computeVerticalScrollRange()){
-//            onScrollBottomListener.scrollBottom();
-//        }
+        if (t + getHeight() == computeVerticalScrollRange()) {
+            onScrollBottomListener.scrollBottom(true);
+        } else {
+            onScrollBottomListener.scrollBottom(false);
+        }
     }
 
     /**
@@ -66,7 +68,7 @@ public class MyScrollView extends ScrollView {
 
 
     public interface OnScrollBottomListener {
-        void scrollBottom();
+        void scrollBottom(boolean isBottom);
     }
 
 }
