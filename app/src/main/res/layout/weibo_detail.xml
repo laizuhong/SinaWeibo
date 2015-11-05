@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:id="@+id/topview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical">
+
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_margin="10dp"
+                android:background="@color/white">
+
+                <ImageView
+                    android:id="@+id/userhead"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/logo"
+                    android:scaleType="fitXY" />
+
+                <TextView
+                    android:id="@+id/username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@id/userhead"
+                    android:text="123"
+                    android:textColor="@color/red" />
+
+                <TextView
+                    android:id="@+id/time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/userhead"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@id/userhead"
+                    android:text="123" />
+
+                <TextView
+                    android:id="@+id/frome"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/userhead"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@id/time"
+                    android:text="123" />
+
+                <LinearLayout
+                    android:layout_width="60dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/subscribe"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1"
+                        android:textSize="10sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="订阅"
+                        android:textSize="10sp" />
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
+            <com.example.laizuhong.sinaweibo.util.TweetTextView
+                android:id="@+id/text"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/white"
+                android:focusable="false"
+                android:textColor="@color/black" />
+
+            <com.example.laizuhong.sinaweibo.util.MyGridView
+                android:id="@+id/mygridview"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@color/white"
+                android:horizontalSpacing="5dp"
+                android:numColumns="3"
+                android:verticalSpacing="5dp"
+                android:visibility="gone">
+
+            </com.example.laizuhong.sinaweibo.util.MyGridView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/frome_status"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:layout_marginBottom="5dp"
+                android:background="@color/gray_black" />
+
+            <com.example.laizuhong.sinaweibo.util.TweetTextView
+                android:id="@+id/frome_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <com.example.laizuhong.sinaweibo.util.MyGridView
+
+                android:id="@+id/frome_grid"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:horizontalSpacing="5dp"
+                android:numColumns="3"
+                android:verticalSpacing="5dp"
+                android:visibility="gone">
+
+            </com.example.laizuhong.sinaweibo.util.MyGridView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

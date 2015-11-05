@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -37,7 +39,7 @@ import java.util.List;
 /**
  * Created by laizuhong on 2015/9/18.
  */
-public class PictureActivity extends BaseActivity implements View.OnClickListener {
+public class PictureActivity extends AppCompatActivity implements View.OnClickListener {
 
     int tab = 0;
     MyAdapter adapter;
@@ -54,7 +56,12 @@ public class PictureActivity extends BaseActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture);
-        getSupportActionBar().setTitle("图片");
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeAsUpIndicator(R.drawable.actionbar_back);
+        actionBar.setTitle("图片");
         pictures = (List<Picture>) getIntent().getSerializableExtra("picture");
         if (pictures == null) {
             pictures = new ArrayList<>();
@@ -102,6 +109,8 @@ public class PictureActivity extends BaseActivity implements View.OnClickListene
             Intent intent = new Intent();
             intent.putExtra("picture", (Serializable) pictures);
             setResult(RESULT_OK, intent);
+            finish();
+        } else if (item.getItemId() == android.R.id.home) {
             finish();
         }
         return super.onOptionsItemSelected(item);

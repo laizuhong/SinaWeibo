@@ -2,217 +2,234 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_black"
     android:descendantFocusability="blocksDescendants"
     android:orientation="vertical"
     android:paddingBottom="10dp">
 
-    <LinearLayout
+    <android.support.v7.widget.CardView
 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="vertical"
-        android:padding="5dp">
+        android:layout_margin="5dp"
+        android:background="@color/white">
 
 
         <LinearLayout
-            android:id="@+id/item_list"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/clik_selector"
-            android:orientation="vertical">
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:padding="5dp">
 
 
-            <RelativeLayout
+            <LinearLayout
+                android:id="@+id/item_list"
                 android:layout_width="fill_parent"
-                android:layout_height="40dp">
+                android:layout_height="wrap_content"
+                android:background="@drawable/clik_selector"
+                android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/userhead"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:background="@drawable/logo"
-                    android:scaleType="fitXY" />
 
-                <TextView
-                    android:id="@+id/username"
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="40dp">
+
+                    <ImageView
+                        android:id="@+id/userhead"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/logo"
+                        android:scaleType="fitXY" />
+
+                    <TextView
+                        android:id="@+id/username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@id/userhead"
+                        android:text="123"
+                        android:textColor="@color/red" />
+
+                    <TextView
+                        android:id="@+id/time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/userhead"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@id/userhead"
+                        android:text="123" />
+
+                    <TextView
+                        android:id="@+id/frome"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/userhead"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@id/time"
+                        android:text="123" />
+
+                    <LinearLayout
+                        android:layout_width="60dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/subscribe"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="1"
+                            android:textSize="10sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="订阅"
+                            android:textSize="10sp" />
+                    </LinearLayout>
+
+
+                </RelativeLayout>
+
+                <com.example.laizuhong.sinaweibo.util.TweetTextView
+                    android:id="@+id/text"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_toRightOf="@id/userhead"
-                    android:text="123"
-                    android:textColor="@color/red" />
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/black" />
 
-                <TextView
-                    android:id="@+id/time"
-                    android:layout_width="wrap_content"
+
+                <com.example.laizuhong.sinaweibo.util.MyGridView
+                    android:id="@+id/mygridview"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/userhead"
-                    android:layout_marginLeft="10dp"
-                    android:layout_toRightOf="@id/userhead"
-                    android:text="123" />
-
-                <TextView
-                    android:id="@+id/frome"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/userhead"
-                    android:layout_marginLeft="10dp"
-                    android:layout_toRightOf="@id/time"
-                    android:text="123" />
-
-                <LinearLayout
-                    android:layout_width="60dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:gravity="center"
-                    android:orientation="vertical"
+                    android:horizontalSpacing="5dp"
+                    android:numColumns="3"
+                    android:verticalSpacing="5dp"
                     android:visibility="gone">
 
-                    <TextView
-                        android:id="@+id/subscribe"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="1"
-                        android:textSize="10sp" />
+                </com.example.laizuhong.sinaweibo.util.MyGridView>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/frome_status"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="fill_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/gray_black" />
+
+                <com.example.laizuhong.sinaweibo.util.TweetTextView
+                    android:id="@+id/frome_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+
+                <com.example.laizuhong.sinaweibo.util.MyGridView
+
+                    android:id="@+id/frome_grid"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:horizontalSpacing="5dp"
+                    android:numColumns="3"
+                    android:verticalSpacing="5dp"
+                    android:visibility="gone">
+
+                </com.example.laizuhong.sinaweibo.util.MyGridView>
+
+            </LinearLayout>
+
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/gray_black"
+                android:visibility="visible" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="30dp"
+                android:layout_marginTop="3dp"
+                android:orientation="horizontal"
+                android:visibility="visible">
+
+                <LinearLayout
+                    android:id="@+id/retweet"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/timeline_icon_retweet" />
 
                     <TextView
+                        android:id="@+id/retweetcount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="订阅"
-                        android:textSize="10sp" />
+                        android:layout_marginLeft="5dp"
+                        android:text="转发" />
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/comment"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-            </RelativeLayout>
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/timeline_icon_comment" />
 
-            <com.example.laizuhong.sinaweibo.util.TweetTextView
-                android:id="@+id/text"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
-                android:textColor="@color/black" />
+                    <TextView
+                        android:id="@+id/commentcount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:text="评论" />
+                </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/like"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-            <com.example.laizuhong.sinaweibo.util.MyGridView
-                android:id="@+id/mygridview"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:horizontalSpacing="5dp"
-                android:numColumns="3"
-                android:verticalSpacing="5dp"
-                android:visibility="gone">
+                    <ImageView
+                        android:id="@+id/likeimage"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/timeline_icon_unlike" />
 
-            </com.example.laizuhong.sinaweibo.util.MyGridView>
+                    <TextView
+                        android:id="@+id/likecount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:text="赞" />
+                </LinearLayout>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/frome_status"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/gray_black"
-            android:orientation="vertical">
-
-            <com.example.laizuhong.sinaweibo.util.TweetTextView
-                android:id="@+id/frome_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-
-            <com.example.laizuhong.sinaweibo.util.MyGridView
-
-                android:id="@+id/frome_grid"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:horizontalSpacing="5dp"
-                android:numColumns="3"
-                android:verticalSpacing="5dp"
-                android:visibility="gone">
-
-            </com.example.laizuhong.sinaweibo.util.MyGridView>
-
-        </LinearLayout>
-
-
-        <ImageView
-            android:layout_width="fill_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/gray_black" />
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="30dp"
-            android:layout_marginTop="3dp"
-            android:orientation="horizontal">
-
-            <LinearLayout
-                android:id="@+id/retweet"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/timeline_icon_retweet" />
-
-                <TextView
-                    android:id="@+id/retweetcount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:text="转发" />
             </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/comment"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/timeline_icon_comment" />
-
-                <TextView
-                    android:id="@+id/commentcount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:text="评论" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/like"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/likeimage"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/timeline_icon_unlike" />
-
-                <TextView
-                    android:id="@+id/likecount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:text="赞" />
-            </LinearLayout>
-
         </LinearLayout>
-    </LinearLayout>
+    </android.support.v7.widget.CardView>
 </LinearLayout>

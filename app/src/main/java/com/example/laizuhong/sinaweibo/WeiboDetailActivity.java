@@ -3,35 +3,42 @@ package com.example.laizuhong.sinaweibo;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.text.Html;
-import android.util.Log;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewTreeObserver;
+import android.widget.AbsListView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.laizuhong.sinaweibo.adapter.CommentAdapter;
 import com.example.laizuhong.sinaweibo.adapter.MyGridviewAdapter;
-import com.example.laizuhong.sinaweibo.fragment.CommentFragment;
-import com.example.laizuhong.sinaweibo.fragment.LikeFragment;
-import com.example.laizuhong.sinaweibo.fragment.RespotFragment;
+import com.example.laizuhong.sinaweibo.config.AccessTokenKeeper;
 import com.example.laizuhong.sinaweibo.util.CatnutUtils;
 import com.example.laizuhong.sinaweibo.util.DateUtil;
 import com.example.laizuhong.sinaweibo.util.DisplayUtil;
 import com.example.laizuhong.sinaweibo.util.MyGridView;
 import com.example.laizuhong.sinaweibo.util.MyLog;
-import com.example.laizuhong.sinaweibo.util.MyScrollView;
 import com.example.laizuhong.sinaweibo.util.StringUtil;
 import com.example.laizuhong.sinaweibo.util.TweetImageSpan;
 import com.example.laizuhong.sinaweibo.util.TweetTextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.sina.weibo.sdk.auth.Oauth2AccessToken;
+import com.sina.weibo.sdk.exception.WeiboException;
+import com.sina.weibo.sdk.net.RequestListener;
+import com.sina.weibo.sdk.openapi.CommentsAPI;
+import com.sina.weibo.sdk.openapi.models.Comment;
+import com.sina.weibo.sdk.openapi.models.CommentList;
 import com.sina.weibo.sdk.openapi.models.Status;
+import com.sina.weibo.sdk.utils.LogUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -41,35 +48,59 @@ import in.srain.cube.views.ptr.header.MaterialHeader;
 /**
  * Created by laizuhong on 2015/9/29.
  */
-public class WeiboDetailActivity extends BaseActivity implements View.OnClickListener {
+public class WeiboDetailActivity extends BaseActivity implements View.OnClickListener, AbsListView.OnScrollListener {
 
-    public static boolean butom = false;
     Status status;
     TweetTextView text, frome_text;
-    TextView name, time, frome, share_count, comment_count, like_count;
+    TextView name, time, frome;
     ImageView head;
     LinearLayout share, commit, like, frome_status_layout;
     MyGridView gridView, frome_grid;
     DisplayImageOptions options;
     MyGridviewAdapter adapter;
-    CommentFragment commentFragment;
-    RespotFragment repostFragment;
-    LikeFragment likeFragment;
     TweetImageSpan tweetImageSpan;
     PtrFrameLayout ptrFrameLayout;
-    MyScrollView scrollView;
-    FrameLayout frameLayout1, frameLayout2, frameLayout3;
-    int stop;
-    private String weibo_id;
+    FrameLayout frameLayout;
+    CommentsAPI commentsAPI;
+    Oauth2AccessToken oauth2AccessToken;
+    View headview;
+    ListView listView;
+    int page = 1;
+    CommentAdapter commentAdapter;
+    List<Comment> commentlist;
+    boolean fresh = false;
+    private long weibo_id;
+    private View mProgressBar;
+    private TextView mHintView;
+    private View footview, rootView;
 
-    public String getWeibo_id() {
-        return weibo_id;
-    }
+    /**
+     * 微博 OpenAPI 回调接口。
+     */
+    private RequestListener mListener = new RequestListener() {
+        @Override
+        public void onComplete(String response) {
+            MyLog.e("onComplete", response);
+            if (!TextUtils.isEmpty(response)) {
+                CommentList comments = CommentList.parse(response);
+                if (comments != null && comments.total_number > 0 && comments.commentList != null && comments.commentList.size() > 0) {
 
+                    commentlist.addAll(comments.commentList);
+                    commentAdapter.notifyDataSetChanged();
+                    fresh = false;
+                    setState(0);
+                } else if (comments != null || comments.total_number == 0 || comments.commentList == null || comments.commentList.size() == 0) {
+                    setState(0);
+                }
+            }
+        }
 
-    public ScrollView getScrollView() {
-        return scrollView;
-    }
+        @Override
+        public void onWeiboException(WeiboException e) {
+            LogUtil.e("onWeiboException", e.getMessage());
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,19 +113,17 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
 
     private void init() {
         getSupportActionBar().setTitle("正文");
-        weibo_id = status.id;
-//        findViewById(R.id.back).setOnClickListener(this);
-        name = (TextView) findViewById(R.id.username);
+        weibo_id = Long.valueOf(status.id);
+
+        headview = LayoutInflater.from(this).inflate(R.layout.weibo_detail, null);
+        name = (TextView) headview.findViewById(R.id.username);
         name.setOnClickListener(this);
-        time = (TextView) findViewById(R.id.time);
-        frome = (TextView) findViewById(R.id.frome);
-        text = (TweetTextView) findViewById(R.id.text);
-        share_count = (TextView) findViewById(R.id.share_count);
-        comment_count = (TextView) findViewById(R.id.comment_count);
-        like_count = (TextView) findViewById(R.id.like_count);
-        head = (ImageView) findViewById(R.id.userhead);
+        time = (TextView) headview.findViewById(R.id.time);
+        frome = (TextView) headview.findViewById(R.id.frome);
+        text = (TweetTextView) headview.findViewById(R.id.text);
+        head = (ImageView) headview.findViewById(R.id.userhead);
         head.setOnClickListener(this);
-        gridView = (MyGridView) findViewById(R.id.mygridview);
+        gridView = (MyGridView) headview.findViewById(R.id.mygridview);
         share = (LinearLayout) findViewById(R.id.retweet);
         share.setOnClickListener(this);
         commit = (LinearLayout) findViewById(R.id.comment);
@@ -104,9 +133,9 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
 
         tweetImageSpan = new TweetImageSpan(this);
 
-        frome_text = (TweetTextView) findViewById(R.id.frome_text);
-        frome_status_layout = (LinearLayout) findViewById(R.id.frome_status);
-        frome_grid = (MyGridView) findViewById(R.id.frome_grid);
+        frome_text = (TweetTextView) headview.findViewById(R.id.frome_text);
+        frome_status_layout = (LinearLayout) headview.findViewById(R.id.frome_status);
+        frome_grid = (MyGridView) headview.findViewById(R.id.frome_grid);
 
         options = new DisplayImageOptions.Builder()
                 .cacheInMemory(true)
@@ -152,27 +181,31 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
         });
 
 
-        scrollView = (MyScrollView) findViewById(R.id.observable);
-        scrollView.smoothScrollBy(0, 0);
-        scrollView.setOnScrollBottomListener(new MyScrollView.OnScrollBottomListener() {
-            @Override
-            public void scrollBottom(boolean isBotton) {
-                //scrollView.requestDisallowInterceptTouchEvent(false);
-                if (isBotton) {
-                    MyLog.e("滚动到底部");
-                    butom = true;
-                } else {
-                    butom = false;
-                }
-            }
-        });
+        listView = (ListView) findViewById(R.id.layout);
 
 
-        frameLayout1 = (FrameLayout) findViewById(R.id.layout1);
-        frameLayout2 = (FrameLayout) findViewById(R.id.layout2);
-        frameLayout3 = (FrameLayout) findViewById(R.id.layout3);
+        footview = LayoutInflater.from(this)
+                .inflate(R.layout.xlistview_footer, null);
+        mProgressBar = footview.findViewById(R.id.xlistview_footer_progressbar);
+        mHintView = (TextView) footview
+                .findViewById(R.id.xlistview_footer_hint_textview);
+
+        commentlist = new ArrayList<>();
+        commentAdapter = new CommentAdapter(commentlist, this);
+        listView.addFooterView(footview);
+        listView.addHeaderView(headview);
+        listView.setAdapter(commentAdapter);
+        listView.setOnScrollListener(this);
+
+
 
         initDate();
+        // 获取当前已保存过的 Token
+        oauth2AccessToken = AccessTokenKeeper.readAccessToken(this);
+        // 获取微博评论信息接口
+        commentsAPI = new CommentsAPI(this, Constants.APP_KEY, oauth2AccessToken);
+
+        commentsAPI.show(weibo_id, 0, 0, 10, page, CommentsAPI.AUTHOR_FILTER_ALL, mListener);
     }
 
 
@@ -183,12 +216,6 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
         text.setText(status.text);
         CatnutUtils.vividTweet(text, tweetImageSpan);
         StringUtil.setTextview(text, this);
-        share_count.setText("转发" + status.reposts_count);
-        share_count.setOnClickListener(this);
-        comment_count.setText("评论" + status.comments_count);
-        comment_count.setOnClickListener(this);
-        like_count.setText("赞" + status.attitudes_count);
-        like_count.setOnClickListener(this);
         ImageLoader.getInstance().displayImage(status.user.profile_image_url, head, options);
         if (status.pic_urls != null) {
             gridView.setVisibility(View.VISIBLE);
@@ -215,51 +242,12 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
         }
 
 
-        stop = DisplayUtil.dip2px(this, 40);
-
-
-        final RelativeLayout center = (RelativeLayout) findViewById(R.id.center);
-        ViewTreeObserver vto = center.getViewTreeObserver();
-
-        vto.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            boolean hasMeasured = false;
-
-            public boolean onPreDraw() {
-                if (hasMeasured == false) {
-
-                    int height = center.getMeasuredHeight();
-                    //获取到宽度和高度后，可用于计算
-                    Log.e("onPreDraw", height + "");
-
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) frameLayout1.getLayoutParams();
-                    MyLog.e(height + "   " + stop);
-                    params.height = height - stop;
-                    params.width = LinearLayout.LayoutParams.MATCH_PARENT;
-                    frameLayout1.setLayoutParams(params);
-                    frameLayout2.setLayoutParams(params);
-                    frameLayout3.setLayoutParams(params);
-                    hasMeasured = true;
-
-                }
-                return true;
-            }
-        });
-
-        switchFragment(2);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.share_count:
-                switchFragment(1);
-                break;
-            case R.id.comment_count:
-                switchFragment(2);
-                break;
-            case R.id.like_count:
-                switchFragment(3);
-                break;
+
             case R.id.retweet:
                 Intent intent = new Intent(WeiboDetailActivity.this, SendWeiboActivity.class);
                 intent.putExtra("weibo", status);
@@ -277,68 +265,38 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
-    public void switchFragment(int tab) {
 
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        clearFouce();
-        //hideFragments(ft);
-        switch (tab) {
-            case 1:
-                share_count.setTextColor(getResources().getColor(R.color.black));
-                if (repostFragment == null) {
-                    repostFragment = new RespotFragment();
-                    ft.replace(R.id.layout1, repostFragment);
-                }
-                frameLayout1.setVisibility(View.VISIBLE);
-                break;
-            case 2:
-                comment_count.setTextColor(getResources().getColor(R.color.black));
-                if (commentFragment == null) {
-                    commentFragment = new CommentFragment();
-                    ft.replace(R.id.layout2, commentFragment);
-                }
-                frameLayout2.setVisibility(View.VISIBLE);
-                break;
-            case 3:
-                like_count.setTextColor(getResources().getColor(R.color.black));
-                if (likeFragment == null) {
-                    likeFragment = new LikeFragment();
-                    ft.replace(R.id.layout3, likeFragment);
-                }
-                frameLayout3.setVisibility(View.VISIBLE);
-                break;
-            default:
-                break;
-        }
-        ft.commit();
-    }
-
-
-    /**
-     * 将所有的Fragment都置为隐藏状态。
-     *
-     * @param transaction 用于对Fragment执行操作的事务
-     */
-    private void hideFragments(FragmentTransaction transaction) {
-        if (repostFragment != null) {
-            transaction.hide(repostFragment);
-        }
-        if (commentFragment != null) {
-            transaction.hide(commentFragment);
-        }
-        if (likeFragment != null) {
-            transaction.hide(likeFragment);
-        }
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
 
     }
 
-
-    private void clearFouce() {
-        frameLayout1.setVisibility(View.GONE);
-        frameLayout2.setVisibility(View.GONE);
-        frameLayout3.setVisibility(View.GONE);
-        share_count.setTextColor(getResources().getColor(R.color.tab_back));
-        comment_count.setTextColor(getResources().getColor(R.color.tab_back));
-        like_count.setTextColor(getResources().getColor(R.color.tab_back));
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        MyLog.e("comment  onScroll", "first=" + firstVisibleItem + "    visible=" + visibleItemCount + "     total=" + totalItemCount);
+        if (totalItemCount - firstVisibleItem == visibleItemCount && fresh == false) {
+            footview.setVisibility(View.VISIBLE);
+            fresh = true;
+            setState(1);
+            page++;
+            commentsAPI.show(weibo_id, 0, 0, 10, page, CommentsAPI.AUTHOR_FILTER_ALL, mListener);
+        }
     }
+
+    public void request(boolean b) {
+        listView.requestDisallowInterceptTouchEvent(b);
+    }
+
+
+    private void setState(int state) {
+        mProgressBar.setVisibility(View.GONE);
+
+        if (state == 0) {
+            mHintView.setText("加载更多");
+        } else if (state == 1) {// 当加载的时候
+            mProgressBar.setVisibility(View.VISIBLE);// 加载进度条显示
+            mHintView.setText("正在加载");
+        }
+    }
+
 }
