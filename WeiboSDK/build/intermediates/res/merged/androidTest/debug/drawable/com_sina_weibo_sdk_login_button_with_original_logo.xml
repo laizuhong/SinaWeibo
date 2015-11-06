@@ -17,10 +17,10 @@
 
 <!-- 请注意：该样式没有按下的效果 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:state_pressed="true" 
-          android:drawable="@drawable/ic_com_sina_weibo_sdk_logo" />
-    <item android:state_focused="true" 
-          android:drawable="@drawable/ic_com_sina_weibo_sdk_logo" />
+    <item android:drawable="@drawable/ic_com_sina_weibo_sdk_logo"
+          android:state_pressed="true" />
+    <item android:drawable="@drawable/ic_com_sina_weibo_sdk_logo"
+          android:state_focused="true" />
     <item android:drawable="@drawable/ic_com_sina_weibo_sdk_logo" />
 </selector>
 <!-- From: file:/D:/Android/work/SinaWeibo/WeiboSDK/res/drawable/com_sina_weibo_sdk_login_button_with_original_logo.xml --><!-- From: file:/D:/Android/work/SinaWeibo/WeiboSDK/build/intermediates/bundles/debug/res/drawable/com_sina_weibo_sdk_login_button_with_original_logo.xml -->

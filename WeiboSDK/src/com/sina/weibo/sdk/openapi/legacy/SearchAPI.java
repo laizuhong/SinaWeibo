@@ -17,6 +17,7 @@
 package com.sina.weibo.sdk.openapi.legacy;
 
 import android.content.Context;
+
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.net.RequestListener;
 import com.sina.weibo.sdk.net.WeiboParameters;
@@ -46,12 +47,11 @@ public class SearchAPI extends AbsOpenAPI {
     public static final int RANGE_ATTENTIONS     = 0;
     public static final int RANGE_ATTENTION_TAGS = 1;
     public static final int RANGE_ALL            = 2;
+    private static final String SERVER_URL_PRIX = API_SERVER + "/search";
 
     public SearchAPI(Context context, String appKey, Oauth2AccessToken accessToken) {
         super(context, appKey, accessToken);
     }
-
-    private static final String SERVER_URL_PRIX = API_SERVER + "/search";
 
     /**
      * 搜索用户时的联想搜索建议。

@@ -57,4 +57,15 @@ public class FriendsAPI extends AbsOpenAPI {
         params.put("is_comment", is_comment);
         requestAsync("https://api.weibo.com/2/comments/create.json", params, HTTPMETHOD_POST, listener);
     }
+
+    /*
+   *获取用户的微博列表
+   */
+    public void getUserWeibo(String uid, int count, int page, RequestListener listener) {
+        WeiboParameters params = new WeiboParameters(mAppKey);
+        params.put("uid", uid);
+        params.put("count", count);
+        params.put("page", page);
+        requestAsync("https://api.weibo.com/2/statuses/user_timeline.json", params, HTTPMETHOD_POST, listener);
+    }
 }

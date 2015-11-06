@@ -77,8 +77,8 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
-//				MyLog.e(TAG, "error : ", e);
             }
+            MyLog.e(TAG, "error : " + ex.getMessage());
 
             mDefaultHandler.uncaughtException(thread, ex);
 
@@ -121,7 +121,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
 //        }.start();
 //        // 收集设备参数信息
 //        collectDeviceInfo(mContext);
-        saveCrashInfo2File(ex);
+//        saveCrashInfo2File(ex);
 //        XmppConnection.closeConnection();
 //        NotiCtrler.cancelNoti();
 //        MyLogCat.plint("xxxxxxxxxxxxxxx", "com.wtstudio.together.activities.TogetherService");

@@ -19,6 +19,7 @@ package com.sina.weibo.sdk.openapi.legacy;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
+
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.net.RequestListener;
 import com.sina.weibo.sdk.net.WeiboParameters;
@@ -73,12 +74,11 @@ public class StatusesAPI extends AbsOpenAPI {
     /** 语言类别，cnname：简体、twname：繁体，默认为cnname。 */
     public static final String LANGUAGE_CNNAME = "cnname";
     public static final String LANGUAGE_TWNAME = "twname";
+    private static final String SERVER_URL_PRIX = API_SERVER + "/statuses";
 
     public StatusesAPI(Context context, String appKey, Oauth2AccessToken accessToken) {
         super(context, appKey, accessToken);
     }
-
-    private static final String SERVER_URL_PRIX = API_SERVER + "/statuses";
 
     /**
      * 返回最新的公共微博。

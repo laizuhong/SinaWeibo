@@ -18,6 +18,7 @@ package com.sina.weibo.sdk.openapi.legacy;
 
 import android.content.Context;
 import android.text.TextUtils;
+
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.net.RequestListener;
 import com.sina.weibo.sdk.net.WeiboParameters;
@@ -37,12 +38,6 @@ public class AccountAPI extends AbsOpenAPI {
     public static final int SCHOOL_TYPE_TECHNICAL   = 3;
     public static final int SCHOOL_TYPE_JUNIOR      = 4;
     public static final int SCHOOL_TYPE_PRIMARY     = 5;
-
-    /** 学校首字母，默认为A。 */
-    public enum CAPITAL {
-        A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
-    }
-
     private static final String SERVER_URL_PRIX = API_SERVER + "/account";
 
     public AccountAPI(Context context, String appKey, Oauth2AccessToken accessToken) {
@@ -51,7 +46,7 @@ public class AccountAPI extends AbsOpenAPI {
 
     /**
      * 获取当前登录用户的隐私设置。
-     * 
+     *
      * @param listener 异步请求回调接口
      */
     public void getPrivacy(RequestListener listener) {
@@ -61,7 +56,7 @@ public class AccountAPI extends AbsOpenAPI {
     /**
      * 获取所有的学校列表。
      * NOTE：参数keyword与capital二者必选其一，且只能选其一 按首字母capital查询时，必须提供province参数
-     * 
+     *
      * @param province   省份范围，省份ID
      * @param city       城市范围，城市ID
      * @param area       区域范围，区ID
@@ -94,7 +89,7 @@ public class AccountAPI extends AbsOpenAPI {
 
     /**
      * 获取当前登录用户的API访问频率限制情况。
-     * 
+     *
      * @param listener 异步请求回调接口
      */
     public void rateLimitStatus(RequestListener listener) {
@@ -103,7 +98,7 @@ public class AccountAPI extends AbsOpenAPI {
 
     /**
      * OAuth授权之后，获取授权用户的UID。
-     * 
+     *
      * @param listener 异步请求回调接口
      */
     public void getUid(RequestListener listener) {
@@ -112,10 +107,17 @@ public class AccountAPI extends AbsOpenAPI {
 
     /**
      * 退出登录。
-     * 
+     *
      * @param listener 异步请求回调接口
      */
     public void endSession(RequestListener listener) {
         requestAsync(SERVER_URL_PRIX + "/end_session.json", new WeiboParameters(mAppKey), HTTPMETHOD_POST, listener);
+    }
+
+    /**
+     * 学校首字母，默认为A。
+     */
+    public enum CAPITAL {
+        A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z
     }
 }

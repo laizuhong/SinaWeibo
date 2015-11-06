@@ -16,10 +16,10 @@
 -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:state_pressed="true" 
-          android:drawable="@drawable/ic_com_sina_weibo_sdk_button_grey_pressed" />
-    <item android:state_focused="true" 
-          android:drawable="@drawable/ic_com_sina_weibo_sdk_button_grey_focused" />
+    <item android:drawable="@drawable/ic_com_sina_weibo_sdk_button_grey_pressed"
+          android:state_pressed="true" />
+    <item android:drawable="@drawable/ic_com_sina_weibo_sdk_button_grey_focused"
+          android:state_focused="true" />
     <item android:drawable="@drawable/ic_com_sina_weibo_sdk_button_grey_normal" />
 </selector>
 <!-- From: file:/D:/Android/work/SinaWeibo/WeiboSDK/res/drawable/com_sina_weibo_sdk_button_grey.xml -->

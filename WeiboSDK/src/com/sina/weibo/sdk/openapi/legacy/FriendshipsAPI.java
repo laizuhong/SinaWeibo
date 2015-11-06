@@ -17,6 +17,7 @@
 package com.sina.weibo.sdk.openapi.legacy;
 
 import android.content.Context;
+
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.net.RequestListener;
 import com.sina.weibo.sdk.net.WeiboParameters;
@@ -31,11 +32,11 @@ import com.sina.weibo.sdk.openapi.AbsOpenAPI;
  */
 public class FriendshipsAPI extends AbsOpenAPI {
 
+    private static final String SERVER_URL_PRIX = API_SERVER + "/friendships";
+
     public FriendshipsAPI(Context context, String appKey, Oauth2AccessToken accessToken) {
         super(context, appKey, accessToken);
     }
-
-    private static final String SERVER_URL_PRIX = API_SERVER + "/friendships";
 
     /**
      * 获取用户的关注列表。

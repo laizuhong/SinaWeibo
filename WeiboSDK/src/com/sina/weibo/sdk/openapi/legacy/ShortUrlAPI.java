@@ -17,6 +17,7 @@
 package com.sina.weibo.sdk.openapi.legacy;
 
 import android.content.Context;
+
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.net.RequestListener;
 import com.sina.weibo.sdk.net.WeiboParameters;
@@ -30,11 +31,11 @@ import com.sina.weibo.sdk.openapi.AbsOpenAPI;
  * @date 2014-03-03
  */
 public class ShortUrlAPI extends AbsOpenAPI {
+    private static final String SERVER_URL_PRIX = API_SERVER + "/short_url";
+
     public ShortUrlAPI(Context context, String appKey, Oauth2AccessToken accessToken) {
         super(context, appKey, accessToken);
     }
-
-    private static final String SERVER_URL_PRIX = API_SERVER + "/short_url";
 
     /**
      * 将一个或多个长链接转换成短链接

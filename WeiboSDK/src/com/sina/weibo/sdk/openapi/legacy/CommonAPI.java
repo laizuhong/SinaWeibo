@@ -17,6 +17,7 @@
 package com.sina.weibo.sdk.openapi.legacy;
 
 import android.content.Context;
+
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.net.RequestListener;
 import com.sina.weibo.sdk.net.WeiboParameters;
@@ -32,25 +33,19 @@ import com.sina.weibo.sdk.openapi.CommentsAPI;
  */
 public class CommonAPI extends AbsOpenAPI {
 
-    /** 国家的首字母，默认为空，代表全部。 */
-    public enum CAPITAL {
-        a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z
-    }
-
     /** 语言版本，zh-cn：简体中文、zh-tw：繁体中文、english：英文，默认为zh-cn。 */
     public static final String LANGUAGE_ZH_CN   = "zh-cn";
     public static final String LANGUAGE_ZH_TW   = "zh-tw";
     public static final String LANGUAGE_EN      = "english";
+    private static final String SERVER_URL_PRIX = API_SERVER + "/common";
 
     public CommonAPI(Context context, String appKey, Oauth2AccessToken accessToken) {
         super(context, appKey, accessToken);
     }
 
-    private static final String SERVER_URL_PRIX = API_SERVER + "/common";
-
     /**
      * 获取城市列表。
-     * 
+     *
      * @param province  省份代码
      * @param capital   国家的首字母，a-z，可为空代表返回全部，默认为全部。
      *                  <li> {@link CommentsAPI#CAPITAL}
@@ -90,7 +85,7 @@ public class CommonAPI extends AbsOpenAPI {
 
     /**
      * 获取时区配置表。
-     * 
+     *
      * @param language  返回的语言版本，zh-cn：简体中文、zh-tw：繁体中文、english：英文，默认为zh-cn
      *                  <li> {@link #LANGUAGE_ZH_CN}
      *                  <li> {@link #LANGUAGE_ZH_TW}
@@ -101,5 +96,12 @@ public class CommonAPI extends AbsOpenAPI {
         WeiboParameters params = new WeiboParameters(mAppKey);
         params.put("language", language);
         requestAsync(SERVER_URL_PRIX + "/get_timezone.json", params, HTTPMETHOD_GET, listener);
+    }
+
+    /**
+     * 国家的首字母，默认为空，代表全部。
+     */
+    public enum CAPITAL {
+        a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z
     }
 }

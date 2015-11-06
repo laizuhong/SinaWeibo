@@ -20,6 +20,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.util.SparseArray;
+
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.net.RequestListener;
 import com.sina.weibo.sdk.net.WeiboParameters;

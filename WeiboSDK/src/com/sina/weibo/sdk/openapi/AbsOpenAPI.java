@@ -18,6 +18,7 @@ package com.sina.weibo.sdk.openapi;
 
 import android.content.Context;
 import android.text.TextUtils;
+
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.net.AsyncWeiboRunner;
 import com.sina.weibo.sdk.net.RequestListener;
@@ -31,8 +32,6 @@ import com.sina.weibo.sdk.utils.LogUtil;
  * @since 2013-11-05
  */
 public abstract class AbsOpenAPI {
-    private static final String TAG = AbsOpenAPI.class.getName();
-    
     /** 访问微博服务接口的地址 */
     protected static final String API_SERVER       = "https://api.weibo.com/2";
     /** POST 请求方式 */
@@ -41,7 +40,7 @@ public abstract class AbsOpenAPI {
     protected static final String HTTPMETHOD_GET   = "GET";
     /** HTTP 参数 */
     protected static final String KEY_ACCESS_TOKEN = "access_token";
-    
+    private static final String TAG = AbsOpenAPI.class.getName();
     /** 当前的 Token */
     protected Oauth2AccessToken mAccessToken;
     protected Context mContext;

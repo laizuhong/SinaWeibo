@@ -18,6 +18,7 @@ package com.sina.weibo.sdk.openapi.legacy;
 
 import android.content.Context;
 import android.util.SparseArray;
+
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.net.RequestListener;
 import com.sina.weibo.sdk.net.WeiboParameters;

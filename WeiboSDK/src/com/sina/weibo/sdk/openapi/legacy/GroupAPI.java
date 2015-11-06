@@ -18,6 +18,7 @@ package com.sina.weibo.sdk.openapi.legacy;
 
 import android.content.Context;
 import android.text.TextUtils;
+
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.net.RequestListener;
 import com.sina.weibo.sdk.net.WeiboParameters;
@@ -38,12 +39,11 @@ public class GroupAPI extends AbsOpenAPI {
     public static final int FEATURE_PICTURE   = 2;
     public static final int FEATURE_VIDEO     = 3;
     public static final int FEATURE_MUSICE    = 4;
+    private static final String SERVER_URL_PRIX = API_SERVER + "/friendships/groups";
 
     public GroupAPI(Context context, String appKey, Oauth2AccessToken accessToken) {
         super(context, appKey, accessToken);
     }
-
-    private static final String SERVER_URL_PRIX = API_SERVER + "/friendships/groups";
 
     /**
      * 获取当前登陆用户好友分组列表。
@@ -126,7 +126,7 @@ public class GroupAPI extends AbsOpenAPI {
     }
     // TODO 批量获取某些用户在指定用户的好友分组中的收录信息
     public void listed() {
-    };
+    }
 
     /**
      * 获取当前登陆用户某个分组的详细信息。

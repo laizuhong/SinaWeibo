@@ -38,15 +38,13 @@ import com.sina.weibo.sdk.utils.LogUtil;
  * @since 2013-11-04
  */
 public class LoginButton extends Button implements OnClickListener {	
-    private static final String TAG = "LoginButton";
-
     /** 默认样式，同时带有新浪微博图标和文字的图标 */
     public static final int LOGIN_INCON_STYLE_1 = 1;
     /** 样式二，带边框的新浪微博图标 */
     public static final int LOGIN_INCON_STYLE_2 = 2;
     /** 样式三，不带边框的新浪微博图标 */
     public static final int LOGIN_INCON_STYLE_3 = 3;
-    
+    private static final String TAG = "LoginButton";
     /** 微博授权时，启动 SSO 界面的 Activity */
 	private Context mContext;
     /** 授权认证所需要的信息 */
