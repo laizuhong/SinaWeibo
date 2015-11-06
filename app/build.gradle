@@ -22,11 +22,11 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile files('libs/universal-image-loader-1.9.4.jar')
-    compile project(':ptr-lib')
-    compile project(':WeiboSDK')
-    compile 'com.android.support:support-v4:23.0.0'
-    compile 'com.android.support:appcompat-v7:23.0.0'
     compile files('libs/volley.jar')
     compile files('libs/fastjson-1.1.36.jar')
+    compile 'com.android.support:support-v4:23.0.1'
+    compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.android.support:cardview-v7:23.0.1'
+    compile project(':ptr-lib')
+    compile project(':WeiboSDK')
 }

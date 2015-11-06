@@ -17,20 +17,26 @@ public class ProgressBarCircularIndetermininate extends CustomView {
 	final static String ANDROIDXML = "http://schemas.android.com/apk/res/android";
 	
 	int backgroundColor = Color.parseColor("#1E88E5");
-	
-
+	float radius1 = 0;
+	float radius2 = 0;
+	int cont = 0;
+	boolean firstAnimationOver = false;
+	int arcD = 1;
+	int arcO = 0;
+	float rotateAngle = 0;
+	int limite = 0;
 	public ProgressBarCircularIndetermininate(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		setAttributes(attrs);
-		
+
 	}
 	
 	// Set atributtes of XML to View
 		protected void setAttributes(AttributeSet attrs){
-			
+
 			setMinimumHeight(Utils.dpToPx(32, getResources()));
 			setMinimumWidth(Utils.dpToPx(32, getResources()));
-			
+
 			//Set background Color
 			// Color by resource
 			int bacgroundColor = attrs.getAttributeResourceValue(ANDROIDXML,"background",-1);
@@ -44,12 +50,12 @@ public class ProgressBarCircularIndetermininate extends CustomView {
 				else
 					setBackgroundColor(Color.parseColor("#1E88E5"));
 			}
-			
+
 			setMinimumHeight(Utils.dpToPx(3, getResources()));
-			
-						
+
+
 		}
-	
+
 	/**
 	 * Make a dark color to ripple effect
 	 * @return
@@ -61,10 +67,9 @@ public class ProgressBarCircularIndetermininate extends CustomView {
 //		r = (r+90 > 245) ? 245 : r+90;
 //		g = (g+90 > 245) ? 245 : g+90;
 //		b = (b+90 > 245) ? 245 : b+90;
-		return Color.argb(128,r, g, b);		
+		return Color.argb(128,r, g, b);
 	}
-	
-	
+
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
@@ -73,13 +78,9 @@ public class ProgressBarCircularIndetermininate extends CustomView {
 		if(cont > 0)
 			drawSecondAnimation(canvas);
 		invalidate();
-		
+
 	}
-	
-	float radius1 = 0;
-	float radius2 = 0;
-	int cont = 0;
-	boolean firstAnimationOver = false;
+
 	/**
 	 * Draw first animation of view
 	 * @param canvas
@@ -115,11 +116,7 @@ public class ProgressBarCircularIndetermininate extends CustomView {
 		    	firstAnimationOver = true;
 		}
 	}
-	
-	int arcD = 1;
-	int arcO = 0;
-	float rotateAngle = 0;
-	int limite = 0;
+
 	/**
 	 * Draw second animation of view
 	 * @param canvas

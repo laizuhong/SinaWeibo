@@ -65,71 +65,6 @@ public class FragmentTabHost extends TabHost implements
 	private TabInfo mLastTab;
 	private boolean mAttached;
 
-	static final class TabInfo {
-		private final String tag;
-		private final Class<?> clss;
-		private final Bundle args;
-		private Fragment fragment;
-
-		TabInfo(String _tag, Class<?> _class, Bundle _args) {
-			tag = _tag;
-			clss = _class;
-			args = _args;
-		}
-	}
-
-	static class DummyTabFactory implements TabContentFactory {
-		private final Context mContext;
-
-		public DummyTabFactory(Context context) {
-			mContext = context;
-		}
-
-		@Override
-		public View createTabContent(String tag) {
-			View v = new View(mContext);
-			v.setMinimumWidth(0);
-			v.setMinimumHeight(0);
-			return v;
-		}
-	}
-
-	static class SavedState extends BaseSavedState {
-		String curTab;
-
-		SavedState(Parcelable superState) {
-			super(superState);
-		}
-
-		private SavedState(Parcel in) {
-			super(in);
-			curTab = in.readString();
-		}
-
-		@Override
-		public void writeToParcel(Parcel out, int flags) {
-			super.writeToParcel(out, flags);
-			out.writeString(curTab);
-		}
-
-		@Override
-		public String toString() {
-			return "FragmentTabHost.SavedState{"
-					+ Integer.toHexString(System.identityHashCode(this))
-					+ " curTab=" + curTab + "}";
-		}
-
-		public static final Creator<SavedState> CREATOR = new Creator<SavedState>() {
-			public SavedState createFromParcel(Parcel in) {
-				return new SavedState(in);
-			}
-
-			public SavedState[] newArray(int size) {
-				return new SavedState[size];
-			}
-		};
-	}
-
 	public FragmentTabHost(Context context) {
 		// Note that we call through to the version that takes an AttributeSet,
 		// because the simple Context construct can result in a broken object!
@@ -365,5 +300,69 @@ public class FragmentTabHost extends TabHost implements
 			mLastTab = newTab;
 		}
 		return ft;
+	}
+
+	static final class TabInfo {
+		private final String tag;
+		private final Class<?> clss;
+		private final Bundle args;
+		private Fragment fragment;
+
+		TabInfo(String _tag, Class<?> _class, Bundle _args) {
+			tag = _tag;
+			clss = _class;
+			args = _args;
+		}
+	}
+
+	static class DummyTabFactory implements TabContentFactory {
+		private final Context mContext;
+
+		public DummyTabFactory(Context context) {
+			mContext = context;
+		}
+
+		@Override
+		public View createTabContent(String tag) {
+			View v = new View(mContext);
+			v.setMinimumWidth(0);
+			v.setMinimumHeight(0);
+			return v;
+		}
+	}
+
+	static class SavedState extends BaseSavedState {
+		public static final Creator<SavedState> CREATOR = new Creator<SavedState>() {
+			public SavedState createFromParcel(Parcel in) {
+				return new SavedState(in);
+			}
+
+			public SavedState[] newArray(int size) {
+				return new SavedState[size];
+			}
+		};
+		String curTab;
+
+		SavedState(Parcelable superState) {
+			super(superState);
+		}
+
+		private SavedState(Parcel in) {
+			super(in);
+			curTab = in.readString();
+		}
+
+		@Override
+		public void writeToParcel(Parcel out, int flags) {
+			super.writeToParcel(out, flags);
+			out.writeString(curTab);
+		}
+
+		@Override
+		public String toString() {
+			return "FragmentTabHost.SavedState{"
+					+ Integer.toHexString(System.identityHashCode(this))
+					+ " curTab=" + curTab + "}";
+		}
 	}
 }

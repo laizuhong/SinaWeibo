@@ -14,10 +14,10 @@ import android.widget.Toast;
 import com.example.laizuhong.sinaweibo.adapter.WeiboAdapter;
 import com.example.laizuhong.sinaweibo.config.AccessTokenKeeper;
 import com.example.laizuhong.sinaweibo.util.DisplayUtil;
+import com.example.laizuhong.sinaweibo.util.android.FriendsAPI;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.exception.WeiboException;
 import com.sina.weibo.sdk.net.RequestListener;
-import com.sina.weibo.sdk.openapi.StatusesAPI;
 import com.sina.weibo.sdk.openapi.models.ErrorInfo;
 import com.sina.weibo.sdk.openapi.models.Status;
 import com.sina.weibo.sdk.openapi.models.StatusList;
@@ -47,7 +47,7 @@ public class UserWeiboActivity extends BaseActivity implements AbsListView.OnScr
     /** 当前 Token 信息 */
     private Oauth2AccessToken mAccessToken;
     /** 用于获取微博信息流等操作的API */
-    private StatusesAPI mStatusesAPI;
+    private FriendsAPI friendsAPI;
     private View footview;
     private View mProgressBar;
     private TextView mHintView;
@@ -120,8 +120,8 @@ public class UserWeiboActivity extends BaseActivity implements AbsListView.OnScr
         // 获取当前已保存过的 Token
         mAccessToken = AccessTokenKeeper.readAccessToken(this);
         // 对statusAPI实例化
-        mStatusesAPI = new StatusesAPI(this, Constants.APP_KEY, mAccessToken);
-        mStatusesAPI.getUserWeibo(uid, 10, page, mListener);
+        friendsAPI = new FriendsAPI(this, Constants.APP_KEY, mAccessToken);
+        friendsAPI.getUserWeibo(uid, 10, page, mListener);
 
 
         ptrFrameLayout = (PtrFrameLayout) findViewById(R.id.store_house_ptr_frame);
@@ -150,7 +150,7 @@ public class UserWeiboActivity extends BaseActivity implements AbsListView.OnScr
                     public void run() {
                         MODE = 1;
                         page = 1;
-                        mStatusesAPI.getUserWeibo(uid, 10, page, mListener);
+                        friendsAPI.getUserWeibo(uid, 10, page, mListener);
 
                     }
                 }, 0);
@@ -182,7 +182,7 @@ public class UserWeiboActivity extends BaseActivity implements AbsListView.OnScr
             fresh = true;
             setState(1);
             page++;
-            mStatusesAPI.getUserWeibo(uid, 10, page, mListener);
+            friendsAPI.getUserWeibo(uid, 10, page, mListener);
         }
     }
 
