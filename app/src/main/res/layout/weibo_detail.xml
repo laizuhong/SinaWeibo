@@ -14,15 +14,13 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
             android:orientation="vertical">
 
 
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="40dp"
-                android:layout_margin="10dp"
-                android:background="@color/white">
+                android:layout_margin="10dp">
 
                 <ImageView
                     android:id="@+id/userhead"
@@ -90,7 +88,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:background="@color/white"
                 android:focusable="false"
                 android:textColor="@color/black" />
 
@@ -99,7 +96,6 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:background="@color/white"
                 android:horizontalSpacing="5dp"
                 android:numColumns="3"
                 android:verticalSpacing="5dp"
@@ -109,38 +105,141 @@
 
         </LinearLayout>
 
-        <LinearLayout
+
+        <android.support.v7.widget.CardView
             android:id="@+id/frome_status"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:background="@color/white"
-            android:orientation="vertical"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:visibility="gone">
+            android:visibility="visible">
 
-            <ImageView
-                android:layout_width="fill_parent"
-                android:layout_height="1dp"
-                android:layout_marginBottom="5dp"
-                android:background="@color/gray_black" />
-
-            <com.example.laizuhong.sinaweibo.util.TweetTextView
-                android:id="@+id/frome_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <com.example.laizuhong.sinaweibo.util.MyGridView
-
-                android:id="@+id/frome_grid"
+            <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:horizontalSpacing="5dp"
-                android:numColumns="3"
-                android:verticalSpacing="5dp"
-                android:visibility="gone">
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:visibility="visible">
 
-            </com.example.laizuhong.sinaweibo.util.MyGridView>
+
+                <com.example.laizuhong.sinaweibo.util.TweetTextView
+                    android:id="@+id/frome_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <com.example.laizuhong.sinaweibo.util.MyGridView
+
+                    android:id="@+id/frome_grid"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:horizontalSpacing="5dp"
+                    android:numColumns="3"
+                    android:verticalSpacing="5dp"
+                    android:visibility="gone">
+
+                </com.example.laizuhong.sinaweibo.util.MyGridView>
+
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="right"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
+
+                    <LinearLayout
+                        android:id="@+id/frome_share_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/timeline_icon_retweet"
+                            android:text="1"
+                            android:textSize="10sp" />
+
+                        <TextView
+                            android:id="@+id/frome_share_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="3dp"
+                            android:text="12"
+                            android:textColor="@color/black"
+                            android:textSize="10sp" />
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/frome_comment_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginLeft="5dp"
+                            android:background="@drawable/timeline_icon_comment"
+                            android:text="1"
+                            android:textSize="10sp" />
+
+                        <TextView
+                            android:id="@+id/frome_comment_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="3dp"
+                            android:text="12"
+                            android:textColor="@color/black"
+                            android:textSize="10sp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="10dp"
+            android:gravity="right"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+
+            <TextView
+                android:id="@+id/share_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12 转发"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text=" / "
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/comment_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12 评论"
+                android:textColor="@color/black" />
+
 
         </LinearLayout>
 

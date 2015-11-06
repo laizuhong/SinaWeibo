@@ -23,7 +23,8 @@
            <ListView
                android:id="@+id/user_weibo_list"
                android:layout_width="fill_parent"
-               android:layout_height="fill_parent">
+               android:layout_height="fill_parent"
+               android:divider="@null">
 
            </ListView>
 

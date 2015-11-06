@@ -8,14 +8,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bm.library.Info;
+import com.bm.library.PhotoView;
 import com.example.laizuhong.sinaweibo.R;
-import com.example.laizuhong.sinaweibo.SendWeiboActivity;
 import com.example.laizuhong.sinaweibo.UserWeiboActivity;
 import com.example.laizuhong.sinaweibo.WeiboDetailActivity;
 import com.example.laizuhong.sinaweibo.util.CatnutUtils;
@@ -40,6 +42,10 @@ public class WeiboAdapter extends BaseAdapter{
     int MODE = 0;
     DisplayImageOptions options;
     TweetImageSpan tweetImageSpan;
+    Info mInfo;
+
+    AlphaAnimation in = new AlphaAnimation(0, 1);
+    AlphaAnimation out = new AlphaAnimation(1, 0);
 
     public WeiboAdapter(Context context,List<Status> statuses,int mode){
         this.context=context;
@@ -56,7 +62,8 @@ public class WeiboAdapter extends BaseAdapter{
                 .considerExifParams(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .build();
-
+        in.setDuration(300);
+        out.setDuration(300);
     }
 
 
@@ -86,12 +93,10 @@ public class WeiboAdapter extends BaseAdapter{
             holer.time= (TextView) convertView.findViewById(R.id.time);
             holer.from = (TextView) convertView.findViewById(R.id.frome);
             holer.text = (TweetTextView) convertView.findViewById(R.id.text);
-            holer.sharecount= (TextView) convertView.findViewById(R.id.retweetcount);
-            holer.commentcount= (TextView) convertView.findViewById(R.id.commentcount);
-            holer.likecount= (TextView) convertView.findViewById(R.id.likecount);
-            holer.share= (LinearLayout) convertView.findViewById(R.id.retweet);
-            holer.comment= (LinearLayout) convertView.findViewById(R.id.comment);
-            holer.like= (LinearLayout) convertView.findViewById(R.id.like);
+            holer.sharecount = (TextView) convertView.findViewById(R.id.share);
+            holer.commentcount = (TextView) convertView.findViewById(R.id.comment);
+            holer.share_layout = (LinearLayout) convertView.findViewById(R.id.share_layout);
+            holer.comment_layout = (LinearLayout) convertView.findViewById(R.id.comment_layout);
             holer.likeImage= (ImageView) convertView.findViewById(R.id.likeimage);
             holer.userhead= (ImageView) convertView.findViewById(R.id.userhead);
             holer.gridView = (MyGridView) convertView.findViewById(R.id.mygridview);
@@ -145,6 +150,13 @@ public class WeiboAdapter extends BaseAdapter{
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     MyLog.e(position + "");
+                    PhotoView p = (PhotoView) view;
+                    mInfo = p.getInfo();
+
+//                    mPhotoView.setImageResource(imgs[position]);
+//                    mBg.startAnimation(in);
+//                    mParent.setVisibility(View.VISIBLE);
+//                    mPhotoView.animaFrom(mInfo);
                 }
             });
         }else {
@@ -172,6 +184,19 @@ public class WeiboAdapter extends BaseAdapter{
                 holer.frome_grid.setVisibility(View.VISIBLE);
                 MyGridviewAdapter adapter = new MyGridviewAdapter(status.retweeted_status.pic_urls, context);
                 holer.frome_grid.setAdapter(adapter);
+                holer.frome_grid.setOnTouchInvalidPositionListener(new MyGridView.OnTouchInvalidPositionListener() {
+                    @Override
+                    public boolean onTouchInvalidPosition(int motionEvent) {
+                        MyLog.e(motionEvent + "");
+                        return false;
+                    }
+                });
+                holer.frome_grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        MyLog.e(position + "");
+                    }
+                });
             }else {
                 holer.frome_grid.setVisibility(View.GONE);
             }
@@ -179,42 +204,18 @@ public class WeiboAdapter extends BaseAdapter{
             holer.frome_status.setVisibility(View.GONE);
         }
 
-        if (status.reposts_count==0){
-            holer.sharecount.setText("转发");
-        }else {
+        if (status.reposts_count != 0) {
+            holer.share_layout.setVisibility(View.VISIBLE);
             holer.sharecount.setText(status.reposts_count + "");
-        }
-        if (status.comments_count==0){
-            holer.commentcount.setText("评论");
         }else {
+            holer.share_layout.setVisibility(View.GONE);
+        }
+        if (status.comments_count != 0) {
+            holer.comment_layout.setVisibility(View.VISIBLE);
             holer.commentcount.setText(status.comments_count+"");
-        }
-        if (status.attitudes_count==0){
-            holer.likecount.setText("赞");
         }else {
-            holer.likecount.setText(status.attitudes_count+"");
+            holer.comment_layout.setVisibility(View.GONE);
         }
-
-        holer.share.setTag(position);
-        holer.share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int p = (int) v.getTag();
-                Intent intent = new Intent(context, SendWeiboActivity.class);
-                intent.putExtra("weibo", statuses.get(p));
-                context.startActivity(intent);
-            }
-        });
-        holer.comment.setTag(position);
-        holer.comment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int p = (int) v.getTag();
-                Intent intent = new Intent(context, WeiboDetailActivity.class);
-                intent.putExtra("weibo", statuses.get(p));
-                context.startActivity(intent);
-            }
-        });
         holer.item_list.setTag(position);
         holer.item_list.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -232,8 +233,8 @@ public class WeiboAdapter extends BaseAdapter{
 
     class ViewHoler {
         TweetTextView text, frome_text;
-        TextView username, time, sharecount, commentcount, likecount;
-        LinearLayout share, comment, like, frome_status, item_list;
+        TextView username, time, sharecount, commentcount;
+        LinearLayout frome_status, item_list, share_layout, comment_layout;
         ImageView likeImage, userhead;
         MyGridView gridView, frome_grid;
         TextView from;

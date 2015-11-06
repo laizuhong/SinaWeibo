@@ -73,7 +73,7 @@ public class WeiboFragment extends Fragment implements AbsListView.OnScrollListe
                 if (response.startsWith("{\"statuses\"")) {
                     // 调用 StatusList#parse 解析字符串成微博列表对象
                     StatusList statuses = StatusList.parse(response);
-                    if (statuses != null && statuses.total_number > 0) {
+                    if (statuses != null && statuses.statusList != null && statuses.statusList.size() > 0) {
                         if (loading.getVisibility() == View.VISIBLE) {
                             loading.setVisibility(View.GONE);
                             ptrFrameLayout.setVisibility(View.VISIBLE);
@@ -86,6 +86,8 @@ public class WeiboFragment extends Fragment implements AbsListView.OnScrollListe
                         setState(0);
                         adapter.notifyDataSetChanged();
                         fresh = false;
+                    } else {
+                        setState(3);
                     }
                 } else {
                     Toast.makeText(context, response, Toast.LENGTH_LONG).show();
@@ -141,7 +143,7 @@ public class WeiboFragment extends Fragment implements AbsListView.OnScrollListe
         footview.setVisibility(View.GONE);
         listView.setOnScrollListener(this);
 
-        mStatusesAPI.friendsTimeline(0L, 0L, 10, page, false, 0, false, mListener);
+        mStatusesAPI.friendsTimeline(0L, 0L, 20, page, false, 0, false, mListener);
 
         ptrFrameLayout= (PtrFrameLayout) v.findViewById(R.id.store_house_ptr_frame);
         ptrFrameLayout.setVisibility(View.GONE);
@@ -169,7 +171,7 @@ public class WeiboFragment extends Fragment implements AbsListView.OnScrollListe
                     public void run() {
                         MODE = 1;
                         page = 1;
-                        mStatusesAPI.friendsTimeline(0L, 0L, 10, page, false, 0, false, mListener);
+                        mStatusesAPI.friendsTimeline(0L, 0L, 20, page, false, 0, false, mListener);
 
                     }
                 }, 0);
@@ -206,7 +208,7 @@ public class WeiboFragment extends Fragment implements AbsListView.OnScrollListe
             fresh=true;
             setState(1);
             page++;
-            mStatusesAPI.friendsTimeline(0L, 0L, 10, page, false, 0, false, mListener);
+            mStatusesAPI.friendsTimeline(0L, 0L, 20, page, false, 0, false, mListener);
         }
     }
 
@@ -219,6 +221,8 @@ public class WeiboFragment extends Fragment implements AbsListView.OnScrollListe
         } else if (state == 1) {// 当加载的时候
             mProgressBar.setVisibility(View.VISIBLE);// 加载进度条显示
             mHintView.setText("正在加载");
+        } else if (state == 3) {
+            mHintView.setText("没有更多");
         }
     }
 

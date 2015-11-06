@@ -2,13 +2,13 @@ package com.example.laizuhong.sinaweibo.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.example.laizuhong.sinaweibo.R;
+import com.bm.library.PhotoView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
@@ -60,16 +60,23 @@ public class MyGridviewAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (getCount()==1){
-            convertView=LayoutInflater.from(context).inflate(R.layout.item_gridview1,null);
-            ImageView imageView= (ImageView) convertView.findViewById(R.id.image);
-            ImageLoader.getInstance().displayImage(pic.get(position), imageView, options);
-        }else {
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_gridview, null);
-            ImageView imageView = (ImageView) convertView.findViewById(R.id.image);
-            ImageLoader.getInstance().displayImage(pic.get(position), imageView, options);
-        }
-        return convertView;
+//        if (getCount()==1){
+//            convertView=LayoutInflater.from(context).inflate(R.layout.item_gridview1,null);
+//            ImageView imageView= (ImageView) convertView.findViewById(R.id.image);
+//            ImageLoader.getInstance().displayImage(pic.get(position), imageView, options);
+//        }else {
+//            convertView = LayoutInflater.from(context).inflate(R.layout.item_gridview, null);
+//            ImageView imageView = (ImageView) convertView.findViewById(R.id.image);
+//            ImageLoader.getInstance().displayImage(pic.get(position), imageView, options);
+//        }
+        PhotoView p = new PhotoView(context);
+        p.setLayoutParams(new AbsListView.LayoutParams((int) (context.getResources().getDisplayMetrics().density * 100), (int) (context.getResources().getDisplayMetrics().density * 100)));
+        p.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        ImageLoader.getInstance().displayImage(pic.get(position), p, options);
+//        p.setImageResource(imgs[position]);
+        // 把PhotoView当普通的控件把触摸功能关掉
+        p.disenable();
+        return p;
     }
 
 }

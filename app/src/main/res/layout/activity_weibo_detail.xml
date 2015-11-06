@@ -30,7 +30,6 @@
                 android:id="@+id/layout"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
                 android:orientation="vertical">
 
             </ListView>
@@ -48,6 +47,7 @@
         android:layout_height="0dp"
         android:layout_alignParentBottom="true"
         android:layout_weight="0.7"
+        android:background="@color/tab_back"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -68,7 +68,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:text="转发" />
+                android:text="转发"
+                android:textColor="@color/white" />
         </LinearLayout>
 
         <LinearLayout
@@ -89,7 +90,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:text="评论" />
+                android:text="评论"
+                android:textColor="@color/white" />
         </LinearLayout>
 
         <LinearLayout
@@ -98,7 +100,8 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/likeimage"

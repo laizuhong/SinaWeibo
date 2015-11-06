@@ -3,6 +3,7 @@ package com.example.laizuhong.sinaweibo;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -52,9 +53,10 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
 
     Status status;
     TweetTextView text, frome_text;
-    TextView name, time, frome;
+    TextView name, time, frome, frome_share_count, frome_comment_count, share_count, comment_count;
     ImageView head;
-    LinearLayout share, commit, like, frome_status_layout;
+    LinearLayout share, commit, like, frome_share_layout, frome_comment_layout;
+    CardView frome_status_layout;
     MyGridView gridView, frome_grid;
     DisplayImageOptions options;
     MyGridviewAdapter adapter;
@@ -134,9 +136,14 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
         tweetImageSpan = new TweetImageSpan(this);
 
         frome_text = (TweetTextView) headview.findViewById(R.id.frome_text);
-        frome_status_layout = (LinearLayout) headview.findViewById(R.id.frome_status);
+        frome_status_layout = (CardView) headview.findViewById(R.id.frome_status);
         frome_grid = (MyGridView) headview.findViewById(R.id.frome_grid);
-
+        frome_comment_count = (TextView) headview.findViewById(R.id.frome_comment_count);
+        frome_comment_layout = (LinearLayout) headview.findViewById(R.id.frome_comment_layout);
+        frome_share_count = (TextView) headview.findViewById(R.id.frome_share_count);
+        frome_share_layout = (LinearLayout) headview.findViewById(R.id.frome_share_layout);
+        share_count = (TextView) headview.findViewById(R.id.share_count);
+        comment_count = (TextView) headview.findViewById(R.id.comment_count);
         options = new DisplayImageOptions.Builder()
                 .cacheInMemory(true)
                 .cacheOnDisk(true)
@@ -224,7 +231,8 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
         } else {
             gridView.setVisibility(View.GONE);
         }
-
+        share_count.setText(status.reposts_count + " 转发");
+        comment_count.setText(status.comments_count + " 评论");
         if (status.retweeted_status == null) {
             frome_status_layout.setVisibility(View.GONE);
         } else {
@@ -239,7 +247,21 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
                 adapter = new MyGridviewAdapter(status.retweeted_status.pic_urls, this);
                 frome_grid.setAdapter(adapter);
             }
+            if (status.retweeted_status.reposts_count == 0) {
+                frome_share_layout.setVisibility(View.GONE);
+            } else {
+                frome_share_layout.setVisibility(View.VISIBLE);
+                frome_share_count.setText(status.retweeted_status.reposts_count + "");
+            }
+            if (status.retweeted_status.comments_count == 0) {
+                frome_comment_layout.setVisibility(View.GONE);
+            } else {
+                frome_comment_layout.setVisibility(View.VISIBLE);
+                frome_comment_count.setText(status.retweeted_status.comments_count + "");
+            }
+            frome_status_layout.setOnClickListener(this);
         }
+
 
 
     }
@@ -259,8 +281,10 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
                 comment.putExtra("comment", true);
                 startActivity(comment);
                 break;
-            case R.id.like:
-
+            case R.id.frome_status:
+                Intent weibo = new Intent(WeiboDetailActivity.this, WeiboDetailActivity.class);
+                weibo.putExtra("weibo", status.retweeted_status);
+                startActivity(weibo);
                 break;
         }
     }

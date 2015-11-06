@@ -23,8 +23,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.laizuhong.sinaweibo.config.AccessTokenKeeper;
+import com.example.laizuhong.sinaweibo.fragment.FriendsFragment;
+import com.example.laizuhong.sinaweibo.fragment.SettingFragment;
+import com.example.laizuhong.sinaweibo.fragment.UserWeiboFragment;
 import com.example.laizuhong.sinaweibo.fragment.WeiboFragment;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.exception.WeiboException;
 import com.sina.weibo.sdk.net.RequestListener;
@@ -39,12 +43,16 @@ import com.sina.weibo.sdk.utils.LogUtil;
 public class Main extends AppCompatActivity {
 
     public static Main main;
-    User user;
+    public static User user;
     DisplayImageOptions options;
     TextView name;
     ImageView head;
     ListView listView;
     ActionBar actionBar;
+    WeiboFragment weiboFragment;
+    SettingFragment settingFragment;
+    UserWeiboFragment userWeiboFragment;
+    FriendsFragment friendsFragment;
     private DrawerLayout mDrawerLayout = null;
     /**
      * 当前 Token 信息
@@ -66,7 +74,7 @@ public class Main extends AppCompatActivity {
                 user = User.parse(response);
                 if (user != null) {
                     name.setText(user.screen_name);
-                    com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(user.avatar_large, head, options);
+                    ImageLoader.getInstance().displayImage(user.avatar_large, head, options);
                 } else {
                     Toast.makeText(Main.this, response, Toast.LENGTH_LONG).show();
                 }
@@ -95,10 +103,7 @@ public class Main extends AppCompatActivity {
         actionBar.setTitle("主页");
 
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, new WeiboFragment());
-        transaction.addToBackStack(null);
-        transaction.commit();
+
 
 
         name = (TextView) findViewById(R.id.name);
@@ -117,26 +122,8 @@ public class Main extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent();
-                switch (position) {
-                    case 0:
-                        intent.putExtra("uid", user.id);
-                        intent.putExtra("name", user.screen_name);
-                        intent.setClass(main, UserWeiboActivity.class);
-                        break;
-                    case 1:
-                        intent.setClass(main, FriendActivity.class);
-                        intent.putExtra("uid", user.id);
-                        break;
-                    case 2:
-                        intent.setClass(main, SettingActivity.class);
-                        break;
-                    case 3:
-                        intent.setClass(main, SettingActivity.class);
-                        break;
-                }
-                mDrawerLayout.closeDrawer(Gravity.LEFT);
-                startActivity(intent);
+                switchFragment(position);
+                mDrawerLayout.closeDrawer(Gravity.LEFT);//关闭抽屉
             }
         });
 
@@ -157,6 +144,7 @@ public class Main extends AppCompatActivity {
             }
         });
 
+        switchFragment(0);
 
     }
 
@@ -223,5 +211,75 @@ public class Main extends AppCompatActivity {
         return super.onKeyDown(keyCode, event);
 
 
+    }
+
+
+    private void switchFragment(int tab) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        hideFragment(transaction);
+        switch (tab) {
+            case 0:
+                actionBar.setTitle("首页");
+                if (weiboFragment == null) {
+                    weiboFragment = new WeiboFragment();
+                    transaction.add(R.id.content_frame, weiboFragment);
+                } else {
+                    transaction.show(weiboFragment);
+                }
+                break;
+            case 1:
+                actionBar.setTitle("我的微博");
+                if (userWeiboFragment == null) {
+                    userWeiboFragment = new UserWeiboFragment();
+                    transaction.add(R.id.content_frame, userWeiboFragment);
+                } else {
+                    transaction.show(userWeiboFragment);
+                }
+                break;
+            case 2:
+                actionBar.setTitle("我的关注");
+                if (friendsFragment == null) {
+                    friendsFragment = new FriendsFragment();
+                    transaction.add(R.id.content_frame, friendsFragment);
+                } else {
+                    transaction.show(friendsFragment);
+                }
+                break;
+            case 3:
+//                actionBar.setTitle("我的粉丝");
+//                if (weiboFragment==null){
+//                    weiboFragment=new WeiboFragment();
+//                    transaction.replace(R.id.content_frame, weiboFragment);
+//                }else {
+//                    transaction.show(weiboFragment);
+//                }
+                break;
+            case 4:
+                actionBar.setTitle("设置");
+                if (settingFragment == null) {
+                    settingFragment = new SettingFragment();
+                    transaction.add(R.id.content_frame, settingFragment);
+                } else {
+                    transaction.show(settingFragment);
+                }
+                break;
+        }
+        transaction.commit();
+    }
+
+
+    private void hideFragment(FragmentTransaction transaction) {
+        if (weiboFragment != null) {
+            transaction.hide(weiboFragment);
+        }
+        if (userWeiboFragment != null) {
+            transaction.hide(userWeiboFragment);
+        }
+        if (friendsFragment != null) {
+            transaction.hide(friendsFragment);
+        }
+        if (settingFragment != null) {
+            transaction.hide(settingFragment);
+        }
     }
 }

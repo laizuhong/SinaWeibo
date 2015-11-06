@@ -1,29 +1,42 @@
-package com.example.laizuhong.sinaweibo;
+package com.example.laizuhong.sinaweibo.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.laizuhong.sinaweibo.adapter.WeiboAdapter;
+import com.example.laizuhong.sinaweibo.Constants;
+import com.example.laizuhong.sinaweibo.Main;
+import com.example.laizuhong.sinaweibo.R;
+import com.example.laizuhong.sinaweibo.adapter.FriendAdapter;
 import com.example.laizuhong.sinaweibo.config.AccessTokenKeeper;
 import com.example.laizuhong.sinaweibo.util.DisplayUtil;
+import com.example.laizuhong.sinaweibo.util.MyLog;
+import com.example.laizuhong.sinaweibo.util.MyToast;
 import com.example.laizuhong.sinaweibo.util.android.FriendsAPI;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.exception.WeiboException;
 import com.sina.weibo.sdk.net.RequestListener;
 import com.sina.weibo.sdk.openapi.models.ErrorInfo;
-import com.sina.weibo.sdk.openapi.models.Status;
-import com.sina.weibo.sdk.openapi.models.StatusList;
+import com.sina.weibo.sdk.openapi.models.User;
 import com.sina.weibo.sdk.utils.LogUtil;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.List;
 
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -31,28 +44,32 @@ import in.srain.cube.views.ptr.PtrHandler;
 import in.srain.cube.views.ptr.header.MaterialHeader;
 
 /**
- * Created by laizuhong on 2015/9/16.
+ * Created by laizuhong on 2015/11/6.
  */
-public class UserWeiboActivity extends BaseActivity implements AbsListView.OnScrollListener {
+public class FriendsFragment extends Fragment implements AbsListView.OnScrollListener {
 
+
+    Context context;
     ListView listView;
     LinearLayout loading;
     int MODE;
     boolean fresh = false;
-    WeiboAdapter adapter;
-    ArrayList<Status> statusList;
+    FriendAdapter adapter;
+    ArrayList<User> users;
     PtrFrameLayout ptrFrameLayout;
-    long uid;
-    int page = 1;
-    /** 当前 Token 信息 */
+    String uid;
+    int page = -1;
+    /**
+     * 当前 Token 信息
+     */
     private Oauth2AccessToken mAccessToken;
-    /** 用于获取微博信息流等操作的API */
+    /**
+     * 用于获取微博信息流等操作的API
+     */
     private FriendsAPI friendsAPI;
     private View footview;
     private View mProgressBar;
     private TextView mHintView;
-
-
     /**
      * 微博 OpenAPI 回调接口。
      */
@@ -61,25 +78,37 @@ public class UserWeiboActivity extends BaseActivity implements AbsListView.OnScr
         public void onComplete(String response) {
             if (!TextUtils.isEmpty(response)) {
                 Log.e("RequestListener status", response);
-                if (response.startsWith("{\"statuses\"")) {
-                    // 调用 StatusList#parse 解析字符串成微博列表对象
-                    StatusList statuses = StatusList.parse(response);
-                    if (statuses != null && statuses.total_number > 0) {
+                if (response.startsWith("{\"users\"")) {
+                    List<User> item = new ArrayList<>();
+                    try {
+                        JSONObject object = new JSONObject(response);
+                        page = object.getInt("next_cursor");
+                        MyToast.makeText(page + "        " + object.getString("total_number"));
+                        JSONArray array = object.getJSONArray("users");
+
+                        for (int i = 0; i < array.length(); i++) {
+                            item.add(User.parse(array.getString(i)));
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (item != null && item.size() > 0) {
                         if (loading.getVisibility() == View.VISIBLE) {
                             loading.setVisibility(View.GONE);
                             ptrFrameLayout.setVisibility(View.VISIBLE);
                         }
                         ptrFrameLayout.refreshComplete();
                         if (MODE == 1) {
-                            statusList.clear();
+                            users.clear();
                         }
-                        statusList.addAll(statuses.statusList);
+                        users.addAll(item);
                         setState(0);
                         adapter.notifyDataSetChanged();
                         fresh = false;
                     }
                 } else {
-                    Toast.makeText(UserWeiboActivity.this, response, Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, response, Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -88,52 +117,54 @@ public class UserWeiboActivity extends BaseActivity implements AbsListView.OnScr
         public void onWeiboException(WeiboException e) {
             LogUtil.e("onWeiboException", e.getMessage());
             ErrorInfo info = ErrorInfo.parse(e.getMessage());
-            Toast.makeText(UserWeiboActivity.this, info.toString(), Toast.LENGTH_LONG).show();
+            Toast.makeText(context, info.toString(), Toast.LENGTH_LONG).show();
         }
     };
 
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_all_weibo);
-        uid = Long.valueOf(getIntent().getStringExtra("uid"));
-        String name = getIntent().getStringExtra("name");
-        getSupportActionBar().setTitle(name);
-        init();
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_my_all_weibo, null);
+        uid = Main.user.id;
+        MyLog.e(uid);
+        context = getActivity();
+        init(view);
+        return view;
     }
 
-    private void init(){
-        listView = (ListView) findViewById(R.id.user_weibo_list);
-        footview = LayoutInflater.from(this)
+
+    private void init(View view) {
+
+        listView = (ListView) view.findViewById(R.id.user_weibo_list);
+        footview = LayoutInflater.from(context)
                 .inflate(R.layout.xlistview_footer, null);
         mProgressBar = footview.findViewById(R.id.xlistview_footer_progressbar);
         mHintView = (TextView) footview
                 .findViewById(R.id.xlistview_footer_hint_textview);
-        statusList = new ArrayList<>();
-        adapter = new WeiboAdapter(this, statusList, 1);
+        users = new ArrayList<>();
+        adapter = new FriendAdapter(context, users);
         listView.addFooterView(footview);
         listView.setAdapter(adapter);
         footview.setVisibility(View.GONE);
-        listView.setOnScrollListener(this);
-
-
+        //listView.setOnScrollListener(this);
 
 
         // 获取当前已保存过的 Token
-        mAccessToken = AccessTokenKeeper.readAccessToken(this);
+        mAccessToken = AccessTokenKeeper.readAccessToken(context);
         // 对statusAPI实例化
-        friendsAPI = new FriendsAPI(this, Constants.APP_KEY, mAccessToken);
-        friendsAPI.getUserWeibo(uid, 10, page, mListener);
+        friendsAPI = new FriendsAPI(context, Constants.APP_KEY, mAccessToken);
+        friendsAPI.getUserFriends(uid, 100, 0, mListener);
 
 
-        ptrFrameLayout = (PtrFrameLayout) findViewById(R.id.store_house_ptr_frame);
+        ptrFrameLayout = (PtrFrameLayout) view.findViewById(R.id.store_house_ptr_frame);
         ptrFrameLayout.setVisibility(View.GONE);
         // header
-        final MaterialHeader header = new MaterialHeader(this);
+        final MaterialHeader header = new MaterialHeader(context);
         int[] colors = getResources().getIntArray(R.array.google_colors);
         header.setColorSchemeColors(colors);
         header.setLayoutParams(new PtrFrameLayout.LayoutParams(-1, -2));
-        header.setPadding(0, 0, 0, DisplayUtil.dip2px(this, 10));
+        header.setPadding(0, 0, 0, DisplayUtil.dip2px(context, 10));
         header.setPtrFrameLayout(ptrFrameLayout);
 
         ptrFrameLayout.setResistance(1.7f);
@@ -152,7 +183,7 @@ public class UserWeiboActivity extends BaseActivity implements AbsListView.OnScr
                     public void run() {
                         MODE = 1;
                         page = 1;
-                        friendsAPI.getUserWeibo(uid, 10, page, mListener);
+                        friendsAPI.getUserFriends(uid, 100, page, mListener);
 
                     }
                 }, 0);
@@ -165,7 +196,7 @@ public class UserWeiboActivity extends BaseActivity implements AbsListView.OnScr
         });
 
 
-        loading = (LinearLayout) findViewById(R.id.loading);
+        loading = (LinearLayout) view.findViewById(R.id.loading);
         loading.setVisibility(View.VISIBLE);
 
     }
@@ -179,12 +210,15 @@ public class UserWeiboActivity extends BaseActivity implements AbsListView.OnScr
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         //Log.e("onscroll",totalItemCount-firstVisibleItem+"   "+visibleItemCount);
         if (totalItemCount - firstVisibleItem == visibleItemCount && fresh == false) {
+            if (page == 0) {
+                return;
+            }
             footview.setVisibility(View.VISIBLE);
             MODE = 2;
             fresh = true;
             setState(1);
             page++;
-            friendsAPI.getUserWeibo(uid, 10, page, mListener);
+            friendsAPI.getUserFriends(uid, 100, page, mListener);
         }
     }
 
@@ -199,4 +233,5 @@ public class UserWeiboActivity extends BaseActivity implements AbsListView.OnScr
             mHintView.setText("正在加载");
         }
     }
+
 }

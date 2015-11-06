@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Build;
 import android.os.StrictMode;
 
-import com.example.laizuhong.sinaweibo.util.CrashHandler;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -52,8 +51,8 @@ public class MyApp extends Application {
 
         initImageLoader(getApplicationContext());
 
-        CrashHandler crashHandler = CrashHandler.getInstance();//这是收集异常信息的单例类，具体代码请看下文
-        crashHandler.init(getApplicationContext());//初始化
+//        CrashHandler crashHandler = CrashHandler.getInstance();//这是收集异常信息的单例类，具体代码请看下文
+//        crashHandler.init(getApplicationContext());//初始化
     }
 
 
