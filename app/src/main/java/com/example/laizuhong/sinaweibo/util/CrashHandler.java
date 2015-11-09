@@ -69,6 +69,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
      */
     @Override
     public void uncaughtException(Thread thread, Throwable ex) {
+        MyLog.e(TAG, "error : " + ex.getMessage());
         if (!handleException(ex) && mDefaultHandler != null) {
             // 如果用户没有处理则让系统默认的异常处理器来处理
 
@@ -78,7 +79,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
             }
-            MyLog.e(TAG, "error : " + ex.getMessage());
+
 
             mDefaultHandler.uncaughtException(thread, ex);
 
@@ -121,7 +122,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
 //        }.start();
 //        // 收集设备参数信息
 //        collectDeviceInfo(mContext);
-//        saveCrashInfo2File(ex);
+        saveCrashInfo2File(ex);
 //        XmppConnection.closeConnection();
 //        NotiCtrler.cancelNoti();
 //        MyLogCat.plint("xxxxxxxxxxxxxxx", "com.wtstudio.together.activities.TogetherService");

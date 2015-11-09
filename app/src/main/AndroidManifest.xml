@@ -38,7 +38,7 @@
     <application
         android:name="com.example.laizuhong.sinaweibo.MyApp"
         android:allowBackup="true"
-        android:icon="@drawable/logo"
+        android:icon="@drawable/ic_logo"
         android:label="SinaWeibo"
         android:theme="@style/AppTheme" >
 
@@ -82,18 +82,34 @@
         </activity>
 
 
-
-        <activity android:name=".SettingActivity"></activity>
-        <activity android:name=".UserWeiboActivity"></activity>
+        <activity android:name=".SettingActivity" />
+        <activity android:name=".UserWeiboActivity" />
 
         <activity android:name=".SendWeiboActivity"
             android:windowSoftInputMode="adjustResize">
         </activity>
-        <activity android:name=".PictureActivity"></activity>
-        <activity android:name=".WeiboDetailActivity"></activity>
-        <activity android:name=".Main"></activity>
-        <activity android:name=".SearchResultActvity"></activity>
-        <activity android:name=".FriendActivity"></activity>
+        <activity android:name=".PictureActivity" />
+        <activity android:name=".WeiboDetailActivity" />
+        <activity android:name=".Main" />
+        <activity android:name=".SearchResultActvity" />
+        <activity android:name=".FriendActivity" />
+        <activity
+            android:name=".ImageActivity"
+            android:theme="@style/fullscreen" />
+        <activity android:name=".UserActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="org.catnut://profiles/" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".TopicActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="http://huati.weibo.com/k/" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

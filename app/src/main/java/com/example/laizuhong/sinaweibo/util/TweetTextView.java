@@ -21,7 +21,6 @@ public class TweetTextView extends TextView {
 
     public static final String TOPIC_SCHEME = "http://huati.weibo.com/k/";
     public static final String MENTION_SCHEME = "org.catnut://profiles/";
-
     /**
      * 微博中 @xx 正则
      */
@@ -34,30 +33,32 @@ public class TweetTextView extends TextView {
      * 微博链接，不包含中文
      */
     public static final Pattern WEB_URL = Pattern.compile("(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
-
     public static final Linkify.TransformFilter MENTION_FILTER = new Linkify.TransformFilter() {
         @Override
         public String transformUrl(Matcher match, String url) {
+            MyLog.e(url + "MENTION_FILTER");
             return url.substring(1);
         }
     };
-
     public static final Linkify.TransformFilter TOPIC_FILTER = new Linkify.TransformFilter() {
         @Override
         public String transformUrl(Matcher match, String url) {
+            MyLog.e(url + "TOPIC_FILTER");
             return url.substring(1, url.length() - 1);
         }
     };
-
     public static final Linkify.TransformFilter URL_FILTER = new Linkify.TransformFilter() {
         @Override
         public String transformUrl(Matcher match, String url) {
+            MyLog.e(url + "URL_FILTER");
             return url;
         }
     };
+    private Context context;
 
     public TweetTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.context = context;
     }
 
     @Override

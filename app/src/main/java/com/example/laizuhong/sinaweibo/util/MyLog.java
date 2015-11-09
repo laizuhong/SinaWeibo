@@ -7,6 +7,7 @@ public class MyLog {
 
     public static void e(String tag, String text) {
         Log.e(tag, text);
+
     }
 
     public static void e(String text) {

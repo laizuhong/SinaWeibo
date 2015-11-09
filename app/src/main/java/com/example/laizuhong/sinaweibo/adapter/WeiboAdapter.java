@@ -2,7 +2,6 @@ package com.example.laizuhong.sinaweibo.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bm.library.Info;
-import com.bm.library.PhotoView;
+import com.example.laizuhong.sinaweibo.ImageActivity;
+import com.example.laizuhong.sinaweibo.MyApp;
 import com.example.laizuhong.sinaweibo.R;
 import com.example.laizuhong.sinaweibo.UserWeiboActivity;
 import com.example.laizuhong.sinaweibo.WeiboDetailActivity;
@@ -26,7 +26,7 @@ import com.example.laizuhong.sinaweibo.util.MyGridView;
 import com.example.laizuhong.sinaweibo.util.MyLog;
 import com.example.laizuhong.sinaweibo.util.TweetImageSpan;
 import com.example.laizuhong.sinaweibo.util.TweetTextView;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.sina.weibo.sdk.openapi.models.Status;
 
 import java.util.List;
@@ -40,7 +40,6 @@ public class WeiboAdapter extends BaseAdapter{
     List<Status> statuses;
     Context context;
     int MODE = 0;
-    DisplayImageOptions options;
     TweetImageSpan tweetImageSpan;
     Info mInfo;
 
@@ -52,16 +51,6 @@ public class WeiboAdapter extends BaseAdapter{
         this.statuses=statuses;
         this.MODE=mode;
         tweetImageSpan = new TweetImageSpan(context);
-        options = new DisplayImageOptions.Builder()
-//                .showImageOnLoading(R.drawable.logo)
-//                .showImageForEmptyUri(R.drawable.logo)
-//                .showImageOnFail(R.drawable.logo)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-//                .displayer(new FadeInBitmapDisplayer(100)) // 展现方式：渐现
-                .considerExifParams(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .build();
         in.setDuration(300);
         out.setDuration(300);
     }
@@ -109,6 +98,7 @@ public class WeiboAdapter extends BaseAdapter{
             holer= (ViewHoler) convertView.getTag();
         }
         final Status status = statuses.get(position);
+        MyLog.e(status.bmiddle_pic + "   " + status.thumbnail_pic + "   " + status.original_pic);
         holer.username.setText(status.user.screen_name);
 
         holer.time.setText(DateUtil.GmtToDatastring(status.created_at).substring(5, 16));
@@ -117,10 +107,12 @@ public class WeiboAdapter extends BaseAdapter{
         Log.e("frome", status.source);
         holer.text.setText(status.text);
         CatnutUtils.vividTweet(holer.text, tweetImageSpan);
-
+//        StringUtil.setTextview(holer.text, context);
 
         // StringUtil.setTextview(holer.text, context);
-        com.nostra13.universalimageloader.core.ImageLoader.getInstance().displayImage(status.user.profile_image_url, holer.userhead, options);
+
+
+        ImageLoader.getInstance().displayImage(status.user.avatar_large, holer.userhead, MyApp.options);
         holer.userhead.setTag(position);
         holer.userhead.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,7 +129,7 @@ public class WeiboAdapter extends BaseAdapter{
         });
         if (status.pic_urls!=null){
             holer.gridView.setVisibility(View.VISIBLE);
-            MyGridviewAdapter adapter = new MyGridviewAdapter(status.pic_urls, context);
+            MyGridviewAdapter adapter = new MyGridviewAdapter(status.pic_urls, context, holer.gridView);
             holer.gridView.setAdapter(adapter);
             holer.gridView.setOnTouchInvalidPositionListener(new MyGridView.OnTouchInvalidPositionListener() {
                 @Override
@@ -146,17 +138,24 @@ public class WeiboAdapter extends BaseAdapter{
                     return false;
                 }
             });
+
+            holer.gridView.setTag(position);
             holer.gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    MyLog.e(position + "");
-                    PhotoView p = (PhotoView) view;
-                    mInfo = p.getInfo();
-
-//                    mPhotoView.setImageResource(imgs[position]);
-//                    mBg.startAnimation(in);
-//                    mParent.setVisibility(View.VISIBLE);
-//                    mPhotoView.animaFrom(mInfo);
+                    MyLog.e(position + "   " + view.getTag());
+                    //int p= (int) view.getTag();
+                    Intent intent = new Intent(context, ImageActivity.class);
+                    intent.putStringArrayListExtra("image", status.pic_urls);
+                    intent.putExtra("positon", position);
+                    context.startActivity(intent);
+//                    PhotoView photoView = (PhotoView) view;
+//                    mInfo = photoView.getInfo();
+//                    ImageLoader.getInstance().displayImage(statuses.get(p).pic_urls.get(position), photoView, options);
+////                    photoView.setImageResource(statuses.get(p).pic_urls.get(position));
+//                    photoView.startAnimation(in);
+////                    mParent.setVisibility(View.VISIBLE);
+//                    photoView.animaFrom(mInfo);
                 }
             });
         }else {
@@ -182,7 +181,7 @@ public class WeiboAdapter extends BaseAdapter{
             // StringUtil.setTextview(holer.frome_text, context);
             if (status.retweeted_status.pic_urls!=null){
                 holer.frome_grid.setVisibility(View.VISIBLE);
-                MyGridviewAdapter adapter = new MyGridviewAdapter(status.retweeted_status.pic_urls, context);
+                MyGridviewAdapter adapter = new MyGridviewAdapter(status.retweeted_status.pic_urls, context, holer.frome_grid);
                 holer.frome_grid.setAdapter(adapter);
                 holer.frome_grid.setOnTouchInvalidPositionListener(new MyGridView.OnTouchInvalidPositionListener() {
                     @Override
@@ -195,6 +194,10 @@ public class WeiboAdapter extends BaseAdapter{
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         MyLog.e(position + "");
+                        Intent intent = new Intent(context, ImageActivity.class);
+                        intent.putStringArrayListExtra("image", status.retweeted_status.pic_urls);
+                        intent.putExtra("positon", position);
+                        context.startActivity(intent);
                     }
                 });
             }else {

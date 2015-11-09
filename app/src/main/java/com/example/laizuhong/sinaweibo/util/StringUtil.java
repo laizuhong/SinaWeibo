@@ -10,6 +10,8 @@ import android.text.style.ClickableSpan;
 import android.widget.TextView;
 
 import com.example.laizuhong.sinaweibo.R;
+import com.example.laizuhong.sinaweibo.TopicActivity;
+import com.example.laizuhong.sinaweibo.UserActivity;
 import com.example.laizuhong.sinaweibo.UserWeiboActivity;
 
 import java.util.regex.Matcher;
@@ -20,17 +22,18 @@ import java.util.regex.Pattern;
  */
 public class StringUtil {
 
-    private static final Pattern itemuser = Pattern.compile("@\\w+ ");
-    private static final Pattern web1 = Pattern.compile("http://\\w+");
-    private static final Pattern web2 = Pattern.compile("#\\w+#");
+    private static final Pattern itemuser = Pattern.compile("@[\\u4e00-\\u9fa5a-zA-Z0-9_-]+");
+    private static final Pattern web1 = Pattern.compile("(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
+    private static final Pattern web2 = Pattern.compile("#[^#]+#");
 
     public static void setTextview(TextView textview, final Context context) {
         String string = textview.getText().toString();
         SpannableString spannableString = new SpannableString(string);
         setKeyworkClickable(textview, spannableString, itemuser, new WeiboClickSpan(new OnTextviewClickListener() {
             @Override
-            public void clickTextView() {
-                Intent intent = new Intent(context, UserWeiboActivity.class);
+            public void clickTextView(TextView tv) {
+                MyLog.e(tv.getText().toString());
+                Intent intent = new Intent(context, UserActivity.class);
                 context.startActivity(intent);
             }
 
@@ -42,7 +45,7 @@ public class StringUtil {
         }));
         setKeyworkClickable(textview, spannableString, web1, new WeiboClickSpan(new OnTextviewClickListener() {
             @Override
-            public void clickTextView() {
+            public void clickTextView(TextView tv) {
                 Intent intent = new Intent(context, UserWeiboActivity.class);
                 context.startActivity(intent);
             }
@@ -55,8 +58,8 @@ public class StringUtil {
         }));
         setKeyworkClickable(textview, spannableString, web2, new WeiboClickSpan(new OnTextviewClickListener() {
             @Override
-            public void clickTextView() {
-                Intent intent = new Intent(context, UserWeiboActivity.class);
+            public void clickTextView(TextView tv) {
+                Intent intent = new Intent(context, TopicActivity.class);
                 context.startActivity(intent);
             }
 

@@ -15,7 +15,7 @@
             android:layout_width="fill_parent"
             android:layout_height="100dp"
             android:layout_alignParentBottom="true"
-            android:background="@drawable/logo"
+            android:background="@drawable/ic_logo"
             android:scaleType="fitXY" />
 
 

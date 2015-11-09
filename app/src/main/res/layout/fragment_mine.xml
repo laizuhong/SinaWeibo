@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:background="@color/gray_black"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/gray_black"
+    android:orientation="vertical">
 
 
     <LinearLayout
@@ -23,57 +23,57 @@
 
 
             <TextView
+                android:id="@+id/user_set"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="设置"
-                android:id="@+id/user_set"
-                android:layout_marginRight="10dp"
+                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"/>
+                android:layout_marginRight="10dp"
+                android:text="设置" />
 
         </RelativeLayout>
 
 
         <RelativeLayout
             android:id="@+id/user"
-            android:layout_marginTop="10dp"
             android:layout_width="fill_parent"
-            android:background="@drawable/clik_selector"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/clik_selector">
 
             <ImageView
+                android:id="@+id/userhead"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_centerVertical="true"
-                android:padding="10dp"
-                android:id="@+id/userhead"/>
+                android:padding="10dp" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/username"
-                android:textSize="18sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_toRightOf="@id/userhead"/>
+                android:layout_toRightOf="@id/userhead"
+                android:textSize="18sp" />
 
 
             <TextView
+                android:id="@+id/jianjie"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="简介："
-                android:layout_toRightOf="@id/userhead"
-                android:layout_marginLeft="10dp"
                 android:layout_below="@id/username"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
-                android:id="@+id/jianjie"/>
+                android:layout_toRightOf="@id/userhead"
+                android:text="简介：" />
 
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:src="@drawable/toolbar_rightarrow"/>
         </RelativeLayout>
 
@@ -100,9 +100,9 @@
 
                 <TextView
                     android:id="@+id/myweibocount"
-                    android:textColor="@color/black"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black" />
 
 
                 <TextView
@@ -122,9 +122,9 @@
 
                 <TextView
                     android:id="@+id/myfocuscount"
-                    android:textColor="@color/black"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black" />
 
 
                 <TextView
@@ -144,9 +144,9 @@
 
                 <TextView
                     android:id="@+id/myfanscount"
-                    android:textColor="@color/black"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black" />
 
 
                 <TextView
@@ -160,16 +160,16 @@
         <LinearLayout
             android:id="@+id/my_new_friend"
             android:layout_width="fill_parent"
-            android:background="@drawable/clik_selector"
+            android:layout_height="50dp"
             android:layout_marginTop="20dp"
-            android:gravity="center_vertical"
-            android:layout_height="50dp">
+            android:background="@drawable/clik_selector"
+            android:gravity="center_vertical">
 
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginLeft="10dp"
-                android:src="@drawable/logo"/>
+                android:src="@drawable/ic_logo" />
 
 
             <TextView

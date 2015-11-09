@@ -2,13 +2,18 @@ package com.example.laizuhong.sinaweibo;
 
 import android.app.Application;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.StrictMode;
 
+import com.example.laizuhong.sinaweibo.util.CrashHandler;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 /**
  * Created by LAIZUHONG on 2015/9/20.
@@ -16,7 +21,7 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 public class MyApp extends Application {
     public static int width;
     public static MyApp myApp;
-
+    public static DisplayImageOptions options;
     public static MyApp getInstance() {
         return myApp;
     }
@@ -50,9 +55,17 @@ public class MyApp extends Application {
         super.onCreate();
 
         initImageLoader(getApplicationContext());
+        options = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
+                .displayer(new FadeInBitmapDisplayer(500)) // 展现方式：渐现
+                .considerExifParams(true)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .build();
 
-//        CrashHandler crashHandler = CrashHandler.getInstance();//这是收集异常信息的单例类，具体代码请看下文
-//        crashHandler.init(getApplicationContext());//初始化
+        CrashHandler crashHandler = CrashHandler.getInstance();//这是收集异常信息的单例类，具体代码请看下文
+        crashHandler.init(getApplicationContext());//初始化
     }
 
 

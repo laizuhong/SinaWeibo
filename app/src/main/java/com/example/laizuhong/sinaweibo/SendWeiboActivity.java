@@ -21,9 +21,7 @@ import com.example.laizuhong.sinaweibo.config.AccessTokenKeeper;
 import com.example.laizuhong.sinaweibo.util.MyLog;
 import com.example.laizuhong.sinaweibo.util.MyToast;
 import com.example.laizuhong.sinaweibo.util.android.FriendsAPI;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.exception.WeiboException;
 import com.sina.weibo.sdk.net.RequestListener;
@@ -40,7 +38,6 @@ public class SendWeiboActivity extends BaseActivity implements View.OnClickListe
     //    GridView gridView;
 //    PictureAdapter adapter;
 //    List<Picture> pictures;
-    DisplayImageOptions options;
     EditText edt;
     Status status;
     boolean is_comment;
@@ -111,16 +108,7 @@ public class SendWeiboActivity extends BaseActivity implements View.OnClickListe
         // 对statusAPI实例化
         mStatusesAPI = new StatusesAPI(this, Constants.APP_KEY, mAccessToken);
         friendsAPI = new FriendsAPI(this, Constants.APP_KEY, mAccessToken);
-        options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.logo)
-                .showImageForEmptyUri(R.drawable.logo)
-                .showImageOnFail(R.drawable.logo)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .displayer(new FadeInBitmapDisplayer(100)) // 展现方式：渐现
-                .considerExifParams(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .build();
+
         share = (CardView) findViewById(R.id.share_layout);
 
 
@@ -133,7 +121,7 @@ public class SendWeiboActivity extends BaseActivity implements View.OnClickListe
                 title = (TextView) findViewById(R.id.share_title);
                 text = (TextView) findViewById(R.id.share_text);
                 imageView = (ImageView) findViewById(R.id.share_image);
-                ImageLoader.getInstance().displayImage(status.user.avatar_large, imageView, options);
+                ImageLoader.getInstance().displayImage(status.user.avatar_large, imageView, MyApp.options);
                 title.setText(status.user.screen_name);
                 text.setText(status.text);
             } else {
@@ -177,7 +165,7 @@ public class SendWeiboActivity extends BaseActivity implements View.OnClickListe
             if (path == null) {
                 mStatusesAPI.update(text, "", "", mListener);
             } else {
-                Bitmap bitmap = ImageLoader.getInstance().loadImageSync("file://" + path, options);
+                Bitmap bitmap = ImageLoader.getInstance().loadImageSync("file://" + path, MyApp.options);
                 mStatusesAPI.upload(text, bitmap, "", "", mListener);
             }
 
@@ -240,7 +228,7 @@ public class SendWeiboActivity extends BaseActivity implements View.OnClickListe
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
             path = cursor.getString(columnIndex);
             pic.setVisibility(View.VISIBLE);
-            ImageLoader.getInstance().displayImage("file://" + path, pic, options);
+            ImageLoader.getInstance().displayImage("file://" + path, pic, MyApp.options);
             //fun1.setImageBitmap(bitmap);
         }
     }

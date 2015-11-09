@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -67,7 +68,7 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
     Oauth2AccessToken oauth2AccessToken;
     View headview;
     ListView listView;
-    int page = 1;
+    int page = 0;
     CommentAdapter commentAdapter;
     List<Comment> commentlist;
     boolean fresh = false;
@@ -109,6 +110,7 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weibo_detail);
         status = (Status) getIntent().getSerializableExtra("weibo");
+        MyLog.e(status.toString());
         init();
     }
 
@@ -212,7 +214,7 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
         // 获取微博评论信息接口
         commentsAPI = new CommentsAPI(this, Constants.APP_KEY, oauth2AccessToken);
 
-        commentsAPI.show(weibo_id, 0, 0, 10, page, CommentsAPI.AUTHOR_FILTER_ALL, mListener);
+        //commentsAPI.show(weibo_id, 0, 0, 10, page, CommentsAPI.AUTHOR_FILTER_ALL, mListener);
     }
 
 
@@ -226,8 +228,17 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
         ImageLoader.getInstance().displayImage(status.user.profile_image_url, head, options);
         if (status.pic_urls != null) {
             gridView.setVisibility(View.VISIBLE);
-            adapter = new MyGridviewAdapter(status.pic_urls, this);
+            adapter = new MyGridviewAdapter(status.pic_urls, this, gridView);
             gridView.setAdapter(adapter);
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent intent = new Intent(WeiboDetailActivity.this, ImageActivity.class);
+                    intent.putStringArrayListExtra("image", status.pic_urls);
+                    intent.putExtra("positon", position);
+                    startActivity(intent);
+                }
+            });
         } else {
             gridView.setVisibility(View.GONE);
         }
@@ -244,8 +255,17 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
                 frome_grid.setVisibility(View.GONE);
             } else {
                 frome_grid.setVisibility(View.VISIBLE);
-                adapter = new MyGridviewAdapter(status.retweeted_status.pic_urls, this);
+                adapter = new MyGridviewAdapter(status.retweeted_status.pic_urls, this, frome_grid);
                 frome_grid.setAdapter(adapter);
+                frome_grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent intent = new Intent(WeiboDetailActivity.this, ImageActivity.class);
+                        intent.putStringArrayListExtra("image", status.pic_urls);
+                        intent.putExtra("positon", position);
+                        startActivity(intent);
+                    }
+                });
             }
             if (status.retweeted_status.reposts_count == 0) {
                 frome_share_layout.setVisibility(View.GONE);
@@ -299,10 +319,11 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         MyLog.e("comment  onScroll", "first=" + firstVisibleItem + "    visible=" + visibleItemCount + "     total=" + totalItemCount);
         if (totalItemCount - firstVisibleItem == visibleItemCount && fresh == false) {
-            footview.setVisibility(View.VISIBLE);
             fresh = true;
+            footview.setVisibility(View.VISIBLE);
             setState(1);
             page++;
+            MyLog.e("onscroll 刷新了");
             commentsAPI.show(weibo_id, 0, 0, 10, page, CommentsAPI.AUTHOR_FILTER_ALL, mListener);
         }
     }

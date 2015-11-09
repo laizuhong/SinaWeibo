@@ -2,7 +2,9 @@ package com.example.laizuhong.sinaweibo.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -30,6 +32,7 @@ import com.sina.weibo.sdk.openapi.models.StatusList;
 import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -48,8 +51,9 @@ public class WeiboFragment extends Fragment implements AbsListView.OnScrollListe
     int MODE=1;  //1为刷新，2为加载更多
     int page=1;
     boolean fresh=false;
-    ArrayList<Status> statusList;
+    List<Status> statusList;
     WeiboAdapter adapter;
+    SharedPreferences sp;
     private View rootView;//缓存Fragment view
     /**
      * 当前 Token 信息
@@ -81,6 +85,9 @@ public class WeiboFragment extends Fragment implements AbsListView.OnScrollListe
                         ptrFrameLayout.refreshComplete();
                         if (MODE == 1) {
                             statusList.clear();
+                            SharedPreferences.Editor editor = sp.edit();
+                            editor.putString("weibo", response);
+                            editor.commit();
                         }
                         statusList.addAll(statuses.statusList);
                         setState(0);
@@ -119,6 +126,7 @@ public class WeiboFragment extends Fragment implements AbsListView.OnScrollListe
     }
 
     private void init(View v){
+        sp = PreferenceManager.getDefaultSharedPreferences(context);
         listView= (ListView) v.findViewById(R.id.allweibo);
 
         // 获取当前已保存过的 Token
@@ -136,14 +144,6 @@ public class WeiboFragment extends Fragment implements AbsListView.OnScrollListe
         loading.setVisibility(View.VISIBLE);
 
 
-        statusList=new ArrayList<>();
-        adapter=new WeiboAdapter(context,statusList,1);
-        listView.addFooterView(footview);
-        listView.setAdapter(adapter);
-        footview.setVisibility(View.GONE);
-        listView.setOnScrollListener(this);
-
-        mStatusesAPI.friendsTimeline(0L, 0L, 20, page, false, 0, false, mListener);
 
         ptrFrameLayout= (PtrFrameLayout) v.findViewById(R.id.store_house_ptr_frame);
         ptrFrameLayout.setVisibility(View.GONE);
@@ -192,6 +192,26 @@ public class WeiboFragment extends Fragment implements AbsListView.OnScrollListe
         });
 
 
+        String weibo = sp.getString("weibo", null);
+        if (weibo == null) {
+            statusList = new ArrayList<>();
+        } else {
+            StatusList list = StatusList.parse(weibo);
+            if (list != null && list.statusList != null && list.statusList.size() > 0) {
+                statusList = list.statusList;
+                loading.setVisibility(View.GONE);
+                ptrFrameLayout.setVisibility(View.VISIBLE);
+            }
+        }
+        adapter = new WeiboAdapter(context, statusList, 1);
+        listView.addFooterView(footview);
+        listView.setAdapter(adapter);
+        footview.setVisibility(View.GONE);
+        listView.setOnScrollListener(this);
+
+        if (statusList.size() == 0) {
+            mStatusesAPI.friendsTimeline(0L, 0L, 20, page, false, 0, false, mListener);
+        }
     }
 
     @Override
@@ -203,11 +223,12 @@ public class WeiboFragment extends Fragment implements AbsListView.OnScrollListe
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         //Log.e("onscroll",totalItemCount-firstVisibleItem+"   "+visibleItemCount);
         if (totalItemCount-firstVisibleItem==visibleItemCount&&fresh==false){
+            fresh = true;
             footview.setVisibility(View.VISIBLE);
             MODE=2;
-            fresh=true;
             setState(1);
             page++;
+
             mStatusesAPI.friendsTimeline(0L, 0L, 20, page, false, 0, false, mListener);
         }
     }

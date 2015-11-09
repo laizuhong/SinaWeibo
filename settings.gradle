@@ -1,1 +1,1 @@
-include ':app', ':ptr-lib', ':WeiboSDK'
+include ':app', ':ptr-lib', ':WeiboSDK', ':library'
