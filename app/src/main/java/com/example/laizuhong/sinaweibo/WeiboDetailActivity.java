@@ -24,7 +24,6 @@ import com.example.laizuhong.sinaweibo.util.DateUtil;
 import com.example.laizuhong.sinaweibo.util.DisplayUtil;
 import com.example.laizuhong.sinaweibo.util.MyGridView;
 import com.example.laizuhong.sinaweibo.util.MyLog;
-import com.example.laizuhong.sinaweibo.util.StringUtil;
 import com.example.laizuhong.sinaweibo.util.TweetImageSpan;
 import com.example.laizuhong.sinaweibo.util.TweetTextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -224,7 +223,7 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
         frome.setText(Html.fromHtml(status.source).toString());
         text.setText(status.text);
         CatnutUtils.vividTweet(text, tweetImageSpan);
-        StringUtil.setTextview(text, this);
+        //StringUtil.setTextview(text, this);
         ImageLoader.getInstance().displayImage(status.user.profile_image_url, head, options);
         if (status.pic_urls != null) {
             gridView.setVisibility(View.VISIBLE);
@@ -250,7 +249,7 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
             frome_status_layout.setVisibility(View.VISIBLE);
             frome_text.setText(status.retweeted_status.text);
             CatnutUtils.vividTweet(frome_text, tweetImageSpan);
-            StringUtil.setTextview(frome_text, this);
+            //StringUtil.setTextview(frome_text, this);
             if (status.retweeted_status.pic_urls == null) {
                 frome_grid.setVisibility(View.GONE);
             } else {

@@ -100,14 +100,21 @@
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="org.catnut://profiles/" />
+                <data android:scheme="erciyuan.mention" />
             </intent-filter>
         </activity>
         <activity android:name=".TopicActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="http://huati.weibo.com/k/" />
+                <data android:scheme="erciyuan.topic" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".BrowserWebActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="erciyuan.http" />
             </intent-filter>
         </activity>
     </application>

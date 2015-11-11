@@ -29,6 +29,7 @@ import com.example.laizuhong.sinaweibo.util.TweetTextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.sina.weibo.sdk.openapi.models.Status;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -89,6 +90,8 @@ public class WeiboAdapter extends BaseAdapter{
             holer.likeImage= (ImageView) convertView.findViewById(R.id.likeimage);
             holer.userhead= (ImageView) convertView.findViewById(R.id.userhead);
             holer.gridView = (MyGridView) convertView.findViewById(R.id.mygridview);
+            holer.grid1 = (ImageView) convertView.findViewById(R.id.grid1);
+            holer.grid2 = (MyGridView) convertView.findViewById(R.id.grid2);
             holer.frome_status= (LinearLayout) convertView.findViewById(R.id.frome_status);
             holer.frome_text = (TweetTextView) convertView.findViewById(R.id.frome_text);
             holer.frome_grid = (MyGridView) convertView.findViewById(R.id.frome_grid);
@@ -109,7 +112,6 @@ public class WeiboAdapter extends BaseAdapter{
         CatnutUtils.vividTweet(holer.text, tweetImageSpan);
 //        StringUtil.setTextview(holer.text, context);
 
-        // StringUtil.setTextview(holer.text, context);
 
 
         ImageLoader.getInstance().displayImage(status.user.avatar_large, holer.userhead, MyApp.options);
@@ -127,37 +129,74 @@ public class WeiboAdapter extends BaseAdapter{
 
             }
         });
+        holer.grid1.setVisibility(View.GONE);
+        holer.grid2.setVisibility(View.GONE);
+        holer.gridView.setVisibility(View.GONE);
         if (status.pic_urls!=null){
-            holer.gridView.setVisibility(View.VISIBLE);
-            MyGridviewAdapter adapter = new MyGridviewAdapter(status.pic_urls, context, holer.gridView);
-            holer.gridView.setAdapter(adapter);
-            holer.gridView.setOnTouchInvalidPositionListener(new MyGridView.OnTouchInvalidPositionListener() {
-                @Override
-                public boolean onTouchInvalidPosition(int motionEvent) {
-                    MyLog.e(motionEvent + "");
-                    return false;
-                }
-            });
+            if (status.pic_urls.size() == 1) {
+                holer.grid1.setVisibility(View.VISIBLE);
+                ImageLoader.getInstance().displayImage(status.pic_urls.get(0), holer.grid1, MyApp.options);
+                holer.grid1.setTag(status.pic_urls);
+                holer.grid1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ArrayList list = (ArrayList) v.getTag();
+                        Intent intent = new Intent(context, ImageActivity.class);
+                        intent.putStringArrayListExtra("image", list);
+                        intent.putExtra("positon", 0);
+                        context.startActivity(intent);
+                    }
+                });
+            } else if (status.pic_urls.size() == 4) {
+                holer.grid2.setVisibility(View.VISIBLE);
+                MyGridviewAdapter adapter = new MyGridviewAdapter(status.pic_urls, context, holer.grid2);
+                holer.grid2.setAdapter(adapter);
+                holer.grid2.setOnTouchInvalidPositionListener(new MyGridView.OnTouchInvalidPositionListener() {
+                    @Override
+                    public boolean onTouchInvalidPosition(int motionEvent) {
+                        MyLog.e(motionEvent + "");
+                        return false;
+                    }
+                });
 
-            holer.gridView.setTag(position);
-            holer.gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    MyLog.e(position + "   " + view.getTag());
-                    //int p= (int) view.getTag();
-                    Intent intent = new Intent(context, ImageActivity.class);
-                    intent.putStringArrayListExtra("image", status.pic_urls);
-                    intent.putExtra("positon", position);
-                    context.startActivity(intent);
-//                    PhotoView photoView = (PhotoView) view;
-//                    mInfo = photoView.getInfo();
-//                    ImageLoader.getInstance().displayImage(statuses.get(p).pic_urls.get(position), photoView, options);
-////                    photoView.setImageResource(statuses.get(p).pic_urls.get(position));
-//                    photoView.startAnimation(in);
-////                    mParent.setVisibility(View.VISIBLE);
-//                    photoView.animaFrom(mInfo);
-                }
-            });
+                holer.grid2.setTag(position);
+                holer.grid2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        MyLog.e(position + "   " + view.getTag());
+                        //int p= (int) view.getTag();
+                        Intent intent = new Intent(context, ImageActivity.class);
+                        intent.putStringArrayListExtra("image", status.pic_urls);
+                        intent.putExtra("positon", position);
+                        context.startActivity(intent);
+                    }
+                });
+            } else {
+
+                holer.gridView.setVisibility(View.VISIBLE);
+                MyGridviewAdapter adapter = new MyGridviewAdapter(status.pic_urls, context, holer.gridView);
+                holer.gridView.setAdapter(adapter);
+                holer.gridView.setOnTouchInvalidPositionListener(new MyGridView.OnTouchInvalidPositionListener() {
+                    @Override
+                    public boolean onTouchInvalidPosition(int motionEvent) {
+                        MyLog.e(motionEvent + "");
+                        return false;
+                    }
+                });
+
+                holer.gridView.setTag(position);
+                holer.gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        MyLog.e(position + "   " + view.getTag());
+                        //int p= (int) view.getTag();
+                        Intent intent = new Intent(context, ImageActivity.class);
+                        intent.putStringArrayListExtra("image", status.pic_urls);
+                        intent.putExtra("positon", position);
+                        context.startActivity(intent);
+                    }
+                });
+            }
         }else {
             holer.gridView.setVisibility(View.GONE);
         }
@@ -238,8 +277,8 @@ public class WeiboAdapter extends BaseAdapter{
         TweetTextView text, frome_text;
         TextView username, time, sharecount, commentcount;
         LinearLayout frome_status, item_list, share_layout, comment_layout;
-        ImageView likeImage, userhead;
-        MyGridView gridView, frome_grid;
+        ImageView likeImage, userhead, grid1;
+        MyGridView gridView, frome_grid, grid2;
         TextView from;
 
     }

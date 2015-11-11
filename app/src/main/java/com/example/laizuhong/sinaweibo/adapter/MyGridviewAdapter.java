@@ -67,34 +67,13 @@ public class MyGridviewAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
 
         String url = pic.get(position).replace("thumbnail", "bmiddle");
-        int count = pic.size();
-        if (count == 1) {
-            gridView.setNumColumns(1);
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_gridview1, null);
-            PhotoView p = (PhotoView) convertView.findViewById(R.id.image);
-            ImageLoader.getInstance().displayImage(url, p, options);
-            p.disenable();
-        } else if (count == 4 || count == 2) {
-            gridView.setNumColumns(2);
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_gridview1, null);
-            PhotoView p = (PhotoView) convertView.findViewById(R.id.image);
-            ImageLoader.getInstance().displayImage(url, p, options);
-            p.disenable();
-        } else {
-            gridView.setNumColumns(3);
-            convertView = LayoutInflater.from(context).inflate(R.layout.item_gridview, null);
-            final PhotoView p = (PhotoView) convertView.findViewById(R.id.image);
+        convertView = LayoutInflater.from(context).inflate(R.layout.item_gridview, null);
+        PhotoView p = (PhotoView) convertView.findViewById(R.id.image);
+        if (p.getTag() == null || !p.getTag().equals(url)) {
+            p.setTag(url);
             ImageLoader.getInstance().displayImage(url, p, options);
             p.disenable();
         }
-        //PhotoView p = new PhotoView(context);
-
-//        p.setLayoutParams(new AbsListView.LayoutParams((int) (context.getResources().getDisplayMetrics().density * 100), (int) (context.getResources().getDisplayMetrics().density * 100)));
-//        p.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//        ImageLoader.getInstance().displayImage(pic.get(position), p, options);
-//        p.setImageResource(imgs[position]);
-        // 把PhotoView当普通的控件把触摸功能关掉
-
         return convertView;
     }
 

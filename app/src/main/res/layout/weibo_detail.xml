@@ -89,7 +89,8 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:focusable="false"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:textSize="16sp" />
 
             <com.example.laizuhong.sinaweibo.util.MyGridView
                 android:id="@+id/mygridview"
@@ -126,7 +127,8 @@
                 <com.example.laizuhong.sinaweibo.util.TweetTextView
                     android:id="@+id/frome_text"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp" />
 
                 <com.example.laizuhong.sinaweibo.util.MyGridView
 

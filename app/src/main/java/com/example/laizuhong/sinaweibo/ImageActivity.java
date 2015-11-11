@@ -10,8 +10,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bm.library.PhotoView;
+import com.example.laizuhong.sinaweibo.util.ProgressBarCircularIndetermininate;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 
 import java.util.List;
 
@@ -24,6 +27,7 @@ public class ImageActivity extends AppCompatActivity {
     List<String> imgsId;
     int position;
     TextView number, totel;
+    ProgressBarCircularIndetermininate pro;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +38,7 @@ public class ImageActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.pager);
         number = (TextView) findViewById(R.id.number);
         totel = (TextView) findViewById(R.id.totle);
+        pro = (ProgressBarCircularIndetermininate) findViewById(R.id.pro);
         totel.setText("/" + imgsId.size());
         viewPager.setPageMargin((int) (getResources().getDisplayMetrics().density * 15));
         viewPager.setAdapter(new PagerAdapter() {
@@ -49,16 +54,17 @@ public class ImageActivity extends AppCompatActivity {
 
             @Override
             public Object instantiateItem(ViewGroup container, int position) {
+
                 PhotoView view = new PhotoView(ImageActivity.this);
                 view.enable();
 //                view.setImageResource(imgsId.get(position));
                 String url = imgsId.get(position).replace("thumbnail", "large");
                 view.setTag(url);
 //                ImageLoader.getInstance().displayImage(imgsId.get(position), view, MyApp.options);
-                com.nostra13.universalimageloader.core.ImageLoader.getInstance().loadImage(url, new ImageLoadingListener() {
+                ImageLoader.getInstance().displayImage(url, view, MyApp.options, new ImageLoadingListener() {
                     @Override
                     public void onLoadingStarted(String s, View view) {
-
+                        pro.setVisibility(View.VISIBLE);
                     }
 
                     @Override
@@ -69,7 +75,8 @@ public class ImageActivity extends AppCompatActivity {
 
                     @Override
                     public void onLoadingComplete(String s, View view, Bitmap bitmap) {
-                        PhotoView photoView = (PhotoView) viewPager.findViewWithTag(s);
+                        pro.setVisibility(View.GONE);
+                        PhotoView photoView = (PhotoView) view;
 //                        ViewPager.LayoutParams params = (ViewPager.LayoutParams) photoView.getLayoutParams();
 //                        if (bitmap.getHeight() > bitmap.getWidth()) {
 //                            params.height = ViewPager.LayoutParams.MATCH_PARENT;
@@ -82,6 +89,11 @@ public class ImageActivity extends AppCompatActivity {
 
                     @Override
                     public void onLoadingCancelled(String s, View view) {
+
+                    }
+                }, new ImageLoadingProgressListener() {
+                    @Override
+                    public void onProgressUpdate(String s, View view, int i, int i1) {
 
                     }
                 });

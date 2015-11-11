@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.laizuhong.sinaweibo.MyApp;
 import com.example.laizuhong.sinaweibo.R;
 import com.example.laizuhong.sinaweibo.util.CatnutUtils;
 import com.example.laizuhong.sinaweibo.util.DateUtil;
@@ -17,7 +18,10 @@ import com.example.laizuhong.sinaweibo.util.TweetImageSpan;
 import com.example.laizuhong.sinaweibo.util.TweetTextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 import com.sina.weibo.sdk.openapi.models.Comment;
 
 import java.util.List;
@@ -79,7 +83,37 @@ public class CommentAdapter extends BaseAdapter {
         MyLog.e(position + "");
         Comment comment = comments.get(position);
         holer.name.setText(comment.user.screen_name);
-        ImageLoader.getInstance().displayImage(comment.user.profile_image_url, holer.head, options);
+        holer.head.setTag(comment.user.profile_image_url);
+        ImageLoader.getInstance().displayImage(comment.user.profile_image_url, holer.head, MyApp.options, new ImageLoadingListener() {
+            @Override
+            public void onLoadingStarted(String s, View view) {
+
+                ImageView imageView = (ImageView) view;
+                imageView.setImageResource(R.drawable.ic_logo);
+            }
+
+            @Override
+            public void onLoadingFailed(String s, View view, FailReason failReason) {
+
+            }
+
+            @Override
+            public void onLoadingComplete(String s, View view, Bitmap bitmap) {
+                ImageView imageView = (ImageView) view;
+                imageView.setImageBitmap(bitmap);
+            }
+
+            @Override
+            public void onLoadingCancelled(String s, View view) {
+
+            }
+        }, new ImageLoadingProgressListener() {
+            @Override
+            public void onProgressUpdate(String s, View view, int i, int i1) {
+
+            }
+        });
+        //ImageLoader.getInstance().displayImage(comment.user.profile_image_url, holer.head, options);
         holer.time.setText(DateUtil.GmtToDatastring(comment.created_at).substring(5, 16));
         holer.text.setText(comment.text);
         CatnutUtils.vividTweet(holer.text, tweetImageSpan);

@@ -68,4 +68,18 @@ public class FriendsAPI extends AbsOpenAPI {
         params.put("page", page);
         requestAsync("https://api.weibo.com/2/statuses/user_timeline.json", params, HTTPMETHOD_GET, listener);
     }
+
+    /*
+   *获取话题下的微博
+   */
+    public void getTopicWeibo(String topic, int count, int page, RequestListener listener) {
+        WeiboParameters params = new WeiboParameters(mAppKey);
+        params.put("trend", topic);
+        params.put("count", count);
+        params.put("page", page);
+        requestAsync("https://api.weibo.com/2/trends/statuses.json", params, HTTPMETHOD_GET, listener);
+    }
+
+
+
 }

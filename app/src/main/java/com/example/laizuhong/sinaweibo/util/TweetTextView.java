@@ -20,7 +20,8 @@ import java.util.regex.Pattern;
 public class TweetTextView extends TextView {
 
     public static final String TOPIC_SCHEME = "http://huati.weibo.com/k/";
-    public static final String MENTION_SCHEME = "org.catnut://profiles/";
+    public static final String MENTION_SCHEME = "erciyuan.mention://";
+    public static final String WEB_SCHEME = "erciyuan.http://";
     /**
      * 微博中 @xx 正则
      */

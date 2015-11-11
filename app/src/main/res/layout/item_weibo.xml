@@ -144,7 +144,14 @@
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
                     android:textColor="@color/black"
-                    android:textSize="15sp" />
+                    android:textSize="16sp" />
+
+
+                <ImageView
+                    android:id="@+id/grid1"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:visibility="gone" />
 
 
                 <com.example.laizuhong.sinaweibo.util.MyGridView
@@ -153,6 +160,17 @@
                     android:layout_height="wrap_content"
                     android:horizontalSpacing="5dp"
                     android:numColumns="3"
+                    android:verticalSpacing="5dp"
+                    android:visibility="gone">
+
+                </com.example.laizuhong.sinaweibo.util.MyGridView>
+
+                <com.example.laizuhong.sinaweibo.util.MyGridView
+                    android:id="@+id/grid2"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:horizontalSpacing="5dp"
+                    android:numColumns="2"
                     android:verticalSpacing="5dp"
                     android:visibility="gone">
 
@@ -179,7 +197,7 @@
                     android:id="@+id/frome_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="15sp" />
+                    android:textSize="16sp" />
 
 
                 <com.example.laizuhong.sinaweibo.util.MyGridView
