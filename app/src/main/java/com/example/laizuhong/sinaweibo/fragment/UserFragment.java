@@ -103,6 +103,6 @@ public class UserFragment extends Fragment {
         location.setText(user.location);
         desc.setText(user.description);
 //        desc.setText(user.le);
-        create.setText(DateUtil.GmtToDatastring(user.created_at).substring(0, 16));
+        create.setText(DateUtil.GmtToDatastring(user.created_at).substring(0, 10));
     }
 }

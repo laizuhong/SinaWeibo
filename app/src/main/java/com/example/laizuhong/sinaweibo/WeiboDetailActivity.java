@@ -1,34 +1,25 @@
 package com.example.laizuhong.sinaweibo;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.laizuhong.sinaweibo.adapter.CommentAdapter;
 import com.example.laizuhong.sinaweibo.adapter.MyGridviewAdapter;
 import com.example.laizuhong.sinaweibo.config.AccessTokenKeeper;
-import com.example.laizuhong.sinaweibo.util.CatnutUtils;
-import com.example.laizuhong.sinaweibo.util.DateUtil;
 import com.example.laizuhong.sinaweibo.util.DisplayUtil;
-import com.example.laizuhong.sinaweibo.util.MyGridView;
 import com.example.laizuhong.sinaweibo.util.MyLog;
 import com.example.laizuhong.sinaweibo.util.TweetImageSpan;
-import com.example.laizuhong.sinaweibo.util.TweetTextView;
+import com.example.laizuhong.sinaweibo.util.WeiboDetailHeader;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.exception.WeiboException;
 import com.sina.weibo.sdk.net.RequestListener;
@@ -41,6 +32,8 @@ import com.sina.weibo.sdk.utils.LogUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrHandler;
@@ -52,30 +45,42 @@ import in.srain.cube.views.ptr.header.MaterialHeader;
 public class WeiboDetailActivity extends BaseActivity implements View.OnClickListener, AbsListView.OnScrollListener {
 
     Status status;
-    TweetTextView text, frome_text;
-    TextView name, time, frome, frome_share_count, frome_comment_count, share_count, comment_count;
-    ImageView head;
-    LinearLayout share, commit, like, frome_share_layout, frome_comment_layout;
-    CardView frome_status_layout;
-    MyGridView gridView, frome_grid;
     DisplayImageOptions options;
     MyGridviewAdapter adapter;
     TweetImageSpan tweetImageSpan;
-    PtrFrameLayout ptrFrameLayout;
-    FrameLayout frameLayout;
     CommentsAPI commentsAPI;
     Oauth2AccessToken oauth2AccessToken;
-    View headview;
-    ListView listView;
     int page = 0;
     CommentAdapter commentAdapter;
     List<Comment> commentlist;
     boolean fresh = false;
+    WeiboDetailHeader detailHeader;
+    @Bind(R.id.listview)
+    ListView listView;
+    @Bind(R.id.store_house_ptr_frame)
+    PtrFrameLayout storeHousePtrFrame;
+    @Bind(R.id.center)
+    RelativeLayout center;
+    @Bind(R.id.retweetcount)
+    TextView retweetcount;
+    @Bind(R.id.retweet)
+    LinearLayout retweet;
+    @Bind(R.id.commentcount)
+    TextView commentcount;
+    @Bind(R.id.comment)
+    LinearLayout comment;
+    @Bind(R.id.likeimage)
+    ImageView likeimage;
+    @Bind(R.id.likecount)
+    TextView likecount;
+    @Bind(R.id.like)
+    LinearLayout like;
+    @Bind(R.id.fun_layout)
+    LinearLayout funLayout;
     private long weibo_id;
     private View mProgressBar;
     private TextView mHintView;
     private View footview, rootView;
-
     /**
      * 微博 OpenAPI 回调接口。
      */
@@ -108,6 +113,7 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weibo_detail);
+        ButterKnife.bind(this);
         status = (Status) getIntent().getSerializableExtra("weibo");
         MyLog.e(status.toString());
         init();
@@ -116,68 +122,41 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
 
     private void init() {
         getSupportActionBar().setTitle("正文");
-        weibo_id = Long.valueOf(status.id);
 
-        headview = LayoutInflater.from(this).inflate(R.layout.weibo_detail, null);
-        name = (TextView) headview.findViewById(R.id.username);
-        name.setOnClickListener(this);
-        time = (TextView) headview.findViewById(R.id.time);
-        frome = (TextView) headview.findViewById(R.id.frome);
-        text = (TweetTextView) headview.findViewById(R.id.text);
-        head = (ImageView) headview.findViewById(R.id.userhead);
-        head.setOnClickListener(this);
-        gridView = (MyGridView) headview.findViewById(R.id.mygridview);
-        share = (LinearLayout) findViewById(R.id.retweet);
-        share.setOnClickListener(this);
-        commit = (LinearLayout) findViewById(R.id.comment);
-        commit.setOnClickListener(this);
-        like = (LinearLayout) findViewById(R.id.like);
+        weibo_id = Long.valueOf(status.id);
+        retweet.setOnClickListener(this);
+        comment.setOnClickListener(this);
         like.setOnClickListener(this);
 
         tweetImageSpan = new TweetImageSpan(this);
+        detailHeader = new WeiboDetailHeader(this);
+        detailHeader.initDate(status, tweetImageSpan);
 
-        frome_text = (TweetTextView) headview.findViewById(R.id.frome_text);
-        frome_status_layout = (CardView) headview.findViewById(R.id.frome_status);
-        frome_grid = (MyGridView) headview.findViewById(R.id.frome_grid);
-        frome_comment_count = (TextView) headview.findViewById(R.id.frome_comment_count);
-        frome_comment_layout = (LinearLayout) headview.findViewById(R.id.frome_comment_layout);
-        frome_share_count = (TextView) headview.findViewById(R.id.frome_share_count);
-        frome_share_layout = (LinearLayout) headview.findViewById(R.id.frome_share_layout);
-        share_count = (TextView) headview.findViewById(R.id.share_count);
-        comment_count = (TextView) headview.findViewById(R.id.comment_count);
-        options = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .displayer(new FadeInBitmapDisplayer(100)) // 展现方式：渐现
-                .considerExifParams(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .build();
 
-        ptrFrameLayout = (PtrFrameLayout) findViewById(R.id.store_house_ptr_frame);
         // header
         final MaterialHeader header = new MaterialHeader(this);
         int[] colors = getResources().getIntArray(R.array.google_colors);
         header.setColorSchemeColors(colors);
         header.setLayoutParams(new PtrFrameLayout.LayoutParams(-1, -2));
         header.setPadding(0, 0, 0, DisplayUtil.dip2px(this, 10));
-        header.setPtrFrameLayout(ptrFrameLayout);
+        header.setPtrFrameLayout(storeHousePtrFrame);
 
-        ptrFrameLayout.setResistance(1.7f);
-        ptrFrameLayout.setRatioOfHeaderHeightToRefresh(1.2f);
-        ptrFrameLayout.setDurationToClose(200);
+        storeHousePtrFrame.setResistance(1.7f);
+        storeHousePtrFrame.setRatioOfHeaderHeightToRefresh(1.2f);
+        storeHousePtrFrame.setDurationToClose(200);
 
-        ptrFrameLayout.setLoadingMinTime(1000);
-        ptrFrameLayout.setDurationToCloseHeader(500);
-        ptrFrameLayout.setHeaderView(header);
-        ptrFrameLayout.addPtrUIHandler(header);
-        ptrFrameLayout.setPtrHandler(new PtrHandler() {
+        storeHousePtrFrame.setLoadingMinTime(1000);
+        storeHousePtrFrame.setDurationToCloseHeader(500);
+        storeHousePtrFrame.setHeaderView(header);
+        storeHousePtrFrame.addPtrUIHandler(header);
+        storeHousePtrFrame.setPtrHandler(new PtrHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
                 frame.postDelayed(new Runnable() {
                     @Override
                     public void run() {
 
-                        ptrFrameLayout.refreshComplete();
+                        storeHousePtrFrame.refreshComplete();
                     }
                 }, 0);
             }
@@ -188,10 +167,6 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
             }
         });
 
-
-        listView = (ListView) findViewById(R.id.layout);
-
-
         footview = LayoutInflater.from(this)
                 .inflate(R.layout.xlistview_footer, null);
         mProgressBar = footview.findViewById(R.id.xlistview_footer_progressbar);
@@ -201,89 +176,19 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
         commentlist = new ArrayList<>();
         commentAdapter = new CommentAdapter(commentlist, this);
         listView.addFooterView(footview);
-        listView.addHeaderView(headview);
+        listView.addHeaderView(detailHeader, null, false);
         listView.setAdapter(commentAdapter);
         listView.setOnScrollListener(this);
 
 
 
-        initDate();
         // 获取当前已保存过的 Token
         oauth2AccessToken = AccessTokenKeeper.readAccessToken(this);
         // 获取微博评论信息接口
         commentsAPI = new CommentsAPI(this, Constants.APP_KEY, oauth2AccessToken);
 
-        //commentsAPI.show(weibo_id, 0, 0, 10, page, CommentsAPI.AUTHOR_FILTER_ALL, mListener);
     }
 
-
-    private void initDate() {
-        name.setText(status.user.screen_name);
-        time.setText(DateUtil.GmtToDatastring(status.created_at).substring(5, 16));
-        frome.setText(Html.fromHtml(status.source).toString());
-        text.setText(status.text);
-        CatnutUtils.vividTweet(text, tweetImageSpan);
-        //StringUtil.setTextview(text, this);
-        ImageLoader.getInstance().displayImage(status.user.profile_image_url, head, options);
-        if (status.pic_urls != null) {
-            gridView.setVisibility(View.VISIBLE);
-            adapter = new MyGridviewAdapter(status.pic_urls, this, gridView);
-            gridView.setAdapter(adapter);
-            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent intent = new Intent(WeiboDetailActivity.this, ImageActivity.class);
-                    intent.putStringArrayListExtra("image", status.pic_urls);
-                    intent.putExtra("positon", position);
-                    startActivity(intent);
-                }
-            });
-        } else {
-            gridView.setVisibility(View.GONE);
-        }
-        share_count.setText(status.reposts_count + " 转发");
-        comment_count.setText(status.comments_count + " 评论");
-        if (status.retweeted_status == null) {
-            frome_status_layout.setVisibility(View.GONE);
-        } else {
-            frome_status_layout.setVisibility(View.VISIBLE);
-            frome_text.setText(status.retweeted_status.text);
-            CatnutUtils.vividTweet(frome_text, tweetImageSpan);
-            //StringUtil.setTextview(frome_text, this);
-            if (status.retweeted_status.pic_urls == null) {
-                frome_grid.setVisibility(View.GONE);
-            } else {
-                frome_grid.setVisibility(View.VISIBLE);
-                adapter = new MyGridviewAdapter(status.retweeted_status.pic_urls, this, frome_grid);
-                frome_grid.setAdapter(adapter);
-                frome_grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Intent intent = new Intent(WeiboDetailActivity.this, ImageActivity.class);
-                        intent.putStringArrayListExtra("image", status.pic_urls);
-                        intent.putExtra("positon", position);
-                        startActivity(intent);
-                    }
-                });
-            }
-            if (status.retweeted_status.reposts_count == 0) {
-                frome_share_layout.setVisibility(View.GONE);
-            } else {
-                frome_share_layout.setVisibility(View.VISIBLE);
-                frome_share_count.setText(status.retweeted_status.reposts_count + "");
-            }
-            if (status.retweeted_status.comments_count == 0) {
-                frome_comment_layout.setVisibility(View.GONE);
-            } else {
-                frome_comment_layout.setVisibility(View.VISIBLE);
-                frome_comment_count.setText(status.retweeted_status.comments_count + "");
-            }
-            frome_status_layout.setOnClickListener(this);
-        }
-
-
-
-    }
 
     @Override
     public void onClick(View v) {

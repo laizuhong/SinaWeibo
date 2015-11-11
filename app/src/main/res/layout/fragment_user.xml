@@ -50,30 +50,6 @@
             android:text="" />
     </LinearLayout>
 
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@color/gray_black" />
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingLeft="10dp">
-
-
-        <TextView
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:text="简介" />
-
-        <TextView
-            android:id="@+id/desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="" />
-    </LinearLayout>
 
     <ImageView
         android:layout_width="fill_parent"
@@ -100,17 +76,15 @@
             android:text="" />
     </LinearLayout>
 
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@color/gray_black" />
+
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingLeft="10dp">
+        android:paddingLeft="10dp"
+        android:visibility="gone">
 
 
         <TextView
@@ -156,4 +130,28 @@
         android:background="@color/gray_black" />
 
 
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp">
+
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:text="简介" />
+
+        <TextView
+            android:id="@+id/desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray_black" />
 </LinearLayout>

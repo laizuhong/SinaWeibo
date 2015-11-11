@@ -2,6 +2,8 @@ package com.example.laizuhong.sinaweibo;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -10,35 +12,80 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bm.library.PhotoView;
+import com.example.laizuhong.sinaweibo.util.FileUtil;
+import com.example.laizuhong.sinaweibo.util.MD5;
+import com.example.laizuhong.sinaweibo.util.MyLog;
+import com.example.laizuhong.sinaweibo.util.MyToast;
 import com.example.laizuhong.sinaweibo.util.ProgressBarCircularIndetermininate;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by laizuhong on 2015/11/9.
  */
 public class ImageActivity extends AppCompatActivity {
 
+
+    @Bind(R.id.pager)
     ViewPager viewPager;
-    List<String> imgsId;
-    int position;
-    TextView number, totel;
+    @Bind(R.id.number)
+    TextView number;
+    @Bind(R.id.totle)
+    TextView totel;
+    @Bind(R.id.pro)
     ProgressBarCircularIndetermininate pro;
+    List<String> imgsId;
+    Bitmap bitmap;
+    int position;
+
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 0) {
+                Bitmap bitmap = (Bitmap) msg.obj;
+                saveBitmap(bitmap);
+                MyToast.makeText("保存成功");
+            }
+        }
+    };
+
+
+    @OnClick(R.id.save)
+    void save() {
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                bitmap = ImageLoader.getInstance().loadImageSync(imgsId.get(position).replace("thumbnail", "large"));
+                Message message = new Message();
+                message.obj = bitmap;
+                handler.sendMessage(message);
+            }
+        }.start();
+
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image);
+        ButterKnife.bind(this);
         imgsId = getIntent().getStringArrayListExtra("image");
         position = getIntent().getIntExtra("positon", 0);
-        viewPager = (ViewPager) findViewById(R.id.pager);
-        number = (TextView) findViewById(R.id.number);
-        totel = (TextView) findViewById(R.id.totle);
-        pro = (ProgressBarCircularIndetermininate) findViewById(R.id.pro);
         totel.setText("/" + imgsId.size());
         viewPager.setPageMargin((int) (getResources().getDisplayMetrics().density * 15));
         viewPager.setAdapter(new PagerAdapter() {
@@ -134,4 +181,28 @@ public class ImageActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * 保存方法
+     */
+    public void saveBitmap(Bitmap bitmap) {
+        MyLog.e("savebitmap", "保存图片");
+        File f = new File(FileUtil.picture + MD5.GetMD5Code(imgsId.get(position)) + ".png");
+        if (f.exists()) {
+            f.delete();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(f);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+            out.flush();
+            out.close();
+            MyLog.i("savebitmap", "已经保存");
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
 }

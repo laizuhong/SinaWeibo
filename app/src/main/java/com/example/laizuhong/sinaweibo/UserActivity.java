@@ -1,5 +1,6 @@
 package com.example.laizuhong.sinaweibo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
@@ -36,7 +37,11 @@ public class UserActivity extends BaseActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         MyLog.e(getIntent().getData() + "");
         setContentView(R.layout.activity_user);
-        name = getIntent().getData().toString().replace("erciyuan.mention://", "");
+        Intent intent = getIntent();
+        name = intent.getStringExtra("name");
+        if (name == null) {
+            name = getIntent().getData().toString().replace("erciyuan.mention://", "");
+        }
         getSupportActionBar().setTitle(name);
         init();
     }

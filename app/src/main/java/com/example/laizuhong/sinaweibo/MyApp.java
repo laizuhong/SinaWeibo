@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.StrictMode;
 
 import com.example.laizuhong.sinaweibo.util.CrashHandler;
+import com.example.laizuhong.sinaweibo.util.FileUtil;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -54,6 +55,7 @@ public class MyApp extends Application {
 
         super.onCreate();
 
+        FileUtil.create();
         initImageLoader(getApplicationContext());
         options = new DisplayImageOptions.Builder()
                 .cacheInMemory(true)
