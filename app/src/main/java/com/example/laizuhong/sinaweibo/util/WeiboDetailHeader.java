@@ -100,9 +100,10 @@ public class WeiboDetailHeader extends LinearLayout implements View.OnClickListe
     private void initView(Context context) {
         LinearLayout view = (LinearLayout) LayoutInflater.from(context).inflate(R.layout.weibo_detail, null);
         ButterKnife.bind(this, view);
-        addView(view);
-        view.setLayoutParams(new LinearLayout.LayoutParams(
-                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+
+        addView(view, lp);
     }
 
     public void initDate(Status s, TweetImageSpan tweetImageSpan) {
@@ -169,6 +170,7 @@ public class WeiboDetailHeader extends LinearLayout implements View.OnClickListe
             }
             fromeShareLayout.setOnClickListener(this);
         }
+
     }
 
     @Override

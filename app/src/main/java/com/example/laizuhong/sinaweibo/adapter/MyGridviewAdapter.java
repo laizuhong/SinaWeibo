@@ -10,6 +10,8 @@ import android.widget.GridView;
 
 import com.bm.library.PhotoView;
 import com.example.laizuhong.sinaweibo.R;
+import com.example.laizuhong.sinaweibo.util.MyLog;
+import com.example.laizuhong.sinaweibo.util.Utils;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
@@ -66,7 +68,12 @@ public class MyGridviewAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 
-        String url = pic.get(position).replace("thumbnail", "bmiddle");
+
+        String url = Utils.getUrl(pic.get(position));
+        url = url.replace("thumbnail", "bmiddle");
+
+
+        MyLog.e("getview url", url + "");
         convertView = LayoutInflater.from(context).inflate(R.layout.item_gridview, null);
         PhotoView p = (PhotoView) convertView.findViewById(R.id.image);
         if (p.getTag() == null || !p.getTag().equals(url)) {

@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.laizuhong.sinaweibo.config.AccessTokenKeeper;
+import com.example.laizuhong.sinaweibo.fragment.FavoritFragment;
 import com.example.laizuhong.sinaweibo.fragment.FriendsFragment;
 import com.example.laizuhong.sinaweibo.fragment.SettingFragment;
 import com.example.laizuhong.sinaweibo.fragment.UserWeiboFragment;
@@ -53,6 +54,7 @@ public class Main extends AppCompatActivity {
     SettingFragment settingFragment;
     UserWeiboFragment userWeiboFragment;
     FriendsFragment friendsFragment;
+    FavoritFragment favoritFragment;
     private DrawerLayout mDrawerLayout = null;
     /**
      * 当前 Token 信息
@@ -111,7 +113,7 @@ public class Main extends AppCompatActivity {
 
 
         mAccessToken = AccessTokenKeeper.readAccessToken(this);
-        mUsersAPI = new UsersAPI(this, com.example.laizuhong.sinaweibo.config.Constants.APP_KEY, mAccessToken);
+        mUsersAPI = new UsersAPI(this, Constants.APP_KEY, mAccessToken);
         long uid = Long.parseLong(mAccessToken.getUid());
         mUsersAPI.show(uid, mListener);
         listView = (ListView) findViewById(R.id.left_drawer);
@@ -131,7 +133,8 @@ public class Main extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                intent.setClass(main, SettingActivity.class);
+                intent.setClass(main, UserActivity.class);
+                intent.putExtra("name", user.screen_name);
                 mDrawerLayout.closeDrawer(Gravity.LEFT);
                 startActivity(intent);
             }
@@ -247,13 +250,13 @@ public class Main extends AppCompatActivity {
                 }
                 break;
             case 3:
-//                actionBar.setTitle("我的粉丝");
-//                if (weiboFragment==null){
-//                    weiboFragment=new WeiboFragment();
-//                    transaction.replace(R.id.content_frame, weiboFragment);
-//                }else {
-//                    transaction.show(weiboFragment);
-//                }
+                actionBar.setTitle("我的收藏");
+                if (favoritFragment == null) {
+                    favoritFragment = new FavoritFragment();
+                    transaction.replace(R.id.content_frame, favoritFragment);
+                } else {
+                    transaction.show(favoritFragment);
+                }
                 break;
             case 4:
                 actionBar.setTitle("设置");
@@ -281,6 +284,9 @@ public class Main extends AppCompatActivity {
         }
         if (settingFragment != null) {
             transaction.hide(settingFragment);
+        }
+        if (favoritFragment != null) {
+            transaction.hide(favoritFragment);
         }
     }
 }

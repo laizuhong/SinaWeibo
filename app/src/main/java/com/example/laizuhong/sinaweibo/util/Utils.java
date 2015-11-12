@@ -14,6 +14,9 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,33 +108,33 @@ public class Utils {
         editor.putString("log_text", text);
         editor.commit();
     }
-    
-    
+
+
     /**
-	 * Convert Dp to Pixel
-	 */
-	public static int dpToPx(float dp, Resources resources) {
-		float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+     * Convert Dp to Pixel
+     */
+    public static int dpToPx(float dp, Resources resources) {
+        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 resources.getDisplayMetrics());
         return (int) px;
     }
 
-	public static int getRelativeTop(View myView) {
-		// if (myView.getParent() == myView.getRootView())
-		if (myView.getId() == android.R.id.content)
-			return myView.getTop();
-		else
-			return myView.getTop() + getRelativeTop((View) myView.getParent());
-	}
+    public static int getRelativeTop(View myView) {
+        // if (myView.getParent() == myView.getRootView())
+        if (myView.getId() == android.R.id.content)
+            return myView.getTop();
+        else
+            return myView.getTop() + getRelativeTop((View) myView.getParent());
+    }
 
-	public static int getRelativeLeft(View myView) {
-		// if (myView.getParent() == myView.getRootView())
-		if (myView.getId() == android.R.id.content)
-			return myView.getLeft();
-		else
-			return myView.getLeft()
-					+ getRelativeLeft((View) myView.getParent());
-	}
+    public static int getRelativeLeft(View myView) {
+        // if (myView.getParent() == myView.getRootView())
+        if (myView.getId() == android.R.id.content)
+            return myView.getLeft();
+        else
+            return myView.getLeft()
+                    + getRelativeLeft((View) myView.getParent());
+    }
 
     /**
      * 计算GridView的高度
@@ -171,4 +174,25 @@ public class Utils {
     }
 
 
+    public static String getUrl(String url) {
+        MyLog.e("geturl", url);
+        String pic = null;
+        JSONObject object;
+        try {
+            if (url.contains("bmiddle_pic")) {
+                object = new JSONObject(url);
+                pic = object.getString("bmiddle_pic");
+            } else if (url.contains("thumbnail_pic")) {
+                object = new JSONObject(url);
+                pic = object.getString("thumbnail_pic");
+            } else {
+                pic = url;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return pic;
+
+    }
 }

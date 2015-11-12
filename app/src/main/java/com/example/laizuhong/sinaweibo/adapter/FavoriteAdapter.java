@@ -26,7 +26,9 @@ import com.example.laizuhong.sinaweibo.util.MyGridView;
 import com.example.laizuhong.sinaweibo.util.MyLog;
 import com.example.laizuhong.sinaweibo.util.TweetImageSpan;
 import com.example.laizuhong.sinaweibo.util.TweetTextView;
+import com.example.laizuhong.sinaweibo.util.Utils;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.sina.weibo.sdk.openapi.models.Favorite;
 import com.sina.weibo.sdk.openapi.models.Status;
 
 import java.util.ArrayList;
@@ -36,12 +38,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
- * Created by laizuhong on 2015/9/16.
+ * Created by laizuhong on 2015/11/12.
  */
-public class WeiboAdapter extends BaseAdapter {
+public class FavoriteAdapter extends BaseAdapter {
 
-
-    List<Status> statuses;
+    List<Favorite> statuses;
     Context context;
     int MODE = 0;
     TweetImageSpan tweetImageSpan;
@@ -50,7 +51,7 @@ public class WeiboAdapter extends BaseAdapter {
     AlphaAnimation in = new AlphaAnimation(0, 1);
     AlphaAnimation out = new AlphaAnimation(1, 0);
 
-    public WeiboAdapter(Context context, List<Status> statuses, int mode) {
+    public FavoriteAdapter(Context context, List<Favorite> statuses, int mode) {
         this.context = context;
         this.statuses = statuses;
         this.MODE = mode;
@@ -86,7 +87,7 @@ public class WeiboAdapter extends BaseAdapter {
         } else {
             holer = (ViewHolder) convertView.getTag();
         }
-        final Status status = statuses.get(position);
+        final Status status = statuses.get(position).status;
         MyLog.e(status.bmiddle_pic + "   " + status.thumbnail_pic + "   " + status.original_pic + "   " + status.user.screen_name);
         holer.username.setText(status.user.screen_name);
 
@@ -105,7 +106,7 @@ public class WeiboAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 int p = (int) v.getTag();
-                String name = statuses.get(p).user.screen_name;
+                String name = statuses.get(p).status.user.screen_name;
                 Intent intent = new Intent(context, UserActivity.class);
                 intent.putExtra("name", name);
                 context.startActivity(intent);
@@ -118,7 +119,8 @@ public class WeiboAdapter extends BaseAdapter {
         if (status.pic_urls != null) {
             if (status.pic_urls.size() == 1) {
                 holer.grid1.setVisibility(View.VISIBLE);
-                ImageLoader.getInstance().displayImage(status.pic_urls.get(0), holer.grid1, MyApp.options);
+                MyLog.e("pic_url.size==1", status.pic_urls.get(0));
+                ImageLoader.getInstance().displayImage(Utils.getUrl(status.pic_urls.get(0)), holer.grid1, MyApp.options);
                 holer.grid1.setTag(status.pic_urls);
                 holer.grid1.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -193,7 +195,7 @@ public class WeiboAdapter extends BaseAdapter {
                 public void onClick(View v) {
                     int p = (int) v.getTag();
                     Intent intent = new Intent(context, WeiboDetailActivity.class);
-                    intent.putExtra("weibo", statuses.get(p).retweeted_status);
+                    intent.putExtra("weibo", statuses.get(p).status.retweeted_status);
                     context.startActivity(intent);
                 }
             });
@@ -247,7 +249,7 @@ public class WeiboAdapter extends BaseAdapter {
             public void onClick(View v) {
                 int p = (int) v.getTag();
                 Intent intent = new Intent(context, WeiboDetailActivity.class);
-                intent.putExtra("weibo", statuses.get(p));
+                intent.putExtra("weibo", statuses.get(p).status);
                 context.startActivity(intent);
             }
         });

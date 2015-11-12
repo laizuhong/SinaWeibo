@@ -25,6 +25,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.exception.WeiboException;
 import com.sina.weibo.sdk.net.RequestListener;
+import com.sina.weibo.sdk.openapi.CommentsAPI;
 import com.sina.weibo.sdk.openapi.StatusesAPI;
 import com.sina.weibo.sdk.openapi.models.ErrorInfo;
 import com.sina.weibo.sdk.openapi.models.Status;
@@ -50,6 +51,7 @@ public class SendWeiboActivity extends BaseActivity implements View.OnClickListe
     /** 用于获取微博信息流等操作的API */
     private StatusesAPI mStatusesAPI;
     private FriendsAPI friendsAPI;
+    private CommentsAPI commentsAPI;
     /**
      * 微博 OpenAPI 回调接口。
      */
@@ -108,6 +110,7 @@ public class SendWeiboActivity extends BaseActivity implements View.OnClickListe
         // 对statusAPI实例化
         mStatusesAPI = new StatusesAPI(this, Constants.APP_KEY, mAccessToken);
         friendsAPI = new FriendsAPI(this, Constants.APP_KEY, mAccessToken);
+        commentsAPI = new CommentsAPI(this, Constants.APP_KEY, mAccessToken);
 
         share = (CardView) findViewById(R.id.share_layout);
 
@@ -147,7 +150,8 @@ public class SendWeiboActivity extends BaseActivity implements View.OnClickListe
                 if (text == null) {
                     MyToast.makeText("请输入评论内容");
                 }
-                friendsAPI.comment(status.id, text, 0, mListener);
+                long id = Long.valueOf(status.id);
+                commentsAPI.create(text, id, false, mListener);
                 return true;
             }
 

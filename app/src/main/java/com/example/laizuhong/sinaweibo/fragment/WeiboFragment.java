@@ -34,8 +34,6 @@ import com.sina.weibo.sdk.utils.LogUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrHandler;
@@ -47,11 +45,8 @@ import in.srain.cube.views.ptr.header.MaterialHeader;
 public class WeiboFragment extends Fragment implements AbsListView.OnScrollListener{
 
     Context context;
-    @Bind(R.id.store_house_ptr_frame)
     PtrFrameLayout ptrFrameLayout;
-    @Bind(R.id.allweibo)
     ListView listView;
-    @Bind(R.id.loading)
     LinearLayout loading;
     int MODE=1;  //1为刷新，2为加载更多
     int page=1;
@@ -117,23 +112,23 @@ public class WeiboFragment extends Fragment implements AbsListView.OnScrollListe
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(rootView==null){
+        //if(rootView==null){
             rootView=inflater.inflate(R.layout.fragment_weibo, null);
-        }
+        //}
         //缓存的rootView需要判断是否已经被加过parent， 如果有parent需要从parent删除，要不然会发生这个rootview已经有parent的错误。
-        ViewGroup parent = (ViewGroup) rootView.getParent();
-        if (parent != null) {
-            parent.removeView(rootView);
-        }
+//        ViewGroup parent = (ViewGroup) rootView.getParent();
+//        if (parent != null) {
+//            parent.removeView(rootView);
+//        }
         context=getActivity();
-        ButterKnife.bind(this, rootView);
+//        ButterKnife.bind(this, rootView);
         init(rootView);
         return rootView;
     }
 
     private void init(View v){
         sp = PreferenceManager.getDefaultSharedPreferences(context);
-//        listView= (ListView) v.findViewById(R.id.allweibo);
+        listView = (ListView) v.findViewById(R.id.allweibo);
 
         // 获取当前已保存过的 Token
         mAccessToken = com.example.laizuhong.sinaweibo.config.AccessTokenKeeper.readAccessToken(context);
@@ -146,11 +141,11 @@ public class WeiboFragment extends Fragment implements AbsListView.OnScrollListe
         mHintView = (TextView) footview
                 .findViewById(R.id.xlistview_footer_hint_textview);
 
-//        loading= (LinearLayout) v.findViewById(R.id.loading);
+        loading = (LinearLayout) v.findViewById(R.id.loading);
         loading.setVisibility(View.VISIBLE);
 
 
-//        ptrFrameLayout= (PtrFrameLayout) v.findViewById(R.id.store_house_ptr_frame);
+        ptrFrameLayout = (PtrFrameLayout) v.findViewById(R.id.store_house_ptr_frame);
         ptrFrameLayout.setVisibility(View.GONE);
         // header
         final MaterialHeader header = new MaterialHeader(context);

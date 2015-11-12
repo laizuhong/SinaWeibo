@@ -1,6 +1,7 @@
 package com.example.laizuhong.sinaweibo.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.laizuhong.sinaweibo.MyApp;
 import com.example.laizuhong.sinaweibo.R;
+import com.example.laizuhong.sinaweibo.UserActivity;
 import com.example.laizuhong.sinaweibo.util.CatnutUtils;
 import com.example.laizuhong.sinaweibo.util.DateUtil;
 import com.example.laizuhong.sinaweibo.util.MyLog;
@@ -83,7 +85,7 @@ public class CommentAdapter extends BaseAdapter {
         MyLog.e(position + "");
         Comment comment = comments.get(position);
         holer.name.setText(comment.user.screen_name);
-        holer.head.setTag(comment.user.profile_image_url);
+        holer.head.setTag(position);
         ImageLoader.getInstance().displayImage(comment.user.profile_image_url, holer.head, MyApp.options, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String s, View view) {
@@ -111,6 +113,17 @@ public class CommentAdapter extends BaseAdapter {
             @Override
             public void onProgressUpdate(String s, View view, int i, int i1) {
 
+            }
+        });
+
+        holer.head.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int p = (int) v.getTag();
+                String name = comments.get(p).user.screen_name;
+                Intent intent = new Intent(context, UserActivity.class);
+                intent.putExtra("name", name);
+                context.startActivity(intent);
             }
         });
         //ImageLoader.getInstance().displayImage(comment.user.profile_image_url, holer.head, options);
