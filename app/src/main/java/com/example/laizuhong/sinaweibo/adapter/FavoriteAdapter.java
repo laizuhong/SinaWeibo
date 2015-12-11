@@ -42,7 +42,7 @@ import butterknife.ButterKnife;
  */
 public class FavoriteAdapter extends BaseAdapter {
 
-    List<Favorite> statuses;
+    List<Favorite> favorites;
     Context context;
     int MODE = 0;
     TweetImageSpan tweetImageSpan;
@@ -51,9 +51,9 @@ public class FavoriteAdapter extends BaseAdapter {
     AlphaAnimation in = new AlphaAnimation(0, 1);
     AlphaAnimation out = new AlphaAnimation(1, 0);
 
-    public FavoriteAdapter(Context context, List<Favorite> statuses, int mode) {
+    public FavoriteAdapter(Context context, List<Favorite> favorites, int mode) {
         this.context = context;
-        this.statuses = statuses;
+        this.favorites = favorites;
         this.MODE = mode;
         tweetImageSpan = new TweetImageSpan(context);
         in.setDuration(300);
@@ -63,12 +63,12 @@ public class FavoriteAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return statuses.size();
+        return favorites.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return statuses.get(position);
+        return favorites.get(position);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class FavoriteAdapter extends BaseAdapter {
         } else {
             holer = (ViewHolder) convertView.getTag();
         }
-        final Status status = statuses.get(position).status;
+        final Status status = favorites.get(position).status;
         MyLog.e(status.bmiddle_pic + "   " + status.thumbnail_pic + "   " + status.original_pic + "   " + status.user.screen_name);
         holer.username.setText(status.user.screen_name);
 
@@ -106,7 +106,7 @@ public class FavoriteAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 int p = (int) v.getTag();
-                String name = statuses.get(p).status.user.screen_name;
+                String name = favorites.get(p).status.user.screen_name;
                 Intent intent = new Intent(context, UserActivity.class);
                 intent.putExtra("name", name);
                 context.startActivity(intent);
@@ -195,7 +195,7 @@ public class FavoriteAdapter extends BaseAdapter {
                 public void onClick(View v) {
                     int p = (int) v.getTag();
                     Intent intent = new Intent(context, WeiboDetailActivity.class);
-                    intent.putExtra("weibo", statuses.get(p).status.retweeted_status);
+                    intent.putExtra("weibo", favorites.get(p).status.retweeted_status);
                     context.startActivity(intent);
                 }
             });
@@ -249,7 +249,7 @@ public class FavoriteAdapter extends BaseAdapter {
             public void onClick(View v) {
                 int p = (int) v.getTag();
                 Intent intent = new Intent(context, WeiboDetailActivity.class);
-                intent.putExtra("weibo", statuses.get(p).status);
+                intent.putExtra("weibo", favorites.get(p).status);
                 context.startActivity(intent);
             }
         });

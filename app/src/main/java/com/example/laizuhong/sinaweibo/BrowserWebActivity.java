@@ -1,14 +1,7 @@
 package com.example.laizuhong.sinaweibo;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.view.KeyEvent;
-import android.view.View;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.example.laizuhong.sinaweibo.config.AccessTokenKeeper;
@@ -19,6 +12,7 @@ import com.sina.weibo.sdk.net.RequestListener;
 import com.sina.weibo.sdk.openapi.legacy.ShortUrlAPI;
 import com.sina.weibo.sdk.openapi.models.ErrorInfo;
 import com.sina.weibo.sdk.utils.LogUtil;
+import com.thefinestartist.finestwebview.FinestWebView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,11 +20,10 @@ import org.json.JSONObject;
 /**
  * Created by laizuhong on 2015/11/10.
  */
-public class BrowserWebActivity extends BaseActivity {
+public class BrowserWebActivity extends AppCompatActivity {
     String url;
-    WebView webView;
+
     ShortUrlAPI shortUrlAPI;
-    ActionBar actionBar;
     /**
      * 当前 Token 信息
      */
@@ -50,7 +43,7 @@ public class BrowserWebActivity extends BaseActivity {
                     JSONObject object1 = (JSONObject) object.getJSONArray("urls").get(0);
                     String long_url = object1.getString("url_long");
                     MyLog.e(long_url);
-                    webView.loadUrl(long_url);
+                    loadUrl(long_url);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -75,69 +68,37 @@ public class BrowserWebActivity extends BaseActivity {
         MyLog.e(getIntent().getData() + "");
         setContentView(R.layout.activity_browser);
         url = getIntent().getData().toString().replace("erciyuan.", "");
-        actionBar = getSupportActionBar();
-        init();
+        MyLog.e(url);
+        if (url.contains("http")){
+            // 获取当前已保存过的 Token
+            mAccessToken = AccessTokenKeeper.readAccessToken(this);
+            shortUrlAPI = new ShortUrlAPI(this, Constants.APP_KEY, mAccessToken);
+            shortUrlAPI.expand(new String[]{url}, mListener);
+        }else {
+            MyLog.e("http://huati.weibo.com/k/"+url);
+            loadUrl("http://huati.weibo.com/k/"+url.replace("topic://",""));
+        }
     }
 
-    private void init() {
-        webView = (WebView) findViewById(R.id.web);
-        WebSettings settings = webView.getSettings();
-        settings.setJavaScriptEnabled(true);
-        settings.setBuiltInZoomControls(true);
-        settings.setDisplayZoomControls(false);
-
-        webView.setOnKeyListener(new View.OnKeyListener() {
-
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if ((keyCode == KeyEvent.KEYCODE_BACK) && webView.canGoBack()) {
-                    webView.goBack();
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                //webView.loadUrl(url);
-                return true;
-            }
-
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-            }
-        });
-
-
-        webView.setWebChromeClient(new WebChromeClient() {
-
-            @Override
-            public void onReceivedTitle(WebView view, String title) {
-                super.onReceivedTitle(view, title);
-                actionBar.setTitle(title);
-            }
-
-            @Override
-            public View getVideoLoadingProgressView() {
-                return super.getVideoLoadingProgressView();
-            }
-        });
-
-        // 获取当前已保存过的 Token
-        mAccessToken = AccessTokenKeeper.readAccessToken(this);
-
-        shortUrlAPI = new ShortUrlAPI(this, Constants.APP_KEY, mAccessToken);
-        //shortUrlAPI.expand(new String[]{url}, mListener);
-        //webView.loadUrl("http://music.163.com/#/song?id=36308884&yyfrom=weibo");
+    private void loadUrl(String url){
+        new FinestWebView.Builder(this)
+                .theme(R.style.FinestWebViewTheme)
+                .titleDefault("Bless This Stuff")
+                .statusBarColorRes(R.color.redPrimaryDark)
+                .toolbarColorRes(R.color.redPrimary)
+                .titleColorRes(R.color.finestWhite)
+                .urlColorRes(R.color.redPrimaryLight)
+                .iconDefaultColorRes(R.color.finestWhite)
+                .progressBarColorRes(R.color.finestWhite)
+                .webViewBuiltInZoomControls(true)
+                .webViewDisplayZoomControls(true)
+                .swipeRefreshColorRes(R.color.redPrimaryDark)
+                .menuColorRes(R.color.redPrimaryDark)
+                .menuTextColorRes(R.color.finestWhite)
+                .dividerHeight(0)
+                .gradientDivider(false)
+                .setCustomAnimations(R.anim.activity_open_enter, R.anim.activity_open_exit, R.anim.activity_close_enter, R.anim.activity_close_exit)
+                .show(url);
     }
-
 
 }

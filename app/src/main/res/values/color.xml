@@ -3,7 +3,7 @@
 
     <color name="LightGray">#D3D3D3</color>
     <color name="Grey">#BEBEBE</color>
-    <color name="theme_color">#d01c9bb4</color>
+    <color name="theme_color">#DD3131</color>
     <color name="nocolor">#00000000</color>
     <color name="white">#ffffff</color>
     <!-- 白色 -->
@@ -25,4 +25,9 @@
 
     <color name="lightgreen">#90ee90</color>
     <!-- 亮绿色 -->
+
+
+    <color name="redPrimaryDark">#DD3131</color>
+    <color name="redPrimary">#FF5E5E</color>
+    <color name="redPrimaryLight">#FFC9C9</color>
 </resources>

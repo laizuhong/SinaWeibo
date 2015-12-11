@@ -39,13 +39,12 @@
         android:name="com.example.laizuhong.sinaweibo.MyApp"
         android:allowBackup="true"
         android:icon="@drawable/ic_logo"
-        android:label="SinaWeibo"
+        android:label="@string/app_name"
         android:theme="@style/AppTheme" >
 
 
         <activity
             android:name=".StartActivity"
-            android:label="SinaWeibo"
             android:theme="@style/fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -107,16 +106,22 @@
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="erciyuan.topic" />
+
             </intent-filter>
         </activity>
-        <activity android:name=".BrowserWebActivity">
+        <activity android:name=".BrowserWebActivity"
+            android:theme="@style/CustomnewDialog">
+
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="erciyuan.http" />
+                <data android:scheme="erciyuan.topic"/>
+
             </intent-filter>
         </activity>
+
+        <activity android:name="com.thefinestartist.finestwebview.FinestWebViewActivity"></activity>
     </application>
 
 </manifest>

@@ -61,11 +61,12 @@ public class FriendsAPI extends AbsOpenAPI {
     /*
    *获取用户的微博列表
    */
-    public void getUserWeibo(long uid, int count, int page, RequestListener listener) {
+    public void getUserWeibo(long uid,String name, int count, int page, RequestListener listener) {
         WeiboParameters params = new WeiboParameters(mAppKey);
         params.put("uid", uid);
         params.put("count", count);
         params.put("page", page);
+        params.put("name", name);
         requestAsync("https://api.weibo.com/2/statuses/user_timeline.json", params, HTTPMETHOD_GET, listener);
     }
 

@@ -123,7 +123,7 @@ public class UserWeiboActivity extends BaseActivity implements AbsListView.OnScr
         mAccessToken = AccessTokenKeeper.readAccessToken(this);
         // 对statusAPI实例化
         friendsAPI = new FriendsAPI(this, Constants.APP_KEY, mAccessToken);
-        friendsAPI.getUserWeibo(uid, 10, page, mListener);
+        friendsAPI.getUserWeibo(uid,null, 10, page, mListener);
 
 
         ptrFrameLayout = (PtrFrameLayout) findViewById(R.id.store_house_ptr_frame);
@@ -152,7 +152,7 @@ public class UserWeiboActivity extends BaseActivity implements AbsListView.OnScr
                     public void run() {
                         MODE = 1;
                         page = 1;
-                        friendsAPI.getUserWeibo(uid, 10, page, mListener);
+                        friendsAPI.getUserWeibo(uid,null, 10, page, mListener);
 
                     }
                 }, 0);
@@ -178,13 +178,14 @@ public class UserWeiboActivity extends BaseActivity implements AbsListView.OnScr
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
         //Log.e("onscroll",totalItemCount-firstVisibleItem+"   "+visibleItemCount);
-        if (totalItemCount - firstVisibleItem == visibleItemCount && fresh == false) {
+        int count=totalItemCount-firstVisibleItem;
+        if (count>0&&count<5&&fresh==false){
             footview.setVisibility(View.VISIBLE);
             MODE = 2;
             fresh = true;
             setState(1);
             page++;
-            friendsAPI.getUserWeibo(uid, 10, page, mListener);
+            friendsAPI.getUserWeibo(uid,null, 10, page, mListener);
         }
     }
 

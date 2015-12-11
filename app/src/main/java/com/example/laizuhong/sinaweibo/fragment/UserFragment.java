@@ -25,6 +25,9 @@ import com.sina.weibo.sdk.openapi.models.ErrorInfo;
 import com.sina.weibo.sdk.openapi.models.User;
 import com.sina.weibo.sdk.utils.LogUtil;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 
 /**
  * Created by laizuhong on 2015/11/10.
@@ -34,9 +37,21 @@ public class UserFragment extends Fragment {
 
     Context context;
     UsersAPI usersAPI;
-    String name;
+    String username;
     User user;
-    TextView tv_name, sex, location, desc, lv, create;
+    @Bind(R.id.name)
+    TextView name;
+    @Bind(R.id.sex)
+    TextView sex;
+    @Bind(R.id.location)
+    TextView location;
+    @Bind(R.id.level)
+    TextView level;
+    @Bind(R.id.create)
+    TextView create;
+    @Bind(R.id.desc)
+    TextView desc;
+
     /**
      * 当前 Token 信息
      */
@@ -72,27 +87,22 @@ public class UserFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_user, null);
         context = getActivity();
         init(view);
+        ButterKnife.bind(this, view);
         return view;
     }
 
 
     private void init(View view) {
-        tv_name = (TextView) view.findViewById(R.id.name);
-        sex = (TextView) view.findViewById(R.id.sex);
-        location = (TextView) view.findViewById(R.id.location);
-        desc = (TextView) view.findViewById(R.id.desc);
-        lv = (TextView) view.findViewById(R.id.level);
-        create = (TextView) view.findViewById(R.id.create);
         mAccessToken = AccessTokenKeeper.readAccessToken(context);
         usersAPI = new UsersAPI(context, Constants.APP_KEY, mAccessToken);
-        name = ((UserActivity) getActivity()).getName();
-        usersAPI.show(name, mListener);
+        username = ((UserActivity) getActivity()).getName();
+        usersAPI.show(username, mListener);
 
 
     }
 
     private void initDate() {
-        tv_name.setText(user.screen_name);
+        name.setText(user.screen_name);
         if (user.gender.equals("f")) {
             sex.setText("女");
         } else if (user.gender.equals("m")) {
@@ -102,7 +112,12 @@ public class UserFragment extends Fragment {
         }
         location.setText(user.location);
         desc.setText(user.description);
-//        desc.setText(user.le);
         create.setText(DateUtil.GmtToDatastring(user.created_at).substring(0, 10));
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 }

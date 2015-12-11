@@ -288,7 +288,7 @@ public class CatnutUtils {
         }
         Linkify.addLinks(text, TweetTextView.MENTION_PATTERN, TweetTextView.MENTION_SCHEME, null, TweetTextView.MENTION_FILTER);
         Linkify.addLinks(text, TweetTextView.TOPIC_PATTERN, TweetTextView.TOPIC_SCHEME, null, TweetTextView.TOPIC_FILTER);
-        Linkify.addLinks(text, TweetTextView.WEB_URL, null, null, TweetTextView.URL_FILTER);
+        Linkify.addLinks(text, TweetTextView.WEB_URL, TweetTextView.WEB_SCHEME, null, TweetTextView.URL_FILTER);
         removeLinkUnderline(text);
     }
 

@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,15 +29,14 @@ import com.example.laizuhong.sinaweibo.fragment.FriendsFragment;
 import com.example.laizuhong.sinaweibo.fragment.SettingFragment;
 import com.example.laizuhong.sinaweibo.fragment.UserWeiboFragment;
 import com.example.laizuhong.sinaweibo.fragment.WeiboFragment;
+import com.example.laizuhong.sinaweibo.util.MyLog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.exception.WeiboException;
 import com.sina.weibo.sdk.net.RequestListener;
 import com.sina.weibo.sdk.openapi.UsersAPI;
-import com.sina.weibo.sdk.openapi.models.ErrorInfo;
 import com.sina.weibo.sdk.openapi.models.User;
-import com.sina.weibo.sdk.utils.LogUtil;
 
 /**
  * Created by laizuhong on 2015/10/28.
@@ -56,6 +56,8 @@ public class Main extends AppCompatActivity {
     FriendsFragment friendsFragment;
     FavoritFragment favoritFragment;
     private DrawerLayout mDrawerLayout = null;
+
+    FrameLayout layout1,layout2;
     /**
      * 当前 Token 信息
      */
@@ -71,7 +73,7 @@ public class Main extends AppCompatActivity {
         @Override
         public void onComplete(String response) {
             if (!TextUtils.isEmpty(response)) {
-                LogUtil.i("RequestListener user", response);
+                MyLog.e("RequestListener user", response);
                 // 调用 User#parse 将JSON串解析成User对象
                 user = User.parse(response);
                 if (user != null) {
@@ -85,9 +87,7 @@ public class Main extends AppCompatActivity {
 
         @Override
         public void onWeiboException(WeiboException e) {
-            LogUtil.e("RequestListener user", e.getMessage());
-            ErrorInfo info = ErrorInfo.parse(e.getMessage());
-            Toast.makeText(Main.this, info.toString(), Toast.LENGTH_LONG).show();
+            MyLog.e("RequestListener user", e.getMessage());
         }
     };
 
@@ -102,7 +102,7 @@ public class Main extends AppCompatActivity {
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.actionbar_menu);
-        actionBar.setTitle("主页");
+        actionBar.setTitle("首页");
 
 
 
@@ -147,6 +147,8 @@ public class Main extends AppCompatActivity {
             }
         });
 
+        layout1= (FrameLayout) findViewById(R.id.content_frame);
+        layout2= (FrameLayout) findViewById(R.id.content_frame2);
         switchFragment(0);
 
     }
@@ -223,15 +225,21 @@ public class Main extends AppCompatActivity {
         hideFragment(transaction);
         switch (tab) {
             case 0:
+                layout1.setVisibility(View.VISIBLE);
+                layout2.setVisibility(View.GONE);
                 actionBar.setTitle("首页");
                 if (weiboFragment == null) {
+                    MyLog.e("weibofragment is null");
                     weiboFragment = new WeiboFragment();
                     transaction.add(R.id.content_frame, weiboFragment);
                 } else {
+                    MyLog.e("show weibofragment");
                     transaction.show(weiboFragment);
                 }
                 break;
             case 1:
+                layout1.setVisibility(View.VISIBLE);
+                layout2.setVisibility(View.GONE);
                 actionBar.setTitle("我的微博");
                 if (userWeiboFragment == null) {
                     userWeiboFragment = new UserWeiboFragment();
@@ -241,6 +249,8 @@ public class Main extends AppCompatActivity {
                 }
                 break;
             case 2:
+                layout1.setVisibility(View.VISIBLE);
+                layout2.setVisibility(View.GONE);
                 actionBar.setTitle("我的关注");
                 if (friendsFragment == null) {
                     friendsFragment = new FriendsFragment();
@@ -250,15 +260,19 @@ public class Main extends AppCompatActivity {
                 }
                 break;
             case 3:
+                layout1.setVisibility(View.GONE);
+                layout2.setVisibility(View.VISIBLE);
                 actionBar.setTitle("我的收藏");
                 if (favoritFragment == null) {
                     favoritFragment = new FavoritFragment();
-                    transaction.replace(R.id.content_frame, favoritFragment);
+                    transaction.replace(R.id.content_frame2, favoritFragment);
                 } else {
                     transaction.show(favoritFragment);
                 }
                 break;
             case 4:
+                layout1.setVisibility(View.VISIBLE);
+                layout2.setVisibility(View.GONE);
                 actionBar.setTitle("设置");
                 if (settingFragment == null) {
                     settingFragment = new SettingFragment();

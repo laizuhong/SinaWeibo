@@ -2,8 +2,7 @@
     package="com.bm.library">
 
     <application
-        android:allowBackup="true"
-        android:label="SinaWeibo">
+        android:allowBackup="true">
 
     </application>
 
