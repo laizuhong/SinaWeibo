@@ -4,9 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -46,10 +47,12 @@ public class Main extends AppCompatActivity {
     public static Main main;
     public static User user;
     DisplayImageOptions options;
+    Toolbar toolbar;
+    ActionBarDrawerToggle mDrawerToggle;
     TextView name;
     ImageView head;
     ListView listView;
-    ActionBar actionBar;
+//    ActionBar actionBar;
     WeiboFragment weiboFragment;
     SettingFragment settingFragment;
     UserWeiboFragment userWeiboFragment;
@@ -95,14 +98,21 @@ public class Main extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main1);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+
         main = this;
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        actionBar = getSupportActionBar();
-        actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.actionbar_menu);
-        actionBar.setTitle("首页");
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar,R.string.drawer_open, R.string.drawer_close);
+        mDrawerToggle.syncState();
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+//        actionBar = getSupportActionBar();
+//        actionBar.setDisplayShowCustomEnabled(true);
+//        actionBar.setDisplayShowHomeEnabled(true);
+//        actionBar.setDisplayHomeAsUpEnabled(true);
+//        actionBar.setHomeAsUpIndicator(R.drawable.actionbar_menu);
+        toolbar.setTitle("首页");
 
 
 
@@ -227,7 +237,7 @@ public class Main extends AppCompatActivity {
             case 0:
                 layout1.setVisibility(View.VISIBLE);
                 layout2.setVisibility(View.GONE);
-                actionBar.setTitle("首页");
+                toolbar.setTitle("首页");
                 if (weiboFragment == null) {
                     MyLog.e("weibofragment is null");
                     weiboFragment = new WeiboFragment();
@@ -240,7 +250,7 @@ public class Main extends AppCompatActivity {
             case 1:
                 layout1.setVisibility(View.VISIBLE);
                 layout2.setVisibility(View.GONE);
-                actionBar.setTitle("我的微博");
+                toolbar.setTitle("我的微博");
                 if (userWeiboFragment == null) {
                     userWeiboFragment = new UserWeiboFragment();
                     transaction.add(R.id.content_frame, userWeiboFragment);
@@ -251,7 +261,7 @@ public class Main extends AppCompatActivity {
             case 2:
                 layout1.setVisibility(View.VISIBLE);
                 layout2.setVisibility(View.GONE);
-                actionBar.setTitle("我的关注");
+                toolbar.setTitle("我的关注");
                 if (friendsFragment == null) {
                     friendsFragment = new FriendsFragment();
                     transaction.add(R.id.content_frame, friendsFragment);
@@ -262,7 +272,7 @@ public class Main extends AppCompatActivity {
             case 3:
                 layout1.setVisibility(View.GONE);
                 layout2.setVisibility(View.VISIBLE);
-                actionBar.setTitle("我的收藏");
+                toolbar.setTitle("我的收藏");
                 if (favoritFragment == null) {
                     favoritFragment = new FavoritFragment();
                     transaction.replace(R.id.content_frame2, favoritFragment);
@@ -273,7 +283,7 @@ public class Main extends AppCompatActivity {
             case 4:
                 layout1.setVisibility(View.VISIBLE);
                 layout2.setVisibility(View.GONE);
-                actionBar.setTitle("设置");
+                toolbar.setTitle("设置");
                 if (settingFragment == null) {
                     settingFragment = new SettingFragment();
                     transaction.add(R.id.content_frame, settingFragment);

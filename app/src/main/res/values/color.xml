@@ -7,7 +7,11 @@
     <color name="nocolor">#00000000</color>
     <color name="white">#ffffff</color>
     <!-- 白色 -->
-
+    <color name="colorPrimary">#ed1815</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="tab_text_color_normal">#000000</color>
+    <color name="tab_text_color_selected">#1570A6</color>
     <color name="black">#000000</color>
     <!-- 黑色 -->
     <color name="gray_black">#f2f2f2</color>

@@ -7,7 +7,10 @@
     <string name="action_settings3">Settings3</string>
     <string name="action_settings4">Settings4</string>
     <string name="action_settings5">Settings5</string>
+    <string name="drawer_open">Open navigation drawer</string>
 
+    <!-- Description of the icon that closes the navigation drawer, used by accessibility. -->
+    <string name="drawer_close">Close navigation drawer</string>
     <!-- 功能列表 -->
     <string name="weibosdk_demo_feature_oauth">微博授权</string>
     <string name="weibosdk_demo_feature_share">分享到微博</string>

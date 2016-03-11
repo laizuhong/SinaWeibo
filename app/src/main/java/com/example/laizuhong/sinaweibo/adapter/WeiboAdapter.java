@@ -186,6 +186,8 @@ public class WeiboAdapter extends BaseAdapter {
 
 
         if (status.retweeted_status != null) {
+            MyLog.e(status.retweeted_status.toString());
+
             holer.fromeStatus.setVisibility(View.VISIBLE);
             holer.fromeStatus.setTag(position);
             holer.fromeStatus.setOnClickListener(new View.OnClickListener() {
@@ -197,7 +199,12 @@ public class WeiboAdapter extends BaseAdapter {
                     context.startActivity(intent);
                 }
             });
-            String text = status.retweeted_status.user.screen_name + ":  " + status.retweeted_status.text;
+            String text;
+            if (status.retweeted_status.user==null){
+                text=status.retweeted_status.text;
+            }else {
+                text = status.retweeted_status.user.screen_name + ":  " + status.retweeted_status.text;
+            }
             holer.itemFromeText.setText(text);
             CatnutUtils.vividTweet(holer.itemFromeText, tweetImageSpan);
             // StringUtil.setTextview(holer.frome_text, context);
