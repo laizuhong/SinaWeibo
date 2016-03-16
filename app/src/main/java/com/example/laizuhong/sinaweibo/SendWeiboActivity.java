@@ -8,7 +8,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,7 +36,7 @@ import com.sina.weibo.sdk.utils.LogUtil;
 /**
  * Created by laizuhong on 2015/9/18.
  */
-public class SendWeiboActivity extends BaseActivity implements View.OnClickListener {
+public class SendWeiboActivity extends AppCompatActivity implements View.OnClickListener {
 
     //    GridView gridView;
 //    PictureAdapter adapter;
@@ -52,6 +54,7 @@ public class SendWeiboActivity extends BaseActivity implements View.OnClickListe
     private StatusesAPI mStatusesAPI;
     private FriendsAPI friendsAPI;
     private CommentsAPI commentsAPI;
+    Toolbar toolbar;
     /**
      * 微博 OpenAPI 回调接口。
      */
@@ -83,7 +86,11 @@ public class SendWeiboActivity extends BaseActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_weibo);
-        getSupportActionBar().setTitle("发微博");
+        toolbar= (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("发微博");
+        toolbar.setNavigationIcon(R.drawable.ic_menu_back);
+        setSupportActionBar(toolbar);
+        //getSupportActionBar().setTitle("发微博");
         status = (Status) getIntent().getSerializableExtra("weibo");
         is_comment = getIntent().getBooleanExtra("comment", false);
 
@@ -91,6 +98,7 @@ public class SendWeiboActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void init(){
+
         findViewById(R.id.back).setOnClickListener(this);
         findViewById(R.id.fun1).setOnClickListener(this);
         findViewById(R.id.fun2).setOnClickListener(this);
@@ -172,8 +180,8 @@ public class SendWeiboActivity extends BaseActivity implements View.OnClickListe
                 Bitmap bitmap = ImageLoader.getInstance().loadImageSync("file://" + path, MyApp.options);
                 mStatusesAPI.upload(text, bitmap, "", "", mListener);
             }
-
-
+        }else if (item.getItemId()==android.R.id.home){
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -237,67 +245,5 @@ public class SendWeiboActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
-//    class PictureAdapter extends BaseAdapter {
-//        @Override
-//        public int getCount() {
-//            return pictures.size();
-//        }
-//
-//        @Override
-//        public Object getItem(int position) {
-//            return pictures.get(position);
-//        }
-//
-//        @Override
-//        public long getItemId(int position) {
-//            return position;
-//        }
-//
-//        @Override
-//        public View getView(final int position, View convertView, ViewGroup parent) {
-//            convertView = LayoutInflater.from(SendWeiboActivity.this).inflate(R.layout.item_send_pic_grid, null);
-//            ImageView img = (ImageView) convertView.findViewById(R.id.imageview);
-//            ImageView delete = (ImageView) convertView.findViewById(R.id.delete);
-//            if (pictures.size() != 0 && getCount() < 9 && position == getCount() - 1) {
-//                img.setBackgroundResource(R.drawable.group_edit_member_add);
-//                img.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        if (pictures.size() > 0 && getCount() < 9 && position == getCount() - 1) {
-//                            Intent picture = new Intent(SendWeiboActivity.this, PictureActivity.class);
-//                            pictures.remove(pictures.size() - 1);
-//                            picture.putExtra("picture", (Serializable) pictures);
-//                            startActivityForResult(picture, 1);
-//                        }
-//                    }
-//                });
-//                delete.setVisibility(View.GONE);
-//                return convertView;
-//            }
-//
-//            final Picture picture = pictures.get(position);
-//
-//            Log.e("     getview", picture.getGroup() + "   " + picture.getChild());
-//            ImageLoader.getInstance().displayImage("file://" + picture.getPath(), img, options);
-//            delete.setTag(position);
-//            delete.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    int p = (int) v.getTag();
-//                    Picture picture1 = pictures.get(p);
-//                    int group = picture1.getGroup();
-//                    int child = picture1.getChild();
-//                    Log.e("path", group + "   " + child);
-//                    pictures.remove(picture1);
-//                    PictureUtil.pictureFiles.get(group).getSets().get(child).isChecked = false;
-//                    if (pictures.size() == 1) {
-//                        pictures.clear();
-//                    }
-//                    adapter.notifyDataSetChanged();
-//                }
-//            });
-//            return convertView;
-//        }
-//    }
 
 }

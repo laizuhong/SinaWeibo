@@ -112,7 +112,7 @@ public class Main extends AppCompatActivity {
 //        actionBar.setDisplayShowHomeEnabled(true);
 //        actionBar.setDisplayHomeAsUpEnabled(true);
 //        actionBar.setHomeAsUpIndicator(R.drawable.actionbar_menu);
-        toolbar.setTitle("首页");
+
 
 
 

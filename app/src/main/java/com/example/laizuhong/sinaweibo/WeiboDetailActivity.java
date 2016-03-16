@@ -2,10 +2,13 @@ package com.example.laizuhong.sinaweibo;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
@@ -44,7 +47,7 @@ import butterknife.ButterKnife;
 /**
  * Created by laizuhong on 2015/9/29.
  */
-public class WeiboDetailActivity extends BaseActivity implements View.OnClickListener, AbsListView.OnScrollListener {
+public class WeiboDetailActivity extends AppCompatActivity implements View.OnClickListener, AbsListView.OnScrollListener {
 
     Status status;
     DisplayImageOptions options;
@@ -100,6 +103,10 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
     private View mProgressBar;
     private TextView mHintView;
     private View footview, rootView;
+
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+
     /**
      * 微博 OpenAPI 回调接口。
      */
@@ -136,6 +143,10 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weibo_detail);
         ButterKnife.bind(this);
+        toolbar.setTitle("正文");
+        toolbar.setNavigationIcon(R.drawable.ic_menu_back);
+        setSupportActionBar(toolbar);
+
         status = (Status) getIntent().getSerializableExtra("weibo");
         MyLog.e(status.toString());
         init();
@@ -143,7 +154,7 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
 
 
     private void init() {
-        getSupportActionBar().setTitle("正文");
+        //getSupportActionBar().setTitle("正文");
 
         weibo_id = Long.valueOf(status.id);
         retweet.setOnClickListener(this);
@@ -348,4 +359,13 @@ public class WeiboDetailActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:// 点击返回图标事件
+                finish();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

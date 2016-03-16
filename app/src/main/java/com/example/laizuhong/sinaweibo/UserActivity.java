@@ -3,6 +3,9 @@ package com.example.laizuhong.sinaweibo;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,7 +18,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 /**
  * Created by laizuhong on 2015/11/9.
  */
-public class UserActivity extends BaseActivity implements View.OnClickListener {
+public class UserActivity extends AppCompatActivity implements View.OnClickListener {
 
     String name;
     UserFragment userFragment;
@@ -37,6 +40,10 @@ public class UserActivity extends BaseActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         MyLog.e(getIntent().getData() + "");
         setContentView(R.layout.activity_user);
+        Toolbar toolbar= (Toolbar) findViewById(R.id.toolbar);
+        //toolbar.setTitle("发微博");
+        toolbar.setNavigationIcon(R.drawable.ic_menu_back);
+        setSupportActionBar(toolbar);
         Intent intent = getIntent();
         name = intent.getStringExtra("name");
         if (name == null) {
@@ -104,5 +111,15 @@ public class UserActivity extends BaseActivity implements View.OnClickListener {
             transaction.hide(mentionWeiboFragment);
         }
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:// 点击返回图标事件
+                finish();
+            default:
+            return super.onOptionsItemSelected(item);
+        }
     }
 }
