@@ -27,7 +27,6 @@ import com.example.laizuhong.sinaweibo.util.MyLog;
 import com.example.laizuhong.sinaweibo.util.MyToast;
 import com.example.laizuhong.sinaweibo.util.TweetImageSpan;
 import com.example.laizuhong.sinaweibo.util.TweetTextView;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.exception.WeiboException;
@@ -50,7 +49,7 @@ import butterknife.ButterKnife;
 public class WeiboDetailActivity extends AppCompatActivity implements View.OnClickListener, AbsListView.OnScrollListener {
 
     Status status;
-    DisplayImageOptions options;
+//    DisplayImageOptions options;
     MyGridviewAdapter adapter;
     TweetImageSpan tweetImageSpan;
     CommentsAPI commentsAPI;
@@ -80,8 +79,8 @@ public class WeiboDetailActivity extends AppCompatActivity implements View.OnCli
     LinearLayout like;
     @Bind(R.id.fun_layout)
     LinearLayout funLayout;
-    @Bind(R.id.head)
-    LinearLayout head;
+//    @Bind(R.id.head)
+//    LinearLayout head;
     LinearLayout view;
     ImageView userhead;
     TextView username;
@@ -144,8 +143,8 @@ public class WeiboDetailActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_weibo_detail);
         ButterKnife.bind(this);
         toolbar.setTitle("正文");
-        toolbar.setNavigationIcon(R.drawable.ic_menu_back);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         status = (Status) getIntent().getSerializableExtra("weibo");
         MyLog.e(status.toString());

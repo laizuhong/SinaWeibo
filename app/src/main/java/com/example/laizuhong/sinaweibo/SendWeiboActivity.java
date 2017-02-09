@@ -88,8 +88,8 @@ public class SendWeiboActivity extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.activity_send_weibo);
         toolbar= (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("发微博");
-        toolbar.setNavigationIcon(R.drawable.ic_menu_back);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //getSupportActionBar().setTitle("发微博");
         status = (Status) getIntent().getSerializableExtra("weibo");
         is_comment = getIntent().getBooleanExtra("comment", false);
@@ -99,13 +99,13 @@ public class SendWeiboActivity extends AppCompatActivity implements View.OnClick
 
     private void init(){
 
-        findViewById(R.id.back).setOnClickListener(this);
+//        findViewById(R.id.back).setOnClickListener(this);
         findViewById(R.id.fun1).setOnClickListener(this);
         findViewById(R.id.fun2).setOnClickListener(this);
         findViewById(R.id.fun3).setOnClickListener(this);
         findViewById(R.id.fun4).setOnClickListener(this);
         findViewById(R.id.fun5).setOnClickListener(this);
-        findViewById(R.id.send).setOnClickListener(this);
+//        findViewById(R.id.send).setOnClickListener(this);
         pic = (ImageView) findViewById(R.id.pic);
         pic.setOnClickListener(this);
 //        adapter = new PictureAdapter();

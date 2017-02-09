@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
@@ -18,104 +19,71 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
+
+
     <RelativeLayout
-        android:id="@+id/title_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/back"
-            android:layout_width="50dp"
-            android:layout_height="fill_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="5dp"
-            android:gravity="center"
-            android:text="取消" />
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="发微博" />
-
-
-        <TextView
-            android:id="@+id/send"
-            android:layout_width="50dp"
-            android:layout_height="fill_parent"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="5dp"
-            android:gravity="center"
-            android:text="发送" />
-
-    </RelativeLayout>
-
-
-    <LinearLayout
-        android:id="@+id/line_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="40dp"
+        android:id="@+id/action_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/fun1"
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:padding="8dp"
-            android:src="@drawable/compose_toolbar_picture_highlighted" />
-
-        <ImageView
-            android:id="@+id/fun2"
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:padding="8dp"
-            android:src="@drawable/compose_mentionbutton_background_highlighted" />
-
-        <ImageView
-            android:id="@+id/fun3"
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:padding="8dp"
-            android:src="@drawable/compose_trendbutton_background_highlighted" />
-
-        <ImageView
-            android:id="@+id/fun4"
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:padding="8dp"
-            android:src="@drawable/compose_emoticonbutton_background_highlighted" />
-
-        <ImageView
-            android:id="@+id/fun5"
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:padding="8dp"
-            android:src="@drawable/search_discover_icon_addchannel_highlighted" />
-
-    </LinearLayout>
-
-
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_above="@id/line_layout"
-        android:layout_below="@id/title_layout"
-        android:background="@color/white">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
+            android:id="@+id/line_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/fun1"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:src="@drawable/compose_toolbar_picture_highlighted" />
+
+            <ImageView
+                android:id="@+id/fun2"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:src="@drawable/compose_mentionbutton_background_highlighted" />
+
+            <ImageView
+                android:id="@+id/fun3"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:src="@drawable/compose_trendbutton_background_highlighted" />
+
+            <ImageView
+                android:id="@+id/fun4"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:src="@drawable/compose_emoticonbutton_background_highlighted" />
+
+            <ImageView
+                android:id="@+id/fun5"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:src="@drawable/search_discover_icon_addchannel_highlighted" />
+
+        </LinearLayout>
+
+        <ScrollView
+
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:orientation="vertical">
+            android:layout_above="@id/line_layout"
+            android:background="@color/white">
+
 
             <RelativeLayout
                 android:layout_width="fill_parent"
@@ -189,6 +157,10 @@
                     </RelativeLayout>
                 </android.support.v7.widget.CardView>
             </RelativeLayout>
-        </LinearLayout>
-    </ScrollView>
-</RelativeLayout>
+
+        </ScrollView>
+
+    </RelativeLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>

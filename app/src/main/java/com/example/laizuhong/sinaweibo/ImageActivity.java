@@ -7,6 +7,8 @@ import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -61,6 +63,8 @@ public class ImageActivity extends AppCompatActivity {
             }
         }
     };
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
 
 
     @OnClick(R.id.save)
@@ -84,6 +88,8 @@ public class ImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image);
         ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         imgsId = getIntent().getStringArrayListExtra("image");
         position = getIntent().getIntExtra("positon", 0);
         totel.setText("/" + imgsId.size());
@@ -172,14 +178,23 @@ public class ImageActivity extends AppCompatActivity {
 
             }
         });
-        findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+//        findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                finish();
+//            }
+//        });
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     /**
      * 保存方法

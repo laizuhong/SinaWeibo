@@ -36,6 +36,7 @@ public class BaseFragment extends Fragment implements AbsListView.OnScrollListen
     Context context;
     PtrFrameLayout ptrFrameLayout;
     ListView listView;
+//    RecyclerView recyclerView;
     LinearLayout loading;
     int MODE=1;  //1为刷新，2为加载更多
     int page=1;
@@ -116,6 +117,7 @@ public class BaseFragment extends Fragment implements AbsListView.OnScrollListen
             }
         });
 
+//        recyclerView= (RecyclerView) v.findViewById(R.id.recyclerView);
         listView = (ListView) v.findViewById(R.id.allweibo);
         listView.addFooterView(footview);
         listView.setOnScrollListener(this);

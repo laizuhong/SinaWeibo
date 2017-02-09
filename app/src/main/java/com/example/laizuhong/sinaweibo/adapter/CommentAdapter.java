@@ -18,10 +18,8 @@ import com.example.laizuhong.sinaweibo.util.DateUtil;
 import com.example.laizuhong.sinaweibo.util.MyLog;
 import com.example.laizuhong.sinaweibo.util.TweetImageSpan;
 import com.example.laizuhong.sinaweibo.util.TweetTextView;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 import com.sina.weibo.sdk.openapi.models.Comment;
@@ -35,20 +33,20 @@ public class CommentAdapter extends BaseAdapter {
 
     List<Comment> comments;
     Context context;
-    DisplayImageOptions options;
+//    DisplayImageOptions options;
     TweetImageSpan tweetImageSpan;
 
     public CommentAdapter(List<Comment> comments, Context context) {
         this.comments = comments;
         this.context = context;
         tweetImageSpan = new TweetImageSpan(context);
-        options = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .displayer(new FadeInBitmapDisplayer(500)) // 展现方式：渐现
-                .considerExifParams(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .build();
+//        options = new DisplayImageOptions.Builder()
+//                .cacheInMemory(true)
+//                .cacheOnDisk(true)
+//                .displayer(new FadeInBitmapDisplayer(500)) // 展现方式：渐现
+//                .considerExifParams(true)
+//                .bitmapConfig(Bitmap.Config.RGB_565)
+//                .build();
     }
 
     @Override

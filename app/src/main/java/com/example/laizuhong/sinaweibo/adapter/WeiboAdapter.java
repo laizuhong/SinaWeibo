@@ -41,14 +41,14 @@ import butterknife.ButterKnife;
 public class WeiboAdapter extends BaseAdapter {
 
 
-    List<Status> statuses;
-    Context context;
-    int MODE = 0;
-    TweetImageSpan tweetImageSpan;
+    private List<Status> statuses;
+    private Context context;
+    private int MODE = 0;
+    private TweetImageSpan tweetImageSpan;
     Info mInfo;
 
-    AlphaAnimation in = new AlphaAnimation(0, 1);
-    AlphaAnimation out = new AlphaAnimation(1, 0);
+    private AlphaAnimation in = new AlphaAnimation(0, 1);
+    private AlphaAnimation out = new AlphaAnimation(1, 0);
 
     public WeiboAdapter(Context context, List<Status> statuses, int mode) {
         this.context = context;
@@ -112,8 +112,9 @@ public class WeiboAdapter extends BaseAdapter {
 
             }
         });
+
         holer.grid1.setVisibility(View.GONE);
-        holer.grid2.setVisibility(View.GONE);
+//        holer.grid2.setVisibility(View.GONE);
         holer.mygridview.setVisibility(View.GONE);
         if (status.pic_urls != null) {
             if (status.pic_urls.size() == 1) {
@@ -130,32 +131,37 @@ public class WeiboAdapter extends BaseAdapter {
                         context.startActivity(intent);
                     }
                 });
-            } else if (status.pic_urls.size() == 4) {
-                holer.grid2.setVisibility(View.VISIBLE);
-                MyGridviewAdapter adapter = new MyGridviewAdapter(status.pic_urls, context, holer.grid2);
-                holer.grid2.setAdapter(adapter);
-                holer.grid2.setOnTouchInvalidPositionListener(new MyGridView.OnTouchInvalidPositionListener() {
-                    @Override
-                    public boolean onTouchInvalidPosition(int motionEvent) {
-                        MyLog.e(motionEvent + "");
-                        return false;
-                    }
-                });
-
-                holer.grid2.setTag(position);
-                holer.grid2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        MyLog.e(position + "   " + view.getTag());
-                        //int p= (int) view.getTag();
-                        Intent intent = new Intent(context, ImageActivity.class);
-                        intent.putStringArrayListExtra("image", status.pic_urls);
-                        intent.putExtra("positon", position);
-                        context.startActivity(intent);
-                    }
-                });
+//            } else if (status.pic_urls.size() == 4) {
+//                holer.grid2.setVisibility(View.VISIBLE);
+//                MyGridviewAdapter adapter = new MyGridviewAdapter(status.pic_urls, context, holer.grid2);
+//                holer.grid2.setAdapter(adapter);
+//                holer.grid2.setOnTouchInvalidPositionListener(new MyGridView.OnTouchInvalidPositionListener() {
+//                    @Override
+//                    public boolean onTouchInvalidPosition(int motionEvent) {
+//                        MyLog.e(motionEvent + "");
+//                        return false;
+//                    }
+//                });
+//
+//                holer.grid2.setTag(position);
+//                holer.grid2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                        MyLog.e(position + "   " + view.getTag());
+//                        //int p= (int) view.getTag();
+//                        Intent intent = new Intent(context, ImageActivity.class);
+//                        intent.putStringArrayListExtra("image", status.pic_urls);
+//                        intent.putExtra("positon", position);
+//                        context.startActivity(intent);
+//                    }
+//                });
             } else {
 
+                if (status.pic_urls.size()==4){
+                    holer.mygridview.setNumColumns(2);
+                }else {
+                    holer.mygridview.setNumColumns(3);
+                }
                 holer.mygridview.setVisibility(View.VISIBLE);
                 MyGridviewAdapter adapter = new MyGridviewAdapter(status.pic_urls, context, holer.mygridview);
                 holer.mygridview.setAdapter(adapter);
@@ -291,8 +297,8 @@ public class WeiboAdapter extends BaseAdapter {
         ImageView grid1;
         @Bind(R.id.mygridview)
         MyGridView mygridview;
-        @Bind(R.id.grid2)
-        MyGridView grid2;
+//        @Bind(R.id.grid2)
+//        MyGridView grid2;
         @Bind(R.id.item_list)
         LinearLayout itemList;
         @Bind(R.id.item_frome_text)

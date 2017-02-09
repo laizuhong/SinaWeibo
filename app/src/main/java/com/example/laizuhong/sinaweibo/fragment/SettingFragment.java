@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.laizuhong.sinaweibo.Constants;
-import com.example.laizuhong.sinaweibo.Main;
 import com.example.laizuhong.sinaweibo.R;
 import com.example.laizuhong.sinaweibo.config.AccessTokenKeeper;
 import com.sina.weibo.sdk.exception.WeiboException;
@@ -59,7 +58,7 @@ public class SettingFragment extends Fragment {
 
                     if ("true".equalsIgnoreCase(value)) {
                         AccessTokenKeeper.clear(context);
-                        Main.main.finish();
+//                        MainActivity.main.finish();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

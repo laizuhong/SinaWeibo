@@ -20,4 +20,3 @@
     <item android:drawable="@drawable/ic_com_sina_weibo_sdk_login_button_with_frame_logo_focused" android:state_focused="true" />
     <item android:drawable="@drawable/ic_com_sina_weibo_sdk_login_button_with_frame_logo_normal" />
 </selector>
-<!-- From: file:/D:/Android/work/SinaWeibo/WeiboSDK/res/drawable/com_sina_weibo_sdk_login_button_with_frame_logo.xml -->

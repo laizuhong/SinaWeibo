@@ -21,4 +21,3 @@
     <item android:drawable="@drawable/ic_com_sina_weibo_sdk_logo" android:state_focused="true" />
     <item android:drawable="@drawable/ic_com_sina_weibo_sdk_logo" />
 </selector>
-<!-- From: file:/F:/Android/work/SinaWeibo/WeiboSDK/res/drawable/com_sina_weibo_sdk_login_button_with_original_logo.xml -->

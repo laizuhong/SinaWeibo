@@ -54,7 +54,7 @@ public class StartActivity extends AppCompatActivity{
 
     private void startActivity() {
         Intent intent = new Intent();
-        intent.setClass(StartActivity.this, Main.class);
+        intent.setClass(StartActivity.this, MainActivity.class);
         startActivity(intent);
         overridePendingTransition(android.R.anim.fade_in,
                 android.R.anim.fade_out);

@@ -1,7 +1,6 @@
 package com.example.laizuhong.sinaweibo.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,10 +8,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.laizuhong.sinaweibo.MyApp;
 import com.example.laizuhong.sinaweibo.R;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.sina.weibo.sdk.openapi.models.User;
 
 import java.util.List;
@@ -24,21 +22,10 @@ public class FriendAdapter extends BaseAdapter {
 
     Context context;
     List<User> users;
-    DisplayImageOptions options;
 
     public FriendAdapter(Context context, List<User> users) {
         this.context = context;
         this.users = users;
-        options = new DisplayImageOptions.Builder()
-//                .showImageOnLoading(R.drawable.logo)
-//                .showImageForEmptyUri(R.drawable.logo)
-//                .showImageOnFail(R.drawable.logo)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .displayer(new FadeInBitmapDisplayer(100)) // 展现方式：渐现
-                .considerExifParams(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                .build();
     }
 
     @Override
@@ -64,7 +51,7 @@ public class FriendAdapter extends BaseAdapter {
         TextView desc = (TextView) convertView.findViewById(R.id.desc);
 
         User user = users.get(position);
-        ImageLoader.getInstance().displayImage(user.profile_image_url, head, options);
+        ImageLoader.getInstance().displayImage(user.profile_image_url, head, MyApp.options);
         name.setText(user.screen_name);
         desc.setText(user.description);
 

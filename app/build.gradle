@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.laizuhong.sinaweibo"
-        minSdkVersion 11
+        minSdkVersion 14
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -66,5 +66,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:cardview-v7:23.1.1'
     compile project(':weblibrary')
+    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:v1.7.9'
 
 }

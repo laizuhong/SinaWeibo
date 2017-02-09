@@ -7,8 +7,7 @@
     <color name="nocolor">#00000000</color>
     <color name="white">#ffffff</color>
     <!-- 白色 -->
-    <color name="colorPrimary">#ed1815</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+
     <color name="colorAccent">#FF4081</color>
     <color name="tab_text_color_normal">#000000</color>
     <color name="tab_text_color_selected">#1570A6</color>
@@ -31,7 +30,26 @@
     <!-- 亮绿色 -->
 
 
-    <color name="redPrimaryDark">#DD3131</color>
+    <color name="redPrimaryDark">#5f0a08</color>
     <color name="redPrimary">#FF5E5E</color>
-    <color name="redPrimaryLight">#FFC9C9</color>
+    <color name="colorPrimary">#ed1815</color>
+    <color name="colorPrimaryDark">#5f0a08</color>
+    <color name="redPrimaryLight">#ed1815</color>
+
+
+
+    <!-- A light Holo shade of blue -->
+    <!-- A light Holo shade of green -->
+    <color name="holo_green_light">#ff99cc00</color>
+    <!-- A light Holo shade of red -->
+    <color name="holo_red_light">#ffff4444</color>
+    <!-- A dark Holo shade of blue -->
+    <!-- A dark Holo shade of green -->
+    <!-- A dark Holo shade of red -->
+    <!-- A Holo shade of purple -->
+    <!-- A light Holo shade of orange -->
+    <color name="holo_orange_light">#ffffbb33</color>
+    <!-- A dark Holo shade of orange -->
+    <!-- A really bright Holo shade of blue -->
+    <color name="holo_blue_bright">#ff00ddff</color>
 </resources>

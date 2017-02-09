@@ -6,15 +6,16 @@
     <LinearLayout
         android:id="@+id/xlistview_footer_content"
         android:layout_width="fill_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal"
         android:padding="10dp" >
 
-        <com.example.laizuhong.sinaweibo.util.ProgressBarCircularIndetermininate
+        <android.support.v4.widget.ContentLoadingProgressBar
             android:id="@+id/xlistview_footer_progressbar"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            style="?android:attr/progressBarStyleLarge"
             android:visibility="visible" />
 
         <TextView

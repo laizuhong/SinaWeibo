@@ -88,6 +88,8 @@ public class FavoriteAdapter extends BaseAdapter {
             holer = (ViewHolder) convertView.getTag();
         }
         final Status status = favorites.get(position).status;
+        MyLog.e(position+"   "+status.user.toString());
+
         MyLog.e(status.bmiddle_pic + "   " + status.thumbnail_pic + "   " + status.original_pic + "   " + status.user.screen_name);
         holer.username.setText(status.user.screen_name);
 

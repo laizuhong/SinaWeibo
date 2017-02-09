@@ -71,7 +71,7 @@ public class SettingActivity extends AppCompatActivity{
 
                     if ("true".equalsIgnoreCase(value)) {
                         AccessTokenKeeper.clear(SettingActivity.this);
-                        Main.main.finish();
+//                        MainActivity.main.finish();
                         finish();
                     }
                 } catch (JSONException e) {
